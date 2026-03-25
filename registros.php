@@ -7,7 +7,7 @@ $hora=date("H:i:s");
 		
 
 $ip = $_SERVER['REMOTE_ADDR'];
-//echo $ip;
+echo $ip;
 // Buscar tienda por IP
 $consultaTienda = mysqli_query($conec, "SELECT * FROM tiendas WHERE ip='$ip' AND estatus=1");
 $tienda = mysqli_fetch_array($consultaTienda);
@@ -139,7 +139,7 @@ VALUES
     </style>
   </head>
   <!--<body onLoad="document.forms[0].tarjeta.focus()">-->
- <body style="background-image: url('assets/dulceria/<?php echo $nombre_tienda; ?>.png'); background-size: cover;">
+ <body style="background-image: url('assets/<?php echo $id_tienda; ?>.png'); background-size: cover;">
 
   <?php
     
@@ -148,7 +148,7 @@ VALUES
   
 ?>
   <!--------------------------------------- FORMULARIO  ------------------------------------------>
- <!-- <h3><?php echo $nombre_tienda; ?></h3> -->
+ <?php echo $nombre_tienda; ?></h3>
 
         <div class="container px-1 px-sm-5 mx-auto">
     <form class="form-inline" action="" method="post">
@@ -269,4 +269,3 @@ VALUES
 
   
 </html>
-
