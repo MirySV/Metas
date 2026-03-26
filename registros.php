@@ -8,6 +8,9 @@ $hora = date("H:i:s");
 
 $ip = $_SERVER['REMOTE_ADDR'];
 //echo $ip;
+?>
+<h3><?php echo $ip; ?></h3>
+<?php
 // Buscar tienda por IP
 $consultaTienda = mysqli_query($conec, "SELECT * FROM tiendas WHERE ip='$ip' AND estatus=1");
 $tienda = mysqli_fetch_array($consultaTienda);
@@ -214,7 +217,7 @@ if (!empty($_POST['tarjeta'])) {
       </thead>
       <tbody>
         <?php
-        //if ($tienda) {
+        //if ($id_tienda = $tienda['id_tienda']) {
         //$id_tienda = $tienda['id_tienda']
         $mostrarR = mysqli_query($conec, "SELECT j.nombre, m.hora_entrada FROM metas.registros as m INNER JOIN reloj.empleados as j ON m.id_empleado=j.idEmpleado WHERE m.fecha = '" . $fecha . "' AND j.fecha = '" . $fecha . "' ORDER BY hora_entrada DESC");
         $c = 1;
@@ -239,6 +242,9 @@ if (!empty($_POST['tarjeta'])) {
           </tr>
         <?php
         }
+        //} else {
+          //$id_tienda = 0;
+          //$nombre_tienda = "Tienda desconocida";
         //}
         ?>
 
