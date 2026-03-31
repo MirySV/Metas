@@ -9,7 +9,7 @@ $hora = date("H:i:s");
 $ip = $_SERVER['REMOTE_ADDR'];
 //echo $ip;
 ?>
-<h3><?php echo $ip; ?></h3>
+<!--<h3><?php echo $ip; ?></h3>-->
 <?php
 // Buscar tienda por IP
 $consultaTienda = mysqli_query($conec, "SELECT * FROM tiendas WHERE ip='$ip' AND estatus=1");
@@ -22,13 +22,15 @@ if ($tienda) {
   $nombre_tienda = "Tienda desconocida";
 }
 
+ echo $id_tienda;
+
 if (!empty($_POST['tarjeta'])) {
   //Consulta original
   //$scar=mysqli_query($conec,"SELECT * FROM registros as r,empleados as e WHERE r.idEmpleado=e.idEmpleado AND codigo=".$_POST['tarjeta']." AND r.fecha='".$fecha."'");
 
   // Consulta cruzada entre 'bd_metas' y 'bd_reloj'
-  $scar = mysqli_query($conec, "SELECT * FROM metas.registros AS m INNER JOIN reloj.empleados AS j ON m.id_empleado=j.idEmpleado AND codigo=" . $_POST['tarjeta'] . " AND m.fecha='" . $fecha . "'");
-  if (mysqli_num_rows($scar) <= 0) {
+  $scar = mysqli_query($conec, "SELECT * FROM metas.registros AS m INNER JOIN reloj.empleados AS j ON m.id_empleado=j.idEmpleado WHERE codigo=" . $_POST['tarjeta'] . " AND m.fecha='" . $fecha . "'");
+    if (mysqli_num_rows($scar) <= 0) {
     $empleado = mysqli_query($conec, "SELECT idEmpleado FROM reloj.empleados WHERE codigo=" . $_POST['tarjeta'] . "");
     $idEmpl = mysqli_fetch_array($empleado);
     if (mysqli_num_rows($empleado) > 0) {
@@ -217,9 +219,7 @@ if (!empty($_POST['tarjeta'])) {
       </thead>
       <tbody>
         <?php
-        //if ($id_tienda = $tienda['id_tienda']) {
-        //$id_tienda = $tienda['id_tienda']
-        $mostrarR = mysqli_query($conec, "SELECT j.nombre, m.hora_entrada FROM metas.registros as m INNER JOIN reloj.empleados as j ON m.id_empleado=j.idEmpleado WHERE m.fecha = '" . $fecha . "' AND j.fecha = '" . $fecha . "' ORDER BY hora_entrada DESC");
+        $mostrarR = mysqli_query($conec, "SELECT j.nombre, m.hora_entrada FROM metas.registros as m INNER JOIN reloj.empleados as j ON m.id_empleado=j.idEmpleado WHERE m.fecha = '" . $fecha . "' AND j.fecha = '" . $fecha . "'  AND m.id_tienda = '" . $id_tienda . "' ORDER BY hora_entrada DESC");
         $c = 1;
         while ($i = mysqli_fetch_array($mostrarR)) {
           $cont = $c++;
@@ -242,10 +242,6 @@ if (!empty($_POST['tarjeta'])) {
           </tr>
         <?php
         }
-        //} else {
-          //$id_tienda = 0;
-          //$nombre_tienda = "Tienda desconocida";
-        //}
         ?>
 
       </tbody>
