@@ -22,7 +22,7 @@ if ($tienda) {
   $nombre_tienda = "Tienda desconocida";
 }
 
- echo $id_tienda;
+ //echo $id_tienda;
 
 if (!empty($_POST['tarjeta'])) {
   //Consulta original
@@ -166,7 +166,7 @@ if (!empty($_POST['tarjeta'])) {
 
   ?>
   <!--------------------------------------- FORMULARIO  ------------------------------------------>
- <h3><?php echo $nombre_tienda; ?></h3>
+ <!--<h3><?php echo $nombre_tienda; ?></h3>-->
 
 
   <div class="container px-1 px-sm-5 mx-auto">
@@ -208,7 +208,7 @@ if (!empty($_POST['tarjeta'])) {
         </div>
       </section>
     </form>
-    <!--<center><h5><?php echo $mensaje; ?></h5></center>-->
+    <center><h5><?php echo @$mensaje; ?></h5></center>
     <table class="table table-dark">
       <thead>
         <tr>

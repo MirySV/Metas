@@ -1,0 +1,17 @@
+header {
+    background-color: #898368;
+}
+
+#nombrepag{
+    font-family: 'Arial', sans-serif;
+    font-size: 30px;
+    text-align: center;
+    margin-right: 550px;
+}
+
+footer{
+    background-color: #2c171c;
+}
+footer p{
+    color: white;
+}
