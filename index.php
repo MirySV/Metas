@@ -1,6 +1,13 @@
 <?php
-//recordar la variable de sesion
-include 'conexion.php';
+
+include 'conexion.php'; //Conexion a la base de datos
+
+session_start();
+$usuario = $_SESSION['username'];
+//echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
+if (!isset($usuario)) {
+  header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -33,11 +40,11 @@ include 'conexion.php';
         <div class="container px-4 py-5" id="custom-cards">
             <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
                 <div class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('unsplash-photo-1.jpg');">
+                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" ;>
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
                             <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
                                 <font dir="auto" style="vertical-align: inherit;">
-                                    <font dir="auto" style="vertical-align: inherit;">Colaboradores</font>
+                                    <a href="colaboradores.php">Colaboradores</a>
                                 </font>
                             </h3>
                         </div>
@@ -45,11 +52,11 @@ include 'conexion.php';
                 </div>
 
                 <div class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('unsplash-photo-1.jpg');">
+                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" ;>
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
                             <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
                                 <font dir="auto" style="vertical-align: inherit;">
-                                    <font dir="auto" style="vertical-align: inherit;">Tiendas Explanada</font>
+                                    <a href="tiendas_exp.php">Tiendas Explanada</a>
                                 </font>
                             </h3>
                         </div>
@@ -57,11 +64,11 @@ include 'conexion.php';
                 </div>
 
                 <div class="col">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" style="background-image: url('unsplash-photo-1.jpg');">
+                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" ;>
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
                             <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
                                 <font dir="auto" style="vertical-align: inherit;">
-                                    <font dir="auto" style="vertical-align: inherit;">Ventas por persona</font>
+                                    <a href="ventas_persona.php">Ventas por persona</a>
                                 </font>
                             </h3>
                         </div>
