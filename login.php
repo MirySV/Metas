@@ -62,8 +62,6 @@ include 'conexion.php';
                                     <button type="submit" value="iniciarsesion" name="iniciarsesion" class="btn btn-primary "><a class="text-light">Iniciar sesion</a></button>
                                     <br>
                                     <br>
-                                    <!-- <button type="submit" value="registrar" href="registro_usuarios.php" class="btn btn-primary btn-lg"><a href="#" class="text-light">Registrarse</a></button> -->
-                                </div>
                             </div>
                         </div>
                     </div>

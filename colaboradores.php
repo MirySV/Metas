@@ -38,42 +38,121 @@ if (!isset($usuario)) {
   </header>
 
   <main>
-
+    <form action="colaboradores.php" method="POST">
+      <div class="filtro_acciones">
+        <select id="tiendas" name="tiendas">
+          <option value="todas" selected>Todas las tiendas</option>
+          <option value="KARIBU">KARIBU</option>
+          <option value="EXPLANADA">EXPLANADA</option>
+          <option value="CHAMCHAWI">CHAMCHAWI</option>
+          <option value="NIEVES ESPECTACULOS">NIEVES ESPECTACULOS</option>
+          <option value="AVENTURA AMAZONICA">AVENTURA AMAZONICA</option>
+          <option value="MATUNDA ESPECTACULOS">MATUNDA ESPECTACULOS</option>
+          <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>
+          <option value="ZAWADI ASIATICOS">ZAWADI ASIATICOS</option>
+          <option value="MOROCCO SOURVENIRS">MOROCCO SOURVENIRS</option>
+          <option value="NIEVES MOROCCO">NIEVES MOROCCO</option>
+          <option value="MICHELADAS">MICHELADAS</option>
+          <option value="CARRITO DE LEONES">CARRITO DE LEONES</option>
+          <option value="AFRITATTOS">AFRITATTOS</option>
+          <option value="MOROCCO DULCERIA">MOROCCO DULCERIA</option>
+          <option value="PALOMITAS MOROCCO">PALOMITAS MOROCCO</option>
+          <option value="KARLUI">KARLUI</option>
+          <option value="PENDA">PENDA</option>
+          <option value="MAHALI">MAHALI</option>
+          <option value="NIEVES MOMBASA">NIEVES MOMBASA</option>
+          <option value="KU-HU-ZU">KU-HU-ZU</option>
+          <option value="FOTO SAFARI">FOTO SAFARI</option>
+          <option value="ZAWADI HUELLAS">ZAWADI HUELLAS</option>
+          <option value="OCEANIA">OCEANIA</option>
+          <option value="AVIARIO AUSTRALIANO">AVIARIO AUSTRALIANO</option>
+        </select>
+        <button type="submit">Filtrar</button>
+      </div>
+    </form>
 
     <div id="info_colaboradores" style="overflow:auto; width:900px;height:200px;  ">
-      <form action="insertarTicketNuevo.php" method="post">
-        <table class="tabla_colaboradores">
-          <!-- Registra el nombre de usuario automaticamente -->
-          <tr>
-            <td width="1000">
-              Colaborador
-            </td>
-          </tr>
-          <tr>
-              <?php
-              //Consulta para mostrar los colaboradores que tienen asignada una tienda, se hace un inner join entre empleados y tiendas para mostrar el nombre del colaborador de acuerdo a la tienda a la que pertenece
-              $colaboradores=mysqli_query($conec,"SELECT e.nombre FROM empleados AS e INNER JOIN tiendas AS t WHERE e.id_tienda = t.id_tienda;"); 
-              while($i=mysqli_fetch_array($colaboradores))
-              { // ciclo para mostrar los datos de los tickets por medio de una posción
+      <table class="tabla_colaboradores">
+        <tr>
+          <td width="1000">
+            Colaborador
+          </td>
+          <td width="1000">
+            Tienda
+          </td>
+          <td width="1000">
+            Acciones
+          </td>
+        </tr>
+        <tr>
+          <?php
+          //Condicional para mostrar los colaboradores de acuerdo a la tienda seleccionada, si se selecciona "todas las tiendas" se muestran todos los colaboradores, de lo contrario se muestra el colaborador de la tienda seleccionada
+          if (isset($_POST['tiendas']) && $_POST['tiendas'] != "") {
+            $tienda = $_POST['tiendas'];
+            if ($tienda == "todas") {
+              //Consulta para mostrar todos los colaboradores, se hace un inner join entre empleados y tiendas para mostrar el nombre del colaborador de acuerdo a la tienda a la que pertenece
+              $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda = t.id_tienda");
+            } else {
+              //Consulta para mostrar los colaboradores de la tienda seleccionada
+              $colaboradores = mysqli_query($conec, "SELECT e.id_empleado,e.nombre, t.nombre FROM empleados AS e INNER JOIN tiendas AS t WHERE t.nombre = '$tienda' AND e.id_tienda = t.id_tienda");
+            }
+          } else {
+            //Consulta para mostrar todos los colaboradores, se hace un inner join entre empleados y tiendas para mostrar el nombre del colaborador de acuerdo a la tienda a la que pertenece
+            $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda = t.id_tienda");
+          }
+          //Ciclo para mostrar los colaboradores, se muestra el nombre del colaborador en la tabla
+          while ($i = mysqli_fetch_array($colaboradores)) {
+          ?>
+        <tr>
+          <!-- Muestra el nombre del colaborador, la posicion 0 es el nombre, por ser el unico valor solicitado en la consulta -->
+          <td width="220"><?php echo $i[1]; ?></td>
+          <!-- Muestra el nombre de la tienda a la que pertenece el colaborador, la posicion 1 es el nombre de la tienda, por ser el segundo valor solicitado en la consulta -->
+          <td width="220">
+            <form action="actualizar_tienda.php" method="post">
 
-              ?>
-          <tr>
-            <!-- muestra el id del ticket -->
-            <td width="220"><?php echo $i[0]; ?></td>
-            <td>
-              <!-- bóton por cada consulta dentro el ciclo while -->
-              <!-- el bóton pasa parametros por medio de la url, de la consulta dentro del while, manda los parametros a la página asignarTipoBoletoAd.php -->
+              <input type="hidden" name="id_empleado" value="<?php echo $i[0]; ?>">
 
-              <a href="actualizarTicket.php?id_ticket=<?php echo $i[0]; ?>&usuario=<?php echo $id_usuario[0]; ?>">
-                <font color="#000000"><i class="fa fa-pencil" aria-hidden="true"></i></font>
-              </a>
-            </td>
-          </tr>
-          <?php } //acaba el ciclo while ?>
-          </th>
-          </tr>
-        </table>
-      </form>
+              <datalist id="tienda">
+                <option value="KARIBU" <?php if ($i[2] == "KARIBU") echo "selected"; ?>>KARIBU</option>
+                <option value="EXPLANADA" >EXPLANADA</option>
+                <option value="CHAMCHAWI" <?php if ($i[2] == "CHAMCHAWI") echo "selected"; ?>>CHAMCHAWI</option>
+                <option value="NIEVES ESPECTACULOS" <?php if ($i[2] == "NIEVES ESPECTACULOS") echo "selected"; ?>>NIEVES ESPECTACULOS</option>
+                <option value="AVENTURA AMAZONICA" <?php if ($i[2] == "AVENTURA AMAZONICA") echo "selected"; ?>>AVENTURA AMAZONICA</option>
+                <option value="MATUNDA ESPECTACULOS" <?php if ($i[2] == "MATUNDA ESPECTACULOS") echo "selected"; ?>>MATUNDA ESPECTACULOS</option>
+                <option value="ZAWADI DUKAZURI" <?php if ($i[2] == "ZAWADI DUKAZURI") echo "selected"; ?>>ZAWADI DUKAZURI</option>
+                <option value="ZAWADI ASIATICOS" <?php if ($i[2] == "ZAWADI ASIATICOS") echo "selected"; ?>>ZAWADI ASIATICOS</option>
+                <option value="MOROCCO SOURVENIRS" <?php if ($i[2] == "MOROCCO SOURVENIRS") echo "selected"; ?>>MOROCCO SOURVENIRS</option>
+                <option value="NIEVES MOROCCO" <?php if ($i[2] == "NIEVES MOROCCO") echo "selected"; ?>>NIEVES MOROCCO</option>
+                <option value="MICHELADAS" <?php if ($i[2] == "MICHELADAS") echo "selected"; ?>>MICHELADAS</option>
+                <option value="CARRITO DE LEONES" <?php if ($i[2] == "CARRITO DE LEONES") echo "selected"; ?>>CARRITO DE LEONES</option>
+                <option value="AFRITATTOS" <?php if ($i[2] == "AFRITATTOS") echo "selected"; ?>>AFRITATTOS</option>
+                <option value="MOROCCO DULCERIA" <?php if ($i[2] == "MOROCCO DULCERIA") echo "selected"; ?>>MOROCCO DULCERIA</option>
+                <option value="PALOMITAS MOROCCO" <?php if ($i[2] == "PALOMITAS MOROCCO") echo "selected"; ?>>PALOMITAS MOROCCO</option>
+                <option value="KARLUI" <?php if ($i[2] == "KARLUI") echo "selected"; ?>>KARLUI</option>
+                <option value="PENDA" <?php if ($i[2] == "PENDA") echo "selected"; ?>>PENDA</option>
+                <option value="MAHALI" <?php if ($i[2] == "MAHALI") echo "selected"; ?>>MAHALI</option>
+                <option value="NIEVES MOMBASA" <?php if ($i[2] == "NIEVES MOMBASA") echo "selected"; ?>>NIEVES MOMBASA</option>
+                <option value="KU-HU-ZU" <?php if ($i[2] == "KU-HU-ZU") echo "selected"; ?>>KU-HU-ZU</option>
+                <option value="FOTO SAFARI" <?php if ($i[2] == "FOTO SAFARI") echo "selected"; ?>>FOTO SAFARI</option>
+                <option value="ZAWADI HUELLAS" <?php if ($i[2] == "ZAWADI HUELLAS") echo "selected"; ?>>ZAWADI HUELLAS</option>
+                <option value="OCEANIA" <?php if ($i[2] == "OCEANIA") echo "selected"; ?>>OCEANIA</option>
+                <option value="AVIARIO AUSTRALIANO" <?php if ($i[2] == "AVIARIO AUSTRALIANO") echo "selected"; ?>>AVIARIO AUSTRALIANO</option>
+              </datalist>
+              <input list="tienda" name="tienda" id="tienda" value="<?php echo $i[2]; ?>">
+            </form>
+          </td>
+          <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->
+          <td width="220">
+            <!-- Aqui va el campo de actualizar -->
+            <button type="submit">Actualizar</button>
+          </td>
+        </tr>
+      <?php
+          } //Acaba el ciclo while 
+      ?>
+      </th>
+      </tr>
+      </table>
     </div>
   </main>
 
