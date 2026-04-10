@@ -30,11 +30,11 @@ if (!isset($usuario)) {
 </head>
 
 <body>
-  <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-    <a href="login.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
-      <img src="./assets/img/logo.png" width="10%" alt="50%" />
-      <h2 class="text-black" id="nombrepag">Colaboradores</h2>
+  <header class="navbar">
+    <a href="login.php">
+      <img src="./assets/img/logo.png" width="130px" alt="130px" />
     </a>
+    <center><h2 class="text-black" id="nombrepag">Colaboradores</h2></center>
   </header>
 
   <main>
@@ -71,13 +71,13 @@ if (!isset($usuario)) {
       </div>
     </form>
 
-    <div id="info_colaboradores" style="overflow:auto; width:900px;height:200px;  ">
+    <div class="info_colaboradores" style="overflow:auto; width:900px;height:400px;  ">
       <table class="tabla_colaboradores">
         <tr>
-          <td width="1000">
+          <td width="1500">
             Colaborador
           </td>
-          <td width="1000">
+          <td width="700">
             Tienda
           </td>
           <td width="1000">
@@ -114,7 +114,7 @@ if (!isset($usuario)) {
 
               <datalist id="tienda">
                 <option value="KARIBU" <?php if ($i[2] == "KARIBU") echo "selected"; ?>>KARIBU</option>
-                <option value="EXPLANADA" >EXPLANADA</option>
+                <option value="EXPLANADA">EXPLANADA</option>
                 <option value="CHAMCHAWI" <?php if ($i[2] == "CHAMCHAWI") echo "selected"; ?>>CHAMCHAWI</option>
                 <option value="NIEVES ESPECTACULOS" <?php if ($i[2] == "NIEVES ESPECTACULOS") echo "selected"; ?>>NIEVES ESPECTACULOS</option>
                 <option value="AVENTURA AMAZONICA" <?php if ($i[2] == "AVENTURA AMAZONICA") echo "selected"; ?>>AVENTURA AMAZONICA</option>
@@ -157,7 +157,7 @@ if (!isset($usuario)) {
   </main>
 
   <!-- Footer -->
-  <footer class="py-3 my-4">
+  <footer>
     <p class="text-center">Africam Safari SA de CV &copy; 2026</p>
   </footer>
 

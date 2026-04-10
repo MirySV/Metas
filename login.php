@@ -22,60 +22,60 @@ include 'conexion.php';
 </head>
 
 <body>
-    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-        <a href="login.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-decoration-none">
-            <img src="./assets/img/logo.png" width="10%" alt="50%" />
-            <h2 class="text-black" id="nombrepag">Tiendas Africam Safari</h2>
+    <header class="navbar">
+        <a href="login.php">
+            <img src="./assets/img/logo.png" width="130px" alt="130px" />
         </a>
+        <h2 class="text-black" id="nombrepag">Tiendas Africam Safari</h2>
     </header>
 
     <main>
-        <div class="container px-1 px-sm-5 mx-auto">
+        <div class="container px-1 px-sm-5 mx-auto" id="login">
 
-        <form class="form-inline" action="validar.php" method="post">
+            <form class="form-inline" action="validar.php" method="post">
 
-            <section class="">
-                <div class="container py-5 h-100 fondo">
-                    <div class="row d-flex justify-content-center align-items-center h-100">
-                        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                            <div class="card shadow-2-strong" style="border-radius: 1rem;">
-                                <div class="card-body p-5 text-center">
-                                    <h3 class="text-center">
-                                        <img src="assets/img/person-circle.svg" width="50%" alt="" />
-                                    </h3>
+                <section class="">
+                    <div class="container py-5 h-100 fondo">
+                        <div class="row d-flex justify-content-center align-items-center h-100">
+                            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                                <div class="card shadow-2-strong" style="border-radius: 1rem;">
+                                    <div class="card-body p-5 text-center">
+                                        <h3 class="text-center">
+                                            <img src="assets/img/person-circle.svg" width="50%" alt="" />
+                                        </h3>
 
-                                    <br><br>
+                                        <br><br>
 
-                                    <div class="mb-3">
-                                        <label for="" class="form-label">Usuario</label>
-                                        <input type="text" class="form-control" name="usuario" required>
+                                        <div class="mb-3">
+                                            <label for="" class="form-label">Usuario</label>
+                                            <input type="text" class="form-control" name="usuario" required>
+                                        </div>
+
+
+                                        <div class="mb-3">
+                                            <label for="" class="form-label">Contraseña</label>
+                                            <input type="password" class="form-control" name="contraseña" required>
+                                        </div>
+
+
+                                        <br>
+                                        <button type="submit" value="iniciarsesion" name="iniciarsesion" class="btn btn-primary boton-isesion"><a class="text-light">Iniciar sesion</a></button>
+                                        <br>
+                                        <br>
                                     </div>
-
-
-                                    <div class="mb-3">
-                                        <label for="" class="form-label">Contraseña</label>
-                                        <input type="password" class="form-control" name="contraseña" required>
-                                    </div>
-
-
-                                    <br>
-                                    <button type="submit" value="iniciarsesion" name="iniciarsesion" class="btn btn-primary "><a class="text-light">Iniciar sesion</a></button>
-                                    <br>
-                                    <br>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </section>
+                </section>
 
-        </form>
-    </div>
+            </form>
+        </div>
     </main>
 
     <!-- Footer -->
-  <footer class="py-3 my-4">
-    <p class="text-center">Africam Safari SA de CV &copy; 2026</p>
-  </footer>
+    <footer>
+        <p class="text-center">Africam Safari SA de CV &copy; 2026</p>
+    </footer>
 
     <!-- CDN Boostrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

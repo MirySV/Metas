@@ -1,15 +1,61 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
 header {
     background-color: #898368;
+}
+
+.navbar{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0px 0px 10px 0px;
+    padding: 27px 0px 8px 20px;
+}
+
+.navbar img{
+    display: flex;
+    justify-content: flex-start;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 #nombrepag{
     font-family: 'Arial', sans-serif;
     font-size: 30px;
-    text-align: center;
-    margin-right: 550px;
+}
+
+#login{
+    margin: 0px 300px 0px 300px;
+}
+
+.boton-isesion{
+    background-color: #500718;
+    border: none;
+}
+
+.boton-isesion a{
+    text-decoration: none;
+    color: white;
+}
+
+.boton-isesion:hover{
+    background-color: #743140;
+}
+
+#custom-cards{
+    margin: 10px 10px 30px 70px;
 }
 
 #tabla_colaboradores{
+    /*width: 100%;*/
     margin: 0 auto;
     margin-top: 50px;
     margin-left: 100px;
@@ -17,13 +63,26 @@ header {
 }
 
 th, td {
-  border:2px solid black;
+  border:3px solid black;
   padding: 10px;
+}
+
+.filtro_acciones{
+    margin: 20px 500px 20px 600px;
+}
+
+.info_colaboradores{
+    margin: 50px 300px 50px 300px;
+    border-collapse: collapse;
 }
 
 footer{
     background-color: #2c171c;
+    margin-bottom: 0;
+    padding: 20px 0;
 }
+
 footer p{
     color: white;
+    margin-top: 12px;
 }
