@@ -18,6 +18,27 @@ include 'conexion.php';
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <!-- Archivo CSS -->
     <link rel="stylesheet" href="./css/style.css">
+
+    <style>
+        #login {
+            margin: 0px 300px 0px 300px;
+        }
+
+        .boton-isesion {
+            background-color: #500718;
+            border: none;
+        }
+
+        .boton-isesion a {
+            text-decoration: none;
+            color: white;
+        }
+
+        .boton-isesion:hover {
+            background-color: #743140;
+        }
+
+    </style>
     <title>Tiendas Africam Safari</title>
 </head>
 
@@ -26,7 +47,7 @@ include 'conexion.php';
         <a href="login.php">
             <img src="./assets/img/logo.png" width="130px" alt="130px" />
         </a>
-        <h2 class="text-black" id="nombrepag">Tiendas Africam Safari</h2>
+        <center><h2 class="text-black" id="nombrepag">Tiendas Africam Safari</h2></center>
     </header>
 
     <main>

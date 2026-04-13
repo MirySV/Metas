@@ -6,7 +6,7 @@ session_start();
 $usuario = $_SESSION['username'];
 //echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
 if (!isset($usuario)) {
-  header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
+    header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
 }
 ?>
 <!DOCTYPE html>
@@ -25,11 +25,30 @@ if (!isset($usuario)) {
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <!-- Archivo CSS -->
     <link rel="stylesheet" href="./css/style.css">
+    <style>
+        .navbarindex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 0px 0px 10px 0px;
+            padding: 55px 0px 40px 0px;
+        }
+
+        .navbarindex a {
+            position: absolute;
+            left: 20px;
+        }
+
+        #custom-cards {
+            margin: 30px 15px 55px 75px;
+        }
+    </style>
     <title>Tiendas Africam Safari</title>
 </head>
 
 <body>
-    <header class="navbar">
+    <header class="navbarindex">
         <a href="login.php">
             <img src="./assets/img/logo.png" width="130px" alt="130px" />
         </a>
@@ -79,8 +98,8 @@ if (!isset($usuario)) {
 
     <!-- Footer -->
     <footer>
-    <p class="text-center">Africam Safari SA de CV &copy; 2026</p>
-  </footer>
+        <p class="text-center">Africam Safari SA de CV &copy; 2026</p>
+    </footer>
 
     <!-- CDN Boostrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

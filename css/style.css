@@ -9,15 +9,16 @@ header {
 
 .navbar{
     display: flex;
-    flex-direction: row;
     align-items: center;
+    justify-content: center;
+    position: relative;
     margin: 0px 0px 10px 0px;
-    padding: 27px 0px 8px 20px;
+    padding: 40px 0px 30px 0px;
 }
 
-.navbar img{
-    display: flex;
-    justify-content: flex-start;
+.navbar a{
+    position: absolute;
+    left: 20px;
 }
 
 body {
@@ -28,52 +29,10 @@ body {
 }
 
 #nombrepag{
-    font-family: 'Arial', sans-serif;
-    font-size: 30px;
-}
-
-#login{
-    margin: 0px 300px 0px 300px;
-}
-
-.boton-isesion{
-    background-color: #500718;
-    border: none;
-}
-
-.boton-isesion a{
-    text-decoration: none;
-    color: white;
-}
-
-.boton-isesion:hover{
-    background-color: #743140;
-}
-
-#custom-cards{
-    margin: 10px 10px 30px 70px;
-}
-
-#tabla_colaboradores{
-    /*width: 100%;*/
-    margin: 0 auto;
-    margin-top: 50px;
-    margin-left: 100px;
-    border-collapse: collapse;
-}
-
-th, td {
-  border:3px solid black;
-  padding: 10px;
-}
-
-.filtro_acciones{
-    margin: 20px 500px 20px 600px;
-}
-
-.info_colaboradores{
-    margin: 50px 300px 50px 300px;
-    border-collapse: collapse;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 20px;
+    text-align: center;
+    margin: 0px;
 }
 
 footer{
@@ -84,5 +43,5 @@ footer{
 
 footer p{
     color: white;
-    margin-top: 12px;
+    margin-top: 6px;        
 }

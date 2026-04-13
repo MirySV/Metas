@@ -26,6 +26,26 @@ if (!isset($usuario)) {
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <!-- Archivo CSS -->
   <link rel="stylesheet" href="./css/style.css">
+  <style>
+#tabla_colaboradores{
+    /*width: 100%;*/
+    margin: 0 auto;
+    margin-top: 50px;
+    margin-left: 100px;
+    border-collapse: collapse;
+}
+th, td {
+  border:3px solid black;
+  padding: 10px;
+}
+.filtro_acciones{
+    margin: 20px 500px 20px 600px;
+}
+.info_colaboradores{
+    margin: 50px 300px 50px 300px;
+    border-collapse: collapse;
+}
+  </style>
   <title>Tiendas Africam Safari</title>
 </head>
 
