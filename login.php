@@ -20,6 +20,10 @@ include 'conexion.php';
     <link rel="stylesheet" href="./css/style.css">
 
     <style>
+
+        main {
+            flex: 1;
+        }
         #login {
             margin: 0px 300px 0px 300px;
         }
@@ -62,7 +66,7 @@ include 'conexion.php';
                                 <div class="card shadow-2-strong" style="border-radius: 1rem;">
                                     <div class="card-body p-5 text-center">
                                         <h3 class="text-center">
-                                            <img src="assets/img/person-circle.svg" width="50%" alt="" />
+                                            <img src="assets/img/person-circle.svg" width="35%" alt="" />
                                         </h3>
 
                                         <br><br>

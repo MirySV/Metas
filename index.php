@@ -26,6 +26,10 @@ if (!isset($usuario)) {
     <!-- Archivo CSS -->
     <link rel="stylesheet" href="./css/style.css">
     <style>
+
+        main {
+            flex: 1;
+        }
         .navbarindex {
             display: flex;
             align-items: center;
@@ -43,6 +47,10 @@ if (!isset($usuario)) {
         #custom-cards {
             margin: 30px 15px 55px 75px;
         }
+
+        #tarjetas{
+            text-decoration:none;
+        }
     </style>
     <title>Tiendas Africam Safari</title>
 </head>
@@ -55,43 +63,58 @@ if (!isset($usuario)) {
     </header>
 
     <main>
-        <div class="container px-4 py-5" id="custom-cards">
-            <div class="row row-cols-1 row-cols-lg-3 align-items-stretch g-4 py-5">
-                <div class="col">
+        <div class="container px-2 py-3" id="custom-cards">
+            <div class="row g-4">
+
+                <div class="col-3">
                     <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" ;>
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
+                            <h5 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
                                 <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="colaboradores.php">Colaboradores</a>
+                                    <a href="colaboradores.php" style="text-decoration: none;">Colaboradores</a>
                                 </font>
-                            </h3>
+                            </h5>
                         </div>
                     </div>
                 </div>
 
-                <div class="col">
+
+                <div class="col-3">
                     <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" ;>
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
+                            <h5 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
                                 <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="tiendas_exp.php">Tiendas Explanada</a>
+                                    <a href="tiendas_exp.php" style="text-decoration: none;">Tiendas Explanada</a>
                                 </font>
-                            </h3>
+                            </h5>
                         </div>
                     </div>
                 </div>
 
-                <div class="col">
+                <div class="col-3">
                     <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" ;>
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h3 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
+                            <h5 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
                                 <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="ventas_persona.php">Ventas por persona</a>
+                                    <a href="ventas_persona.php" style="text-decoration: none;">Ventas por persona</a>
                                 </font>
-                            </h3>
+                            </h5>
                         </div>
                     </div>
                 </div>
+
+                <div class="col-3">
+                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" ;>
+                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
+                            <h5 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
+                                <font dir="auto" style="vertical-align: inherit;">
+                                    <a href="ventas_persona.php" style="text-decoration: none;">Comision</a>
+                                </font>
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>

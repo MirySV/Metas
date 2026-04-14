@@ -14,6 +14,7 @@ require 'conexion.php';
     //almacena el id y el nombre del usuario en variables de sesion
     $_SESSION['idUsuario']=$filas['id']; 
     $_SESSION['nombreUsuario']=$filas['username'];
+    $_SESSION['rolUsuario']=$filas['rol'];
     
     //si el usuario existe redirige a la pagina principal, de lo contrario muestra un mensaje de error
     if($filas['contar']>0){

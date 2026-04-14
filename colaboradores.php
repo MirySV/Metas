@@ -8,6 +8,8 @@ $usuario = $_SESSION['username'];
 if (!isset($usuario)) {
   header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -27,24 +29,32 @@ if (!isset($usuario)) {
   <!-- Archivo CSS -->
   <link rel="stylesheet" href="./css/style.css">
   <style>
-#tabla_colaboradores{
-    /*width: 100%;*/
-    margin: 0 auto;
-    margin-top: 50px;
-    margin-left: 100px;
-    border-collapse: collapse;
-}
-th, td {
-  border:3px solid black;
-  padding: 10px;
-}
-.filtro_acciones{
-    margin: 20px 500px 20px 600px;
-}
-.info_colaboradores{
-    margin: 50px 300px 50px 300px;
-    border-collapse: collapse;
-}
+    main {
+      flex: 1;
+    }
+
+    #tabla_colaboradores {
+      /*width: 100%;*/
+      margin: 0 auto;
+      margin-top: 50px;
+      margin-left: 100px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 3px solid black;
+      padding: 10px;
+    }
+
+    .filtro_acciones {
+      margin: 20px 500px 20px 600px;
+    }
+
+    .info_colaboradores {
+      margin: 50px 120px 50px 120px;
+      border-collapse: collapse;
+    }
   </style>
   <title>Tiendas Africam Safari</title>
 </head>
@@ -54,7 +64,9 @@ th, td {
     <a href="login.php">
       <img src="./assets/img/logo.png" width="130px" alt="130px" />
     </a>
-    <center><h2 class="text-black" id="nombrepag">Colaboradores</h2></center>
+    <center>
+      <h2 class="text-black" id="nombrepag">Colaboradores</h2>
+    </center>
   </header>
 
   <main>
@@ -91,16 +103,16 @@ th, td {
       </div>
     </form>
 
-    <div class="info_colaboradores" style="overflow:auto; width:900px;height:400px;  ">
+    <div class="info_colaboradores" style="overflow:auto; width:1200px;height:400px;  ">
       <table class="tabla_colaboradores">
         <tr>
-          <td width="1500">
+          <td width="2500">
             Colaborador
           </td>
-          <td width="700">
+          <td width="1000">
             Tienda
           </td>
-          <td width="1000">
+          <td width="3000">
             Acciones
           </td>
         </tr>
@@ -124,48 +136,54 @@ th, td {
           while ($i = mysqli_fetch_array($colaboradores)) {
           ?>
         <tr>
-          <!-- Muestra el nombre del colaborador, la posicion 0 es el nombre, por ser el unico valor solicitado en la consulta -->
-          <td width="220"><?php echo $i[1]; ?></td>
-          <!-- Muestra el nombre de la tienda a la que pertenece el colaborador, la posicion 1 es el nombre de la tienda, por ser el segundo valor solicitado en la consulta -->
-          <td width="220">
-            <form action="actualizar_tienda.php" method="post">
-
+          <form action="actualizar_tienda.php" method="post">
+            <!-- Muestra el nombre del colaborador, la posicion 1 es el nombre, por ser el unico valor solicitado en la consulta -->
+            <td width="220">
+              <?php echo $i[1]; ?>
+            </td>
+            <!-- Muestra el nombre de la tienda a la que pertenece el colaborador, la posicion 2 es el nombre de la tienda, por ser el segundo valor solicitado en la consulta -->
+            <td width="220">
+              <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->
               <input type="hidden" name="id_empleado" value="<?php echo $i[0]; ?>">
 
-              <datalist id="tienda">
-                <option value="KARIBU" <?php if ($i[2] == "KARIBU") echo "selected"; ?>>KARIBU</option>
-                <option value="EXPLANADA">EXPLANADA</option>
-                <option value="CHAMCHAWI" <?php if ($i[2] == "CHAMCHAWI") echo "selected"; ?>>CHAMCHAWI</option>
-                <option value="NIEVES ESPECTACULOS" <?php if ($i[2] == "NIEVES ESPECTACULOS") echo "selected"; ?>>NIEVES ESPECTACULOS</option>
-                <option value="AVENTURA AMAZONICA" <?php if ($i[2] == "AVENTURA AMAZONICA") echo "selected"; ?>>AVENTURA AMAZONICA</option>
-                <option value="MATUNDA ESPECTACULOS" <?php if ($i[2] == "MATUNDA ESPECTACULOS") echo "selected"; ?>>MATUNDA ESPECTACULOS</option>
-                <option value="ZAWADI DUKAZURI" <?php if ($i[2] == "ZAWADI DUKAZURI") echo "selected"; ?>>ZAWADI DUKAZURI</option>
-                <option value="ZAWADI ASIATICOS" <?php if ($i[2] == "ZAWADI ASIATICOS") echo "selected"; ?>>ZAWADI ASIATICOS</option>
-                <option value="MOROCCO SOURVENIRS" <?php if ($i[2] == "MOROCCO SOURVENIRS") echo "selected"; ?>>MOROCCO SOURVENIRS</option>
-                <option value="NIEVES MOROCCO" <?php if ($i[2] == "NIEVES MOROCCO") echo "selected"; ?>>NIEVES MOROCCO</option>
-                <option value="MICHELADAS" <?php if ($i[2] == "MICHELADAS") echo "selected"; ?>>MICHELADAS</option>
-                <option value="CARRITO DE LEONES" <?php if ($i[2] == "CARRITO DE LEONES") echo "selected"; ?>>CARRITO DE LEONES</option>
-                <option value="AFRITATTOS" <?php if ($i[2] == "AFRITATTOS") echo "selected"; ?>>AFRITATTOS</option>
-                <option value="MOROCCO DULCERIA" <?php if ($i[2] == "MOROCCO DULCERIA") echo "selected"; ?>>MOROCCO DULCERIA</option>
-                <option value="PALOMITAS MOROCCO" <?php if ($i[2] == "PALOMITAS MOROCCO") echo "selected"; ?>>PALOMITAS MOROCCO</option>
-                <option value="KARLUI" <?php if ($i[2] == "KARLUI") echo "selected"; ?>>KARLUI</option>
-                <option value="PENDA" <?php if ($i[2] == "PENDA") echo "selected"; ?>>PENDA</option>
-                <option value="MAHALI" <?php if ($i[2] == "MAHALI") echo "selected"; ?>>MAHALI</option>
-                <option value="NIEVES MOMBASA" <?php if ($i[2] == "NIEVES MOMBASA") echo "selected"; ?>>NIEVES MOMBASA</option>
-                <option value="KU-HU-ZU" <?php if ($i[2] == "KU-HU-ZU") echo "selected"; ?>>KU-HU-ZU</option>
-                <option value="FOTO SAFARI" <?php if ($i[2] == "FOTO SAFARI") echo "selected"; ?>>FOTO SAFARI</option>
-                <option value="ZAWADI HUELLAS" <?php if ($i[2] == "ZAWADI HUELLAS") echo "selected"; ?>>ZAWADI HUELLAS</option>
-                <option value="OCEANIA" <?php if ($i[2] == "OCEANIA") echo "selected"; ?>>OCEANIA</option>
-                <option value="AVIARIO AUSTRALIANO" <?php if ($i[2] == "AVIARIO AUSTRALIANO") echo "selected"; ?>>AVIARIO AUSTRALIANO</option>
+              <input list="tienda_<?php echo $i[0]; ?>" name="tienda" value="<?php echo $i[2]; ?>">
+
+              <datalist id="tienda_<?php echo $i[0]; ?>">
+                <option value="KARIBU">
+                <option value="EXPLANADA">
+                <option value="CHAMCHAWI">
+                <option value="NIEVES ESPECTACULOS">
+                <option value="AVENTURA AMAZONICA">
+                <option value="MATUNDA ESPECTACULOS">
+                <option value="ZAWADI DUKAZURI">
+                <option value="ZAWADI ASIATICOS">
+                <option value="MOROCCO SOURVENIRS">
+                <option value="NIEVES MOROCCO">
+                <option value="MICHELADAS">
+                <option value="CARRITO DE LEONES">
+                <option value="AFRITATTOS">
+                <option value="MOROCCO DULCERIA">
+                <option value="PALOMITAS MOROCCO">
+                <option value="KARLUI">
+                <option value="PENDA">
+                <option value="MAHALI">
+                <option value="NIEVES MOMBASA">
+                <option value="KU-HU-ZU">
+                <option value="FOTO SAFARI">
+                <option value="ZAWADI HUELLAS">
+                <option value="OCEANIA">
+                <option value="AVIARIO AUSTRALIANO">
               </datalist>
-              <input list="tienda" name="tienda" id="tienda" value="<?php echo $i[2]; ?>">
-            </form>
-          </td>
-          <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->
-          <td width="220">
-            <!-- Aqui va el campo de actualizar -->
-            <button type="submit">Actualizar</button>
-          </td>
+            </td>
+            <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->
+            <td width="220">
+              <!-- Aqui va el campo de actualizar -->
+              <button type="submit">Actualizar</button>
+              <input type="date" id="inicio" name="inicio">
+              <input type="date" id="final" name="final">
+              <button onclick="mostrarModal()">Buscar</button>
+            </td>
+          </form>
         </tr>
       <?php
           } //Acaba el ciclo while 
@@ -173,6 +191,30 @@ th, td {
       </th>
       </tr>
       </table>
+
+      <div id="modal" style="display:none; background:#00000088; position:fixed; top:0; left:0; width:100%; height:100%;">
+                <div style="background:white; padding:20px; margin:10% auto; width:300px;">
+                  <h3>Fechas seleccionadas</h3>
+                  <p id="resultado"></p>
+                  <button onclick="cerrarModal()">Cerrar</button>
+                </div>
+              </div>
+
+              <script>
+                function mostrarModal() {
+                  let inicio = document.getElementById("inicio").value;
+                  let fin = document.getElementById("fin").value;
+
+                  document.getElementById("resultado").innerText =
+                    "Inicio: " + inicio + " - Fin: " + fin;
+
+                  document.getElementById("modal").style.display = "block";
+                }
+
+                function cerrarModal() {
+                  document.getElementById("modal").style.display = "none";
+                }
+              </script>
     </div>
   </main>
 
