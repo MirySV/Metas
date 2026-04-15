@@ -7,28 +7,25 @@ $usuario = $_SESSION['username'];
 if (!isset($usuario)) {
     header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
 }
-?>
 
-$tienda = $_POST['tienda'];
 $id_empleado = $_POST['id_empleado'];
-
 $inicio = $_POST['inicio'];
 $fin = $_POST['fin'];
 
-$colaborador = mysqli_query($conec, "SELECT tienda, fecha, hora FROM registros WHERE fecha BETWEEN '$inicio' AND '$fin'");
+$colaborador = mysqli_query($conec, "SELECT r.fecha, r.hora_entrada, t.nombre FROM registros AS r INNER JOIN tiendas AS t WHERE r.id_empleado = $id_empleado AND r.id_tienda = t.id_tienda AND fecha BETWEEN '$inicio' AND '$fin'");
 
 echo "<table border='1' width='100%'>";
     echo "<tr>
-        <th>Tienda</th>
         <th>Fecha</th>
         <th>Hora</th>
+        <th>Tienda</th>
     </tr>";
 
-    while($row = mysqli_fetch_assoc($query)){
+    while($row = mysqli_fetch_assoc($colaborador)){
     echo "<tr>
-        <td>".$row['tienda']."</td>
         <td>".$row['fecha']."</td>
-        <td>".$row['hora']."</td>
+        <td>".$row['hora_entrada']."</td>
+        <td>".$row['nombre']."</td>
     </tr>";
     }
 

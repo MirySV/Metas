@@ -199,43 +199,43 @@ if (!isset($usuario)) {
             </td>
             <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->
             <td width="220">
-              <!-- Aqui va el campo de actualizar -->
+              <!-- Aqui va el boton de actualizar -->
               <button type="submit">Actualizar</button>
-              <input type="date" id="inicio" name="inicio" required>
-              <input type="date" id="final" name="final" required>
-              <button type="button" onclick="mostrarModal()">Buscar</button>
+              <input type="date" id="inicio" name="inicio" <?php echo $i[0]; ?> required>
+              <input type="date" id="final" name="final" <?php echo $i[0]; ?> required>
+              <button type="button" onclick="buscar(<?php echo $i[0]; ?> , <?php echo $i[1]; ?>)" >Buscar</button>
             </td>
           </form>
         </tr>
-
-        <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000088;">
-          <div style="background:white; padding:20px; margin:5% auto; width:80%; max-height:80%; overflow:auto;">
-
-            <h3>Resultados</h3>
-
-            <!-- aquí se insertará la tabla -->
-            <div id="tablaResultados"></div>
-
-            <button onclick="cerrarModal()">Cerrar</button>
-          </div>
-        </div>
       <?php
           } //Acaba el ciclo while 
       ?>
       </tr>
       </table>
+
+      <!--Modal para mostrar los resultados de la busqueda de los registros del colaborador, se muestra el nombre del colaborador y las fechas seleccionadas para mostrar los registros de ese colaborador en ese rango de fechas-->
+      <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
+        <div style="background-color:white; margin:5% auto; padding:20px; width:80%; max-height:80%; overflow:auto;">
+        <h3 id="tituloModal"></h3>
+        <div id="tablaResultados"></div>
+        <button onclick="cerrarModal()">Cerrar</button>
+        </div>
+    </div>
+
     </div>
   </main>
 
 <script>
-function buscar(){
-  let inicio = document.getElementById("inicio").value;
-  let fin = document.getElementById("fin").value;
+function buscar(id_empleado, nombre){
+  let inicio = document.getElementById("inicio_" + id_empleado).value;
+  let fin = document.getElementById("fin_" + id_empleado).value;
 
   if(inicio === "" || fin === ""){
     alert("Selecciona ambas fechas");
     return;
   }
+
+  document.getElementById("tituloModal").innerText = "Registros de " + nombre;
 
   // abrir modal
   document.getElementById("modal").style.display = "block";
@@ -246,7 +246,7 @@ function buscar(){
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
     },
-    body: "inicio=" + inicio + "&fin=" + fin
+    body: "id_empleado=" + id_empleado + "&inicio=" + inicio + "&fin=" + fin
   })
   .then(res => res.text())
   .then(data => {
