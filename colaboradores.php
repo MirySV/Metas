@@ -65,7 +65,7 @@ if (!isset($usuario)) {
       padding-top: 12px;
       padding-bottom: 12px;
       text-align: left;
-      background-color: #6c5346d1;
+      background-color: #500718;
       color: white;
     }
 
@@ -128,15 +128,15 @@ if (!isset($usuario)) {
     <div class="info_colaboradores" style="overflow:auto; width:1200px;height:400px;  ">
       <table class="tabla_colaboradores">
         <tr class="encabezado">
-          <td width="2500" style="font-size: 16px;">
+          <th width="2500" style="font-size: 16px;">
             <b>Colaborador</b>
-          </td>
-          <td width="1000" style="font-size: 16px;">
+          </th>
+          <th width="1000" style="font-size: 16px;">
             <b>Tienda</b>
-          </td>
-          <td width="3000" style="font-size: 16px;">
+          </th>
+          <th width="3000" style="font-size: 16px;">
             <b>Acciones</b>
-          </td>
+          </th>
         </tr>
         <tr>
           <?php
@@ -207,44 +207,57 @@ if (!isset($usuario)) {
             </td>
           </form>
         </tr>
+
+        <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000088;">
+          <div style="background:white; padding:20px; margin:5% auto; width:80%; max-height:80%; overflow:auto;">
+
+            <h3>Resultados</h3>
+
+            <!-- aquí se insertará la tabla -->
+            <div id="tablaResultados"></div>
+
+            <button onclick="cerrarModal()">Cerrar</button>
+          </div>
+        </div>
       <?php
           } //Acaba el ciclo while 
       ?>
-      </th>
       </tr>
       </table>
-
-
-      <!--
-      <div id="modal" style="display:none; background:#00000088; position:fixed; top:0; left:0; width:100%; height:100%;">
-        <div style="background:white; padding:20px; margin:10% auto; width:300px;">
-          <h3>Nombre del colaborador</h3>
-          <p id="resultado"></p>
-          <button onclick="enviarForm()">Confirmar</button>
-          <button onclick="cerrarModal()">Cancelar</button>
-        </div>
-      </div>
-
-      <script>
-        function mostrarModal() {
-          let inicio = document.getElementById("inicio").value;
-          let fin = document.getElementById("fin").value;
-
-          document.getElementById("resultado").innerText =
-            "Inicio: " + inicio + " - Fin: " + fin;
-
-          document.getElementById("modal").style.display = "block";
-        }
-
-        function cerrarModal() {
-          document.getElementById("modal").style.display = "none";
-        }
-      </script>
     </div>
--->
-
-
   </main>
+
+<script>
+function buscar(){
+  let inicio = document.getElementById("inicio").value;
+  let fin = document.getElementById("fin").value;
+
+  if(inicio === "" || fin === ""){
+    alert("Selecciona ambas fechas");
+    return;
+  }
+
+  // abrir modal
+  document.getElementById("modal").style.display = "block";
+
+  // enviar datos a PHP
+  fetch("reporte.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: "inicio=" + inicio + "&fin=" + fin
+  })
+  .then(res => res.text())
+  .then(data => {
+    document.getElementById("tablaResultados").innerHTML = data;
+  });
+}
+
+function cerrarModal(){
+  document.getElementById("modal").style.display = "none";
+}
+</script>
 
   <!-- Footer -->
   <footer>
