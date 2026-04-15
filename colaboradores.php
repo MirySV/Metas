@@ -39,12 +39,34 @@ if (!isset($usuario)) {
       margin-top: 50px;
       margin-left: 100px;
       border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    table {
+      border-collapse: collapse;
     }
 
     th,
     td {
-      border: 3px solid black;
+      border: 2px solid black;
       padding: 10px;
+      font-size: 14px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    tr:hover {
+      background-color: #ddd;
+    }
+
+    .encabezado {
+      padding-top: 12px;
+      padding-bottom: 12px;
+      text-align: left;
+      background-color: #6c5346d1;
+      color: white;
     }
 
     .filtro_acciones {
@@ -105,15 +127,15 @@ if (!isset($usuario)) {
 
     <div class="info_colaboradores" style="overflow:auto; width:1200px;height:400px;  ">
       <table class="tabla_colaboradores">
-        <tr>
-          <td width="2500">
-            Colaborador
+        <tr class="encabezado">
+          <td width="2500" style="font-size: 16px;">
+            <b>Colaborador</b>
           </td>
-          <td width="1000">
-            Tienda
+          <td width="1000" style="font-size: 16px;">
+            <b>Tienda</b>
           </td>
-          <td width="3000">
-            Acciones
+          <td width="3000" style="font-size: 16px;">
+            <b>Acciones</b>
           </td>
         </tr>
         <tr>
@@ -179,9 +201,9 @@ if (!isset($usuario)) {
             <td width="220">
               <!-- Aqui va el campo de actualizar -->
               <button type="submit">Actualizar</button>
-              <input type="date" id="inicio" name="inicio">
-              <input type="date" id="final" name="final">
-              <button onclick="mostrarModal()">Buscar</button>
+              <input type="date" id="inicio" name="inicio" required>
+              <input type="date" id="final" name="final" required>
+              <button type="button" onclick="mostrarModal()">Buscar</button>
             </td>
           </form>
         </tr>
@@ -192,30 +214,36 @@ if (!isset($usuario)) {
       </tr>
       </table>
 
+
+      <!--
       <div id="modal" style="display:none; background:#00000088; position:fixed; top:0; left:0; width:100%; height:100%;">
-                <div style="background:white; padding:20px; margin:10% auto; width:300px;">
-                  <h3>Fechas seleccionadas</h3>
-                  <p id="resultado"></p>
-                  <button onclick="cerrarModal()">Cerrar</button>
-                </div>
-              </div>
+        <div style="background:white; padding:20px; margin:10% auto; width:300px;">
+          <h3>Nombre del colaborador</h3>
+          <p id="resultado"></p>
+          <button onclick="enviarForm()">Confirmar</button>
+          <button onclick="cerrarModal()">Cancelar</button>
+        </div>
+      </div>
 
-              <script>
-                function mostrarModal() {
-                  let inicio = document.getElementById("inicio").value;
-                  let fin = document.getElementById("fin").value;
+      <script>
+        function mostrarModal() {
+          let inicio = document.getElementById("inicio").value;
+          let fin = document.getElementById("fin").value;
 
-                  document.getElementById("resultado").innerText =
-                    "Inicio: " + inicio + " - Fin: " + fin;
+          document.getElementById("resultado").innerText =
+            "Inicio: " + inicio + " - Fin: " + fin;
 
-                  document.getElementById("modal").style.display = "block";
-                }
+          document.getElementById("modal").style.display = "block";
+        }
 
-                function cerrarModal() {
-                  document.getElementById("modal").style.display = "none";
-                }
-              </script>
+        function cerrarModal() {
+          document.getElementById("modal").style.display = "none";
+        }
+      </script>
     </div>
+-->
+
+
   </main>
 
   <!-- Footer -->
