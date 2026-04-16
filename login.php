@@ -16,21 +16,31 @@ include 'conexion.php';
     <!-- Favicon (Icono de la pagina web)-->
     <link rel="shortcut icon" href="./assets/img/shop.svg" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <!-- Tipografia Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Glory:ital,wght@0,100..800;1,100..800&family=Macondo&family=Marcellus&display=swap" rel="stylesheet">
     <!-- Archivo CSS -->
     <link rel="stylesheet" href="./css/style.css">
 
     <style>
-
         main {
             flex: 1;
         }
+
         #login {
             margin: 0px 300px 0px 300px;
         }
 
+        #usuario, #contraseña {
+            font-family: "Glory", sans-serif;
+            font-size: 20px;
+        }
+
         .boton-isesion {
-            background-color: #500718;
+            background-color: #efac41;
             border: none;
+            font-family: "Macondo", cursive;
         }
 
         .boton-isesion a {
@@ -39,9 +49,8 @@ include 'conexion.php';
         }
 
         .boton-isesion:hover {
-            background-color: #743140;
+            background-color: #de8531;
         }
-
     </style>
     <title>Tiendas Africam Safari</title>
 </head>
@@ -51,7 +60,9 @@ include 'conexion.php';
         <a href="login.php">
             <img src="./assets/img/logo.png" width="130px" alt="130px" />
         </a>
-        <center><h2 class="text-black" id="nombrepag">Tiendas Africam Safari</h2></center>
+        <center>
+            <h2 class="text-black" id="nombrepag">Tiendas Africam Safari</h2>
+        </center>
     </header>
 
     <main>
@@ -72,13 +83,13 @@ include 'conexion.php';
                                         <br><br>
 
                                         <div class="mb-3">
-                                            <label for="" class="form-label">Usuario</label>
+                                            <b><label for="" class="form-label" id="usuario">Usuario</label></b>
                                             <input type="text" class="form-control" name="usuario" required>
                                         </div>
 
 
                                         <div class="mb-3">
-                                            <label for="" class="form-label">Contraseña</label>
+                                            <b><label for="" class="form-label" id="contraseña">Contraseña</label></b>
                                             <input type="password" class="form-control" name="contraseña" required>
                                         </div>
 

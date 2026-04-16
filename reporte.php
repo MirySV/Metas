@@ -12,7 +12,13 @@ $id_empleado = $_POST['id_empleado'];
 $inicio = $_POST['inicio'];
 $fin = $_POST['fin'];
 
-$colaborador = mysqli_query($conec, "SELECT r.fecha, r.hora_entrada, t.nombre FROM registros AS r INNER JOIN tiendas AS t WHERE r.id_empleado = $id_empleado AND r.id_tienda = t.id_tienda AND fecha BETWEEN '$inicio' AND '$fin'");
+//echo "ID: $id_empleado | Inicio: $inicio | Fin: $fin";
+
+$colaborador = mysqli_query($conec, "SELECT r.fecha, r.hora_entrada, t.nombre FROM registros AS r INNER JOIN tiendas AS t ON r.id_tienda = t.id_tienda WHERE r.id_empleado = $id_empleado AND r.fecha BETWEEN '$inicio' AND '$fin' ORDER BY r.fecha DESC");
+
+if(!$colaborador){
+    die("Error en consulta: " . mysqli_error($conec));
+}
 
 echo "<table border='1' width='100%'>";
     echo "<tr>

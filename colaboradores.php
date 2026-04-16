@@ -26,6 +26,10 @@ if (!isset($usuario)) {
   <!-- Favicon (Icono de la pagina web)-->
   <link rel="shortcut icon" href="./assets/img/shop.svg" type="image/x-icon">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <!-- Tipografia Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Glory:ital,wght@0,100..800;1,100..800&family=Macondo&family=Marcellus&display=swap" rel="stylesheet">
   <!-- Archivo CSS -->
   <link rel="stylesheet" href="./css/style.css">
   <style>
@@ -48,34 +52,66 @@ if (!isset($usuario)) {
 
     th,
     td {
-      border: 2px solid black;
+      border: 1px solid #77240f81 ;
       padding: 10px;
       font-size: 14px;
     }
 
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
-    }
+    /*tr:nth-child(even) {
+      background-color: #73241127;
+    }*/
 
-    tr:hover {
-      background-color: #ddd;
-    }
+    /*tr:hover {
+      background-color: #de853136;
+    }*/
 
     .encabezado {
       padding-top: 12px;
       padding-bottom: 12px;
       text-align: left;
-      background-color: #500718;
+      background-color: #77240f;
       color: white;
     }
 
     .filtro_acciones {
-      margin: 20px 500px 20px 600px;
+      margin: 20px 480px 20px 480px;
+    }
+
+    .filtro_tiendas {
+      display: flex;
+      justify-content: center;
     }
 
     .info_colaboradores {
+      overflow-x: auto;
       margin: 50px 120px 50px 120px;
       border-collapse: collapse;
+      font-family: "Glory", sans-serif;
+    }
+
+    #tiendas {
+      padding: 5px;
+      font-size: 14px;
+      font-family: "Glory", sans-serif;
+      border-radius: 4px;
+    }
+
+    #tienda{
+      border-radius: 4px;
+      border: 1px;
+    }
+
+    .date{
+      width: 100px;
+    }
+
+    button {
+      background-color: #de85315c;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 5px;
+      font-family: "Glory", sans-serif;
+      margin: 0px 15px 0px 7px;
     }
   </style>
   <title>Tiendas Africam Safari</title>
@@ -92,6 +128,7 @@ if (!isset($usuario)) {
   </header>
 
   <main>
+    <div class="filtro_tiendas">
     <form action="colaboradores.php" method="POST">
       <div class="filtro_acciones">
         <select id="tiendas" name="tiendas">
@@ -124,17 +161,18 @@ if (!isset($usuario)) {
         <button type="submit">Filtrar</button>
       </div>
     </form>
+    </div>
 
-    <div class="info_colaboradores" style="overflow:auto; width:1200px;height:400px;  ">
+    <div class="info_colaboradores" style="overflow-x:auto;  ">
       <table class="tabla_colaboradores">
         <tr class="encabezado">
-          <th width="2500" style="font-size: 16px;">
+          <th width="2000" style="font-size: 18px;">
             <b>Colaborador</b>
           </th>
-          <th width="1000" style="font-size: 16px;">
+          <th width="1300" style="font-size: 18px;">
             <b>Tienda</b>
           </th>
-          <th width="3000" style="font-size: 16px;">
+          <th width="2800" style="font-size: 18px;">
             <b>Acciones</b>
           </th>
         </tr>
@@ -168,7 +206,7 @@ if (!isset($usuario)) {
               <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->
               <input type="hidden" name="id_empleado" value="<?php echo $i[0]; ?>">
 
-              <input list="tienda_<?php echo $i[0]; ?>" name="tienda" value="<?php echo $i[2]; ?>">
+              <input id="tienda" list="tienda_<?php echo $i[0]; ?>" name="tienda" value="<?php echo $i[2]; ?>" class="form-control" style="font-size: 14px;">
 
               <datalist id="tienda_<?php echo $i[0]; ?>">
                 <option value="KARIBU">
@@ -200,10 +238,10 @@ if (!isset($usuario)) {
             <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->
             <td width="220">
               <!-- Aqui va el boton de actualizar -->
-              <button type="submit">Actualizar</button>
-              <input type="date" id="inicio" name="inicio" <?php echo $i[0]; ?> required>
-              <input type="date" id="final" name="final" <?php echo $i[0]; ?> required>
-              <button type="button" onclick="buscar(<?php echo $i[0]; ?> , <?php echo $i[1]; ?>)" >Buscar</button>
+              <button style="margin-right: 90px;" type="submit">Actualizar</button>
+              <input type="date" id="inicio_<?php echo $i[0]; ?>" name="inicio" required class="date">
+              <input type="date" id="fin_<?php echo $i[0]; ?>" name="fin" required class="date">
+              <button type="button" onclick="buscar(<?php echo $i[0]; ?> , '<?php echo $i[1]; ?>')" >Buscar</button>
             </td>
           </form>
         </tr>
@@ -224,6 +262,18 @@ if (!isset($usuario)) {
 
     </div>
   </main>
+
+  <!-- Footer -->
+  <footer>
+    <p class="text-center">Africam Safari SA de CV &copy; 2026</p>
+  </footer>
+
+  <!-- CDN Boostrap -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+  </script>
+
+</body>
 
 <script>
 function buscar(id_empleado, nombre){
@@ -250,6 +300,7 @@ function buscar(id_empleado, nombre){
   })
   .then(res => res.text())
   .then(data => {
+    console.log(data);
     document.getElementById("tablaResultados").innerHTML = data;
   });
 }
@@ -258,17 +309,5 @@ function cerrarModal(){
   document.getElementById("modal").style.display = "none";
 }
 </script>
-
-  <!-- Footer -->
-  <footer>
-    <p class="text-center">Africam Safari SA de CV &copy; 2026</p>
-  </footer>
-
-  <!-- CDN Boostrap -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-  </script>
-
-</body>
 
 </html>

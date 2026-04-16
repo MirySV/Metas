@@ -4,7 +4,7 @@ html {
 }
 
 header {
-    background-color: #948d5a;
+    background-color: #cf6123;
 }
 
 .navbar{
@@ -29,19 +29,22 @@ body {
 }
 
 #nombrepag{
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 20px;
+    font-family: "Macondo", cursive;
+    font-size: 45px;
+    font-style: normal;
     text-align: center;
     margin: 0px;
 }
 
 footer{
-    background-color: #500718;
+    background-color: #993918 ;
     margin-bottom: 0;
     padding: 20px 0;
 }
 
 footer p{
+    font-family: "Averia Libre", system-ui;
+    font-size: 18px;
     color: white;
     margin-top: 6px;        
 }

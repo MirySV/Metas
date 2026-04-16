@@ -23,6 +23,10 @@ if (!isset($usuario)) {
     <!-- Favicon (Icono de la pagina web)-->
     <link rel="shortcut icon" href="./assets/img/shop.svg" type="image/x-icon">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <!-- Tipografia Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Glory:ital,wght@0,100..800;1,100..800&family=Macondo&family=Marcellus&display=swap" rel="stylesheet">
     <!-- Archivo CSS -->
     <link rel="stylesheet" href="./css/style.css">
     <style>
@@ -51,6 +55,14 @@ if (!isset($usuario)) {
         #tarjetas{
             text-decoration:none;
         }
+
+        .mi-card {
+            background-color: #330a04;
+        }
+
+        font {
+            font-family: "Macondo", cursive;
+        }
     </style>
     <title>Tiendas Africam Safari</title>
 </head>
@@ -67,11 +79,11 @@ if (!isset($usuario)) {
             <div class="row g-4">
 
                 <div class="col-3">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" ;>
+                    <div class="card card-cover h-100 overflow-hidden mi-card rounded-4 shadow-lg">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h5 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
+                            <h5 class="pt-5 mt-5 mb-4 fs-2 lh-1 fw-bold">
                                 <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="colaboradores.php" style="text-decoration: none;">Colaboradores</a>
+                                    <a href="colaboradores.php" style="text-decoration: none; color: white;">Colaboradores</a>
                                 </font>
                             </h5>
                         </div>
@@ -80,11 +92,11 @@ if (!isset($usuario)) {
 
 
                 <div class="col-3">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" ;>
+                    <div class="card card-cover h-100 overflow-hidden mi-card rounded-4 shadow-lg">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h5 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
+                            <h5 class="pt-5 mt-5 mb-4 fs-2 lh-1 fw-bold">
                                 <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="tiendas_exp.php" style="text-decoration: none;">Tiendas Explanada</a>
+                                    <a href="tiendas_exp.php" style="text-decoration: none; color: white;">Tiendas Explanada</a>
                                 </font>
                             </h5>
                         </div>
@@ -92,11 +104,11 @@ if (!isset($usuario)) {
                 </div>
 
                 <div class="col-3">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" ;>
+                    <div class="card card-cover h-100 overflow-hidden mi-card rounded-4 shadow-lg">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h5 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
+                            <h5 class="pt-5 mt-5 mb-4 fs-2 lh-1 fw-bold">
                                 <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="ventas_persona.php" style="text-decoration: none;">Ventas por persona</a>
+                                    <a href="ventas_persona.php" style="text-decoration: none; color: white;">Ventas por persona</a>
                                 </font>
                             </h5>
                         </div>
@@ -104,11 +116,11 @@ if (!isset($usuario)) {
                 </div>
 
                 <div class="col-3">
-                    <div class="card card-cover h-100 overflow-hidden text-bg-dark rounded-4 shadow-lg" ;>
+                    <div class="card card-cover h-100 overflow-hidden mi-card rounded-4 shadow-lg">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h5 class="pt-5 mt-5 mb-4 display-6 lh-1 fw-bold">
+                            <h5 class="pt-5 mt-5 mb-4 fs-2 lh-1 fw-bold">
                                 <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="ventas_persona.php" style="text-decoration: none;">Comision</a>
+                                    <a href="comisiones.php" style="text-decoration: none; color: white;">Comision</a>
                                 </font>
                             </h5>
                         </div>
