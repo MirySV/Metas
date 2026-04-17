@@ -4,6 +4,7 @@ include 'conexion.php'; //Conexion a la base de datos
 
 session_start();
 $usuario = $_SESSION['username'];
+$rol = $_SESSION['rol'];
 //echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
 if (!isset($usuario)) {
     header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
@@ -30,20 +31,37 @@ if (!isset($usuario)) {
     <!-- Archivo CSS -->
     <link rel="stylesheet" href="./css/style.css">
     <style>
-
         main {
             flex: 1;
         }
+
         .navbarindex {
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
             margin: 0px 0px 10px 0px;
-            padding: 55px 0px 40px 0px;
+            padding: 65px 0px 55px 0px;
         }
 
-        .navbarindex a {
+        .cerrarsesion {
+            font-family: "Macondo", cursive;
+            font-size: 22px;
+            position: absolute;
+            right: 20px;
+            top: 40px;
+        }
+
+        .cerrarsesion a {
+            text-decoration: none;
+            color: #330a04;
+        }
+
+        .cerrarsesion a:hover {
+            color: #ffffff;
+        }
+
+        #login {
             position: absolute;
             left: 20px;
         }
@@ -52,8 +70,8 @@ if (!isset($usuario)) {
             margin: 30px 15px 55px 75px;
         }
 
-        #tarjetas{
-            text-decoration:none;
+        #tarjetas {
+            text-decoration: none;
         }
 
         .mi-card {
@@ -69,9 +87,13 @@ if (!isset($usuario)) {
 
 <body>
     <header class="navbarindex">
-        <a href="login.php">
+        <a id="login" href="login.php">
             <img src="./assets/img/logo.png" width="130px" alt="130px" />
         </a>
+
+        <div class="cerrarsesion">
+            <a href="logout.php">Cerrar sesión</a>
+        </div>
     </header>
 
     <main>

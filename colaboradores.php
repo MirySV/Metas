@@ -4,6 +4,7 @@ include 'conexion.php'; //Conexion a la base de datos
 
 session_start();
 $usuario = $_SESSION['username'];
+$rol = $_SESSION['rol'];
 //echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
 if (!isset($usuario)) {
   header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
@@ -36,7 +37,34 @@ if (!isset($usuario)) {
     main {
       flex: 1;
     }
+    .navbarcolaboradores {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      padding: 18px;
+    }
 
+    #nombrepagcolab {
+      font-family: "Macondo", cursive;
+      font-size: 45px;
+      color: #330a04;
+      text-align: center;
+      margin: 0;
+    }
+    .cerrarsesion {
+      font-family: "Macondo", cursive;
+      font-size: 22px;
+      position: absolute;
+      right: 20px;
+      top: 40px;
+    }
+    .cerrarsesion a {
+      text-decoration: none;
+      color: #330a04;
+    }
+    .cerrarsesion a:hover {
+      color: #ffffff;
+    }
     #tabla_colaboradores {
       /*width: 100%;*/
       margin: 0 auto;
@@ -45,14 +73,12 @@ if (!isset($usuario)) {
       border-collapse: collapse;
       font-size: 12px;
     }
-
     table {
       border-collapse: collapse;
     }
-
     th,
     td {
-      border: 1px solid #77240f81 ;
+      border: 1px solid #77240f81;
       padding: 10px;
       font-size: 14px;
     }
@@ -96,12 +122,12 @@ if (!isset($usuario)) {
       border-radius: 4px;
     }
 
-    #tienda{
+    #tienda {
       border-radius: 4px;
       border: 1px;
     }
 
-    .date{
+    .date {
       width: 100px;
     }
 
@@ -118,49 +144,50 @@ if (!isset($usuario)) {
 </head>
 
 <body>
-  <header class="navbar">
+  <header class="navbarcolaboradores">
     <a href="login.php">
-      <img src="./assets/img/logo.png" width="130px" alt="130px" />
+      <img src="./assets/img/logo.png" width="130px" />
     </a>
-    <center>
-      <h2 class="text-black" id="nombrepag">Colaboradores</h2>
-    </center>
+      <h2 class="text-black m-0" id="nombrepagcolab">Colaboradores</h2>
+    <div class="cerrarsesion">
+      <a href="logout.php">Cerrar sesión</a>
+    </div>
   </header>
 
   <main>
     <div class="filtro_tiendas">
-    <form action="colaboradores.php" method="POST">
-      <div class="filtro_acciones">
-        <select id="tiendas" name="tiendas">
-          <option value="todas" selected>Todas las tiendas</option>
-          <option value="KARIBU">KARIBU</option>
-          <option value="EXPLANADA">EXPLANADA</option>
-          <option value="CHAMCHAWI">CHAMCHAWI</option>
-          <option value="NIEVES ESPECTACULOS">NIEVES ESPECTACULOS</option>
-          <option value="AVENTURA AMAZONICA">AVENTURA AMAZONICA</option>
-          <option value="MATUNDA ESPECTACULOS">MATUNDA ESPECTACULOS</option>
-          <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>
-          <option value="ZAWADI ASIATICOS">ZAWADI ASIATICOS</option>
-          <option value="MOROCCO SOURVENIRS">MOROCCO SOURVENIRS</option>
-          <option value="NIEVES MOROCCO">NIEVES MOROCCO</option>
-          <option value="MICHELADAS">MICHELADAS</option>
-          <option value="CARRITO DE LEONES">CARRITO DE LEONES</option>
-          <option value="AFRITATTOS">AFRITATTOS</option>
-          <option value="MOROCCO DULCERIA">MOROCCO DULCERIA</option>
-          <option value="PALOMITAS MOROCCO">PALOMITAS MOROCCO</option>
-          <option value="KARLUI">KARLUI</option>
-          <option value="PENDA">PENDA</option>
-          <option value="MAHALI">MAHALI</option>
-          <option value="NIEVES MOMBASA">NIEVES MOMBASA</option>
-          <option value="KU-HU-ZU">KU-HU-ZU</option>
-          <option value="FOTO SAFARI">FOTO SAFARI</option>
-          <option value="ZAWADI HUELLAS">ZAWADI HUELLAS</option>
-          <option value="OCEANIA">OCEANIA</option>
-          <option value="AVIARIO AUSTRALIANO">AVIARIO AUSTRALIANO</option>
-        </select>
-        <button type="submit">Filtrar</button>
-      </div>
-    </form>
+      <form action="colaboradores.php" method="POST">
+        <div class="filtro_acciones">
+          <select id="tiendas" name="tiendas">
+            <option value="todas" selected>Todas las tiendas</option>
+            <option value="KARIBU">KARIBU</option>
+            <option value="EXPLANADA">EXPLANADA</option>
+            <option value="CHAMCHAWI">CHAMCHAWI</option>
+            <option value="NIEVES ESPECTACULOS">NIEVES ESPECTACULOS</option>
+            <option value="AVENTURA AMAZONICA">AVENTURA AMAZONICA</option>
+            <option value="MATUNDA ESPECTACULOS">MATUNDA ESPECTACULOS</option>
+            <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>
+            <option value="ZAWADI ASIATICOS">ZAWADI ASIATICOS</option>
+            <option value="MOROCCO SOURVENIRS">MOROCCO SOURVENIRS</option>
+            <option value="NIEVES MOROCCO">NIEVES MOROCCO</option>
+            <option value="MICHELADAS">MICHELADAS</option>
+            <option value="CARRITO DE LEONES">CARRITO DE LEONES</option>
+            <option value="AFRITATTOS">AFRITATTOS</option>
+            <option value="MOROCCO DULCERIA">MOROCCO DULCERIA</option>
+            <option value="PALOMITAS MOROCCO">PALOMITAS MOROCCO</option>
+            <option value="KARLUI">KARLUI</option>
+            <option value="PENDA">PENDA</option>
+            <option value="MAHALI">MAHALI</option>
+            <option value="NIEVES MOMBASA">NIEVES MOMBASA</option>
+            <option value="KU-HU-ZU">KU-HU-ZU</option>
+            <option value="FOTO SAFARI">FOTO SAFARI</option>
+            <option value="ZAWADI HUELLAS">ZAWADI HUELLAS</option>
+            <option value="OCEANIA">OCEANIA</option>
+            <option value="AVIARIO AUSTRALIANO">AVIARIO AUSTRALIANO</option>
+          </select>
+          <button type="submit">Filtrar</button>
+        </div>
+      </form>
     </div>
 
     <div class="info_colaboradores" style="overflow-x:auto;  ">
@@ -206,7 +233,7 @@ if (!isset($usuario)) {
               <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->
               <input type="hidden" name="id_empleado" value="<?php echo $i[0]; ?>">
 
-              <input id="tienda" list="tienda_<?php echo $i[0]; ?>" name="tienda" value="<?php echo $i[2]; ?>" class="form-control" style="font-size: 14px;">
+              <input id="tienda" list="tienda_<?php echo $i[0]; ?>" name="tienda" value="<?php echo $i[2]; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
 
               <datalist id="tienda_<?php echo $i[0]; ?>">
                 <option value="KARIBU">
@@ -238,10 +265,12 @@ if (!isset($usuario)) {
             <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->
             <td width="220">
               <!-- Aqui va el boton de actualizar -->
-              <button style="margin-right: 90px;" type="submit">Actualizar</button>
+              <?php if ($rol == 'admin') { ?>
+                <button style="margin-right: 90px;" type="submit">Actualizar</button>
+              <?php } ?>
               <input type="date" id="inicio_<?php echo $i[0]; ?>" name="inicio" required class="date">
               <input type="date" id="fin_<?php echo $i[0]; ?>" name="fin" required class="date">
-              <button type="button" onclick="buscar(<?php echo $i[0]; ?> , '<?php echo $i[1]; ?>')" >Buscar</button>
+              <button type="button" onclick="buscar(<?php echo $i[0]; ?> , '<?php echo $i[1]; ?>')">Buscar</button>
             </td>
           </form>
         </tr>
@@ -254,11 +283,11 @@ if (!isset($usuario)) {
       <!--Modal para mostrar los resultados de la busqueda de los registros del colaborador, se muestra el nombre del colaborador y las fechas seleccionadas para mostrar los registros de ese colaborador en ese rango de fechas-->
       <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
         <div style="background-color:white; margin:5% auto; padding:20px; width:80%; max-height:80%; overflow:auto;">
-        <h3 id="tituloModal"></h3>
-        <div id="tablaResultados"></div>
-        <button onclick="cerrarModal()">Cerrar</button>
+          <h3 id="tituloModal"></h3>
+          <div id="tablaResultados"></div>
+          <button onclick="cerrarModal()">Cerrar</button>
         </div>
-    </div>
+      </div>
 
     </div>
   </main>
@@ -276,38 +305,38 @@ if (!isset($usuario)) {
 </body>
 
 <script>
-function buscar(id_empleado, nombre){
-  let inicio = document.getElementById("inicio_" + id_empleado).value;
-  let fin = document.getElementById("fin_" + id_empleado).value;
+  function buscar(id_empleado, nombre) {
+    let inicio = document.getElementById("inicio_" + id_empleado).value;
+    let fin = document.getElementById("fin_" + id_empleado).value;
 
-  if(inicio === "" || fin === ""){
-    alert("Selecciona ambas fechas");
-    return;
+    if (inicio === "" || fin === "") {
+      alert("Selecciona ambas fechas");
+      return;
+    }
+
+    document.getElementById("tituloModal").innerText = "Registros de " + nombre;
+
+    // abrir modal
+    document.getElementById("modal").style.display = "block";
+
+    // enviar datos a PHP
+    fetch("reporte.php", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "id_empleado=" + id_empleado + "&inicio=" + inicio + "&fin=" + fin
+      })
+      .then(res => res.text())
+      .then(data => {
+        console.log(data);
+        document.getElementById("tablaResultados").innerHTML = data;
+      });
   }
 
-  document.getElementById("tituloModal").innerText = "Registros de " + nombre;
-
-  // abrir modal
-  document.getElementById("modal").style.display = "block";
-
-  // enviar datos a PHP
-  fetch("reporte.php", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: "id_empleado=" + id_empleado + "&inicio=" + inicio + "&fin=" + fin
-  })
-  .then(res => res.text())
-  .then(data => {
-    console.log(data);
-    document.getElementById("tablaResultados").innerHTML = data;
-  });
-}
-
-function cerrarModal(){
-  document.getElementById("modal").style.display = "none";
-}
+  function cerrarModal() {
+    document.getElementById("modal").style.display = "none";
+  }
 </script>
 
 </html>

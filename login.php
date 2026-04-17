@@ -32,7 +32,8 @@ include 'conexion.php';
             margin: 0px 300px 0px 300px;
         }
 
-        #usuario, #contraseña {
+        #usuario,
+        #contraseña {
             font-family: "Glory", sans-serif;
             font-size: 20px;
         }
@@ -41,15 +42,17 @@ include 'conexion.php';
             background-color: #efac41;
             border: none;
             font-family: "Macondo", cursive;
-        }
-
-        .boton-isesion a {
-            text-decoration: none;
             color: white;
         }
 
         .boton-isesion:hover {
             background-color: #de8531;
+        }
+
+        .boton-isesion:focus,
+        .boton-isesion:active {
+            outline: none;
+            box-shadow: none;
         }
     </style>
     <title>Tiendas Africam Safari</title>
@@ -95,7 +98,7 @@ include 'conexion.php';
 
 
                                         <br>
-                                        <button type="submit" value="iniciarsesion" name="iniciarsesion" class="btn btn-primary boton-isesion"><a class="text-light">Iniciar sesion</a></button>
+                                        <button type="submit" name="iniciarsesion" class="btn boton-isesion">Iniciar sesión</button>
                                         <br>
                                         <br>
                                     </div>

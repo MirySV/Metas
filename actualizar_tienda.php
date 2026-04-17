@@ -3,6 +3,13 @@
 include 'conexion.php'; //Conexion a la base de datos
 
 session_start();
+
+//Verifica si el usuario tiene una sesion iniciada y si el rol del usuario es admin, en caso de que no tenga una sesion iniciada o el rol del usuario no sea admin, se muestra un mensaje de error y se detiene la ejecucion del codigo
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 'admin') {
+    echo "No tienes permisos para actualizar";
+    exit();
+}
+
 $usuario = $_SESSION['username'];
 //echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
 if (!isset($usuario)) {

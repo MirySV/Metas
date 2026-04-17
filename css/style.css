@@ -1,13 +1,13 @@
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 header {
     background-color: #cf6123;
 }
 
-.navbar{
+.navbar {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -16,19 +16,19 @@ header {
     padding: 40px 0px 30px 0px;
 }
 
-.navbar a{
+.navbar a:first-child {
     position: absolute;
     left: 20px;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-#nombrepag{
+#nombrepag {
     font-family: "Macondo", cursive;
     font-size: 45px;
     font-style: normal;
@@ -36,15 +36,15 @@ body {
     margin: 0px;
 }
 
-footer{
-    background-color: #993918 ;
+footer {
+    background-color: #993918;
     margin-bottom: 0;
     padding: 20px 0;
 }
 
-footer p{
+footer p {
     font-family: "Averia Libre", system-ui;
     font-size: 18px;
     color: white;
-    margin-top: 6px;        
+    margin-top: 6px;
 }
