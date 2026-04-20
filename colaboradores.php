@@ -50,6 +50,7 @@ if (!isset($usuario)) {
       color: #330a04;
       text-align: center;
       margin: 0;
+      padding-right: 150px;
     }
     .cerrarsesion {
       font-family: "Macondo", cursive;

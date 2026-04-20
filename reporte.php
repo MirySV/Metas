@@ -3,7 +3,7 @@ include "conexion.php";
 
 session_start();
 $usuario = $_SESSION['username'];
-//echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
+//echo "Bienvenido, " .$usuario; 
 if (!isset($usuario)) {
     header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
 }
