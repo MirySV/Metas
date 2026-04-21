@@ -88,9 +88,9 @@ if (!isset($usuario)) {
       background-color: #73241127;
     }*/
 
-    /*tr:hover {
+    tr:hover {
       background-color: #de853136;
-    }*/
+    }
 
     .encabezado {
       padding-top: 12px;
@@ -113,13 +113,13 @@ if (!isset($usuario)) {
       overflow-x: auto;
       margin: 50px 120px 50px 120px;
       border-collapse: collapse;
-      font-family: "Glory", sans-serif;
+      /*font-family: "Glory", sans-serif;*/
     }
 
     #tiendas {
       padding: 5px;
       font-size: 14px;
-      font-family: "Glory", sans-serif;
+      /*font-family: "Glory", sans-serif;*/
       border-radius: 4px;
     }
 
@@ -134,12 +134,17 @@ if (!isset($usuario)) {
 
     button {
       background-color: #de85315c;
-      border: none;
+      border: 1px ;
       border-radius: 4px;
-      padding: 2px 5px;
-      font-family: "Glory", sans-serif;
+      padding: 4px 5px;
+      /*font-family: "Glory", sans-serif;*/
       margin: 0px 15px 0px 7px;
     }
+
+    .btnmodal{
+      border-radius: 4px;
+    }
+    
   </style>
   <title>Tiendas Africam Safari</title>
 </head>
@@ -186,7 +191,7 @@ if (!isset($usuario)) {
             <option value="OCEANIA">OCEANIA</option>
             <option value="AVIARIO AUSTRALIANO">AVIARIO AUSTRALIANO</option>
           </select>
-          <button type="submit">Filtrar</button>
+          <button type="submit" style="font-size: 14px;">Filtrar</button>
         </div>
       </form>
     </div>
@@ -194,13 +199,13 @@ if (!isset($usuario)) {
     <div class="info_colaboradores" style="overflow-x:auto;  ">
       <table class="tabla_colaboradores">
         <tr class="encabezado">
-          <th width="2000" style="font-size: 18px;">
+          <th width="2000" style="font-size: 16px;">
             <b>Colaborador</b>
           </th>
-          <th width="1300" style="font-size: 18px;">
+          <th width="1300" style="font-size: 16px;">
             <b>Tienda</b>
           </th>
-          <th width="2800" style="font-size: 18px;">
+          <th width="2800" style="font-size: 16px;">
             <b>Acciones</b>
           </th>
         </tr>
@@ -267,11 +272,12 @@ if (!isset($usuario)) {
             <td width="220">
               <!-- Aqui va el boton de actualizar -->
               <?php if ($rol == 'admin') { ?>
-                <button style="margin-right: 90px;" type="submit">Actualizar</button>
+                <button class="btnmodal" style="margin-right: 90px;" type="submit">Actualizar</button>
               <?php } ?>
               <input type="date" id="inicio_<?php echo $i[0]; ?>" name="inicio" required class="date">
               <input type="date" id="fin_<?php echo $i[0]; ?>" name="fin" required class="date">
-              <button type="button" onclick="buscar(<?php echo $i[0]; ?> , '<?php echo $i[1]; ?>')">Buscar</button>
+              <!-- Botón para buscar registros -->
+              <button type="button" class="btnmodal" onclick="buscar(<?php echo $i[0]; ?> , '<?php echo $i[1]; ?>')">Buscar</button>
             </td>
           </form>
         </tr>
@@ -286,7 +292,8 @@ if (!isset($usuario)) {
         <div style="background-color:white; margin:5% auto; padding:20px; width:80%; max-height:80%; overflow:auto;">
           <h3 id="tituloModal"></h3>
           <div id="tablaResultados"></div>
-          <button onclick="cerrarModal()">Cerrar</button>
+          <br>
+          <button class="btnmodal" onclick="cerrarModal()">Cerrar</button>
         </div>
       </div>
 
