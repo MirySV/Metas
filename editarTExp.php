@@ -3,14 +3,27 @@
 include 'conexion.php'; //Conexion a la base de datos
 
 session_start();
+
+//Verifica si el usuario tiene una sesion iniciada y si el rol del usuario es admin, en caso de que no tenga una sesion iniciada o el rol del usuario no sea admin, se muestra un mensaje de error y se detiene la ejecucion del codigo
+if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 'admin') {
+    echo "No tienes permisos para actualizar";
+    exit();
+}
+
 $usuario = $_SESSION['username'];
-$rol = $_SESSION['rol'];
 //echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
 if (!isset($usuario)) {
     header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
 }
+//Recibe los datos del formulario de tiendas_exp , la fecha, los grupos y los visitantes por experiencia para guardar la informacion en la base de datos
 
+$id_tiexp = $_GET['id_tiexp'];
+
+//Busca el id del registro seleccionado en el formulario para editar
+$buscar_tiexp = mysqli_query($conec, "SELECT * FROM tiendas_explanada WHERE id_tiexp='$id_tiexp'");
+$fila = mysqli_fetch_array($buscar_tiexp);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -161,7 +174,8 @@ if (!isset($usuario)) {
                 </section>
             </form>
         </div>
-        <!-- Formulario para consultar los grupos, pax y numero de visitantes segun la fecha -->
+
+         <!-- Formulario para consultar los grupos, pax y numero de visitantes segun la fecha -->
         <div class="inputTExplanada  card shadow-2-strong" style="border-radius: 1rem;">
             <form class="form-inline" action="tiendas_exp.php" method="POST">
                 <section>
@@ -201,35 +215,23 @@ if (!isset($usuario)) {
                                 </th>
                             </tr>
                             <tr>
-                                <?php
-                                if (isset($_POST['inicio']) && isset($_POST['fin'])) {
-                                    $fechainicio = $_POST['inicio'];
-                                    $fechafin = $_POST['fin'];
-                                    //Consulta para mostrar la informacion de tiendas explanada, si se selecciona una fecha, se muestra la informacion de esa fecha en especifico, se muestra la fecha, los grupos, el pax y los visitantes por experiencia, si no se selecciona una fecha, se muestra toda la informacion de la tabla tiendas_explanada, 
-                                    $tiendas_explanada = mysqli_query($conec, "SELECT * FROM tiendas_explanada WHERE fecha BETWEEN '$fechainicio' AND '$fechafin' ORDER BY fecha DESC ");
-                                } else {
-                                    $tiendas_explanada = mysqli_query($conec, "SELECT * FROM tiendas_explanada ORDER BY fecha DESC");
-                                }
-                                //Ciclo para mostrar los colaboradores, se muestra el nombre del colaborador en la tabla
-                                while ($i = mysqli_fetch_array($tiendas_explanada)) {
-                                ?>
                             <tr>
-                                <form action="tiendas_exp.php" method="post">
+                                <form action="actualizarTExp.php" method="post">
                                     <!-- Muestra la fecha-->
                                     <td width="220">
-                                        <center><?php echo $i['fecha']; ?></center>
+                                        <input type="hidden" name="id" value="<?php echo $fila['fecha']; ?>">
                                     </td>
                                     <!-- Muestra los grupos -->
                                     <td width="220">
-                                        <center><?php echo $i['grupos']; ?></center>
+                                        <input type="hidden" name="id" value="<?php echo $fila['grupos']; ?>">
                                     </td>
                                     <!-- Muestra el pax -->
                                     <td width="220">
-                                        <center><?php echo $i['pax']; ?></center>
+                                        <input type="hidden" name="id" value="<?php echo $fila['pax']; ?>">
                                     </td>
                                     <!-- Muestra los visitantes por experiencia -->
                                     <td width="220">
-                                        <center><?php echo $i['visitantes']; ?></center>
+                                        <input type="hidden" name="id" value="<?php echo $fila['visitantes']; ?>">
                                     </td>
                                     <td width="220">
                                         <center>
@@ -240,9 +242,6 @@ if (!isset($usuario)) {
                                     </td>
                                 </form>
                             </tr>
-                        <?php
-                                } //Acaba el ciclo while 
-                        ?>
                         </tr>
                         </table>
                     </div>
@@ -250,8 +249,6 @@ if (!isset($usuario)) {
             </form>
         </div>
     </main>
-
-    <!-- Footer -->
     <footer>
         <p class="text-center">Africam Safari SA de CV &copy; 2026</p>
     </footer>
@@ -260,7 +257,6 @@ if (!isset($usuario)) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
-
 </body>
 
 </html>

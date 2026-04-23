@@ -41,7 +41,7 @@ if (!isset($usuario)) {
 
         table {
             border-collapse: collapse;
-        }
+        } 
 
         th,
         td {

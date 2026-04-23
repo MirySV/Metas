@@ -34,14 +34,14 @@ include 'conexion.php';
 
         #usuario,
         #contraseña {
-            font-family: "Glory", sans-serif;
+            /*font-family: "Glory", sans-serif;*/
             font-size: 20px;
         }
 
         .boton-isesion {
             background-color: #efac41;
             border: none;
-            font-family: "Macondo", cursive;
+            /*font-family: "Macondo", cursive;*/
             color: white;
         }
 
