@@ -1,7 +1,7 @@
 <?php
 
 include 'conexion.php'; //Conexion a la base de datos
-
+//var_dump($_GET);
 session_start();
 
 //Verifica si el usuario tiene una sesion iniciada y si el rol del usuario es admin, en caso de que no tenga una sesion iniciada o el rol del usuario no sea admin, se muestra un mensaje de error y se detiene la ejecucion del codigo
@@ -17,7 +17,8 @@ if (!isset($usuario)) {
 }
 //Recibe los datos del formulario de tiendas_exp , la fecha, los grupos y los visitantes por experiencia para guardar la informacion en la base de datos
 
-$id_tiexp = $_GET['id_tiexp'];
+$id_tiexp = $_GET['id_tiexp']; //Recibe el id del registro seleccionado en el formulario para editar
+//echo "ID del registro a editar: " . $id_tiexp; //Confirmo el id del registro que se va a editar
 
 //Busca el id del registro seleccionado en el formulario para editar
 $buscar_tiexp = mysqli_query($conec, "SELECT * FROM tiendas_explanada WHERE id_tiexp='$id_tiexp'");
@@ -147,98 +148,52 @@ $fila = mysqli_fetch_array($buscar_tiexp);
     </header>
 
     <main>
-        <!-- Formulario para ingresar datos de tiendas explanada, se enviar a guardarTExp.php para insertar en la base de datos -->
-        <div class="inputTExplanada  card shadow-2-strong" style="border-radius: 1rem;">
-            <form class="form-inline" action="guardarTExp.php" method="POST">
-                <section>
-                    <div class="row mb-3">
-                        <label for="inputfecha" class="col-sm-2 col-form-label">Fecha:</label>
-                        <div class="col-sm-10">
-                            <input type="date" class="form-control" id="fecha" name="fecha" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputGrupos" class="col-sm-2 col-form-label">Grupos:</label>
-                        <div class="col-sm-10">
-                            <input type="number" class="form-control" id="grupos" name="grupos" required>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <label for="inputVxE" class="col-sm-4 col-form-label">Visitantes por experiencia:</label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" id="vxe" name="vxe" required>
-                        </div>
-                    </div>
-                    <br>
-                    <button type="submit">Guardar</button>
-                </section>
-            </form>
-        </div>
-
          <!-- Formulario para consultar los grupos, pax y numero de visitantes segun la fecha -->
         <div class="inputTExplanada  card shadow-2-strong" style="border-radius: 1rem;">
             <form class="form-inline" action="tiendas_exp.php" method="POST">
                 <section>
-                    <div class="row mb-3 align-items-center">
-                        <label for="inputfecha" class="col-sm-1 col-form-label">Del:</label>
-                        <div class="col-sm-4">
-                            <input type="date" class="form-control" name="inicio" required>
-                        </div>
-
-                        <label for="inputfecha" class="col-sm-1 col-form-label">al:</label>
-                        <div class="col-sm-4">
-                            <input type="date" class="form-control" name="fin" required>
-                        </div>
-
-                        <div class="col-sm-2">
-                            <button type="submit">Buscar</button>
-                        </div>
-                    </div>
                     <!-- Comienza l atbla que muestra los grupos, el pax y los visitantes -->
                     <div class="info_texp" style="overflow-x:auto;  ">
                         <table class="tabla_texp">
                             <tr class="encabezado">
-                                <th width="2000" style="font-size: 16px;">
+                                <th width="1800" style="font-size: 16px;">
                                     <b>Fecha</b>
                                 </th>
-                                <th width="2000" style="font-size: 16px;">
+                                <th width="1800" style="font-size: 16px;">
                                     <b>Grupos</b>
                                 </th>
-                                <th width="2000" style="font-size: 16px;">
+                                <th width="1800" style="font-size: 16px;">
                                     <b>PAX</b>
                                 </th>
                                 <th width="1700" style="font-size: 16px;">
                                     <b>Visitantes</b>
                                 </th>
                                 <th width="1700" style="font-size: 16px;">
-                                    <b>Editar</b>
+                                    <b>Actualizar</b>
                                 </th>
                             </tr>
                             <tr>
                             <tr>
-                                <form action="actualizarTExp.php" method="post">
+                                <form action="actualizarTExp.php" method="POST">
+                                    <input type="hidden" name="id_tiexp" value="<?php echo $fila['id_tiexp']; ?>">
                                     <!-- Muestra la fecha-->
-                                    <td width="220">
-                                        <input type="hidden" name="id" value="<?php echo $fila['fecha']; ?>">
+                                    <td width="200">
+                                        <input type="date" name="fecha" value="<?php echo $fila['fecha']; ?>">
                                     </td>
                                     <!-- Muestra los grupos -->
-                                    <td width="220">
-                                        <input type="hidden" name="id" value="<?php echo $fila['grupos']; ?>">
+                                    <td width="200">
+                                        <input type="number" name="grupos" value="<?php echo $fila['grupos']; ?>">
                                     </td>
                                     <!-- Muestra el pax -->
-                                    <td width="220">
-                                        <input type="hidden" name="id" value="<?php echo $fila['pax']; ?>">
+                                    <td width="200">
+                                       <input type="number" name="pax" value="<?php echo $fila['pax']; ?>">
                                     </td>
                                     <!-- Muestra los visitantes por experiencia -->
-                                    <td width="220">
-                                        <input type="hidden" name="id" value="<?php echo $fila['visitantes']; ?>">
+                                    <td width="200">
+                                        <input type="number" name="visitantes" value="<?php echo $fila['visitantes']; ?>">
                                     </td>
-                                    <td width="220">
-                                        <center>
-                                            <a href="editarTExp.php?id=<?php echo $i['id_tiexp']; ?>" class="btn">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
-                                        </center>
+                                    <td width="200">
+                                         <button type="submit">Guardar</button>
                                     </td>
                                 </form>
                             </tr>

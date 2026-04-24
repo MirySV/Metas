@@ -214,7 +214,7 @@ if (!isset($usuario)) {
                                 while ($i = mysqli_fetch_array($tiendas_explanada)) {
                                 ?>
                             <tr>
-                                <form action="tiendas_exp.php" method="post">
+                                <form action="tiendas_exp.php" method="POST">
                                     <!-- Muestra la fecha-->
                                     <td width="220">
                                         <center><?php echo $i['fecha']; ?></center>
@@ -233,7 +233,7 @@ if (!isset($usuario)) {
                                     </td>
                                     <td width="220">
                                         <center>
-                                            <a href="editarTExp.php?id=<?php echo $i['id_tiexp']; ?>" class="btn">
+                                            <a href="editarTExp.php?id_tiexp=<?php echo $i['id_tiexp']; ?>" class="btn">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
                                         </center>
