@@ -9,8 +9,6 @@ $rol = $_SESSION['rol'];
 if (!isset($usuario)) {
   header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -51,6 +49,7 @@ if (!isset($usuario)) {
       text-align: center;
       margin: 0;
       padding-right: 150px;
+      text-decoration: none;
     }
     .cerrarsesion {
       font-family: "Macondo", cursive;
@@ -154,7 +153,7 @@ if (!isset($usuario)) {
     <a href="login.php">
       <img src="./assets/img/logo.png" width="130px" />
     </a>
-      <h2 class="text-black m-0" id="nombrepagcolab">Colaboradores</h2>
+      <a class="text-black m-0" id="nombrepagcolab" href="index.php">Colaboradores</a>
     <div class="cerrarsesion">
       <a href="logout.php">Cerrar sesión</a>
     </div>
@@ -229,7 +228,7 @@ if (!isset($usuario)) {
           while ($i = mysqli_fetch_array($colaboradores)) {
           ?>
         <tr>
-          <form action="actualizar_tienda.php" method="post">
+          <form action="actualizar_tiendaColab.php" method="POST">
             <!-- Muestra el nombre del colaborador, la posicion 1 es el nombre, por ser el unico valor solicitado en la consulta -->
             <td width="220">
               <?php echo $i[1]; ?>
@@ -272,7 +271,7 @@ if (!isset($usuario)) {
             <td width="220">
               <!-- Aqui va el boton de actualizar -->
               <?php if ($rol == 'admin') { ?>
-                <button class="btnmodal" style="margin-right: 90px;" type="submit">Actualizar</button>
+                <button class="btnmodal" style="margin-right: 90px;" type="submit" formnovalidate>Actualizar</button>
               <?php } ?>
               <input type="date" id="inicio_<?php echo $i[0]; ?>" name="inicio" required class="date">
               <input type="date" id="fin_<?php echo $i[0]; ?>" name="fin" required class="date">

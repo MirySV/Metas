@@ -51,6 +51,7 @@ if (!isset($usuario)) {
             text-align: center;
             margin: 0;
             padding-right: 150px;
+            text-decoration: none;
         }
 
         .cerrarsesion {
@@ -92,6 +93,12 @@ if (!isset($usuario)) {
             color: white;
         }
 
+        .btneditar {
+            background-color: transparent;
+            border: none;
+            color: #330a04;
+        }
+
         .tabla_texp {
             /*width: 100%;*/
             margin: 0 auto;
@@ -127,7 +134,7 @@ if (!isset($usuario)) {
         <a href="login.php">
             <img src="./assets/img/logo.png" width="130px" />
         </a>
-        <h2 class="text-black m-0" id="nombrepagtiendasexp">Tiendas Explanada</h2>
+        <a class="text-black m-0" id="nombrepagtiendasexp" href="index.php">Tiendas Explanada</a>
         <div class="cerrarsesion">
             <a href="logout.php">Cerrar sesión</a>
         </div>
@@ -163,7 +170,7 @@ if (!isset($usuario)) {
         </div>
         <!-- Formulario para consultar los grupos, pax y numero de visitantes segun la fecha -->
         <div class="inputTExplanada  card shadow-2-strong" style="border-radius: 1rem;">
-            <form class="form-inline" action="tiendas_exp.php" method="POST">
+            <form class="form-inline" action="actualizarTExp.php" method="POST">
                 <section>
                     <div class="row mb-3 align-items-center">
                         <label for="inputfecha" class="col-sm-1 col-form-label">Del:</label>
@@ -196,8 +203,8 @@ if (!isset($usuario)) {
                                 <th width="1700" style="font-size: 16px;">
                                     <b>Visitantes</b>
                                 </th>
-                                <th width="1700" style="font-size: 16px;">
-                                    <b>Editar</b>
+                                <th width="1000" style="font-size: 16px;">
+                                    <b>Actualizar</b>
                                 </th>
                             </tr>
                             <tr>
@@ -214,31 +221,30 @@ if (!isset($usuario)) {
                                 while ($i = mysqli_fetch_array($tiendas_explanada)) {
                                 ?>
                             <tr>
-                                <form action="tiendas_exp.php" method="POST">
                                     <!-- Muestra la fecha-->
                                     <td width="220">
-                                        <center><?php echo $i['fecha']; ?></center>
+                                        <input type="hidden" name="id_tiexp" value="<?php echo $i['id_tiexp']; ?>">
+                                        <input type="date" name="fecha" value="<?php echo $i['fecha']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
                                     </td>
                                     <!-- Muestra los grupos -->
                                     <td width="220">
-                                        <center><?php echo $i['grupos']; ?></center>
+                                        <input type="text" name="grupos" value="<?php echo $i['grupos']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
                                     </td>
                                     <!-- Muestra el pax -->
                                     <td width="220">
-                                        <center><?php echo $i['pax']; ?></center>
+                                        <input type="number" name="pax" value="<?php echo $i['pax']; ?>" class="form-control" style="font-size: 14px;" readonly>
                                     </td>
                                     <!-- Muestra los visitantes por experiencia -->
                                     <td width="220">
-                                        <center><?php echo $i['visitantes']; ?></center>
+                                         <input type="text" name="visitantes" value="<?php echo $i['visitantes']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
                                     </td>
                                     <td width="220">
                                         <center>
-                                            <a href="editarTExp.php?id_tiexp=<?php echo $i['id_tiexp']; ?>" class="btn">
+                                            <button type="submit" class="btneditar" formnovalidate>
                                                 <i class="bi bi-pencil-square"></i>
-                                            </a>
+                                            </button>
                                         </center>
                                     </td>
-                                </form>
                             </tr>
                         <?php
                                 } //Acaba el ciclo while 

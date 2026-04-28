@@ -21,6 +21,14 @@ $grupos = $_POST['grupos'];
 $vxe = $_POST['vxe'];
 $pax=$vxe*0.65;
 
+$verificar = mysqli_query($conec, "SELECT * FROM tiendas_explanada WHERE fecha = '$fecha' AND id_tiexp != '$id_tiexp'");
+
+if (mysqli_num_rows($verificar) > 0) {
+    echo '<script>
+            alert("Ya existe un registro con esa fecha, por favor elige otra fecha");
+            window.location.href="tiendas_exp.php";
+          </script>';
+}
 //Inserta la informacion recibida del formulario de tiendas exp en la base de datos, se inserta la fecha, los grupos y los visitantes por experiencia en la tabla tiendas_explanada
 $insertar_info = mysqli_query($conec, "INSERT INTO tiendas_explanada (fecha, grupos, visitantes, pax) VALUES ('$fecha', '$grupos', '$vxe', '$pax')");
 if ($insertar_info) {
