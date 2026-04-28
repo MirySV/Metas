@@ -170,89 +170,96 @@ if (!isset($usuario)) {
         </div>
         <!-- Formulario para consultar los grupos, pax y numero de visitantes segun la fecha -->
         <div class="inputTExplanada  card shadow-2-strong" style="border-radius: 1rem;">
-            <form class="form-inline" action="actualizarTExp.php" method="POST">
-                <section>
-                    <div class="row mb-3 align-items-center">
-                        <label for="inputfecha" class="col-sm-1 col-form-label">Del:</label>
-                        <div class="col-sm-4">
-                            <input type="date" class="form-control" name="inicio" required>
-                        </div>
-
-                        <label for="inputfecha" class="col-sm-1 col-form-label">al:</label>
-                        <div class="col-sm-4">
-                            <input type="date" class="form-control" name="fin" required>
-                        </div>
-
-                        <div class="col-sm-2">
-                            <button type="submit">Buscar</button>
-                        </div>
+            <form class="form-inline" action="tiendas_exp.php" method="GET">
+                <div class="row mb-3 align-items-center">
+                    <label for="inputfecha" class="col-sm-1 col-form-label">Del:</label>
+                    <div class="col-sm-4">
+                        <input type="date" name="inicio" class="form-control" value="<?php echo isset($_GET['inicio']) ? $_GET['inicio'] : ''; ?>" required>
                     </div>
-                    <!-- Comienza l atbla que muestra los grupos, el pax y los visitantes -->
-                    <div class="info_texp" style="overflow-x:auto;  ">
-                        <table class="tabla_texp">
-                            <tr class="encabezado">
-                                <th width="2000" style="font-size: 16px;">
-                                    <b>Fecha</b>
-                                </th>
-                                <th width="2000" style="font-size: 16px;">
-                                    <b>Grupos</b>
-                                </th>
-                                <th width="2000" style="font-size: 16px;">
-                                    <b>PAX</b>
-                                </th>
-                                <th width="1700" style="font-size: 16px;">
-                                    <b>Visitantes</b>
-                                </th>
-                                <th width="1000" style="font-size: 16px;">
-                                    <b>Actualizar</b>
-                                </th>
-                            </tr>
-                            <tr>
-                                <?php
-                                if (isset($_POST['inicio']) && isset($_POST['fin'])) {
-                                    $fechainicio = $_POST['inicio'];
-                                    $fechafin = $_POST['fin'];
-                                    //Consulta para mostrar la informacion de tiendas explanada, si se selecciona una fecha, se muestra la informacion de esa fecha en especifico, se muestra la fecha, los grupos, el pax y los visitantes por experiencia, si no se selecciona una fecha, se muestra toda la informacion de la tabla tiendas_explanada, 
-                                    $tiendas_explanada = mysqli_query($conec, "SELECT * FROM tiendas_explanada WHERE fecha BETWEEN '$fechainicio' AND '$fechafin' ORDER BY fecha DESC ");
-                                } else {
-                                    $tiendas_explanada = mysqli_query($conec, "SELECT * FROM tiendas_explanada ORDER BY fecha DESC");
-                                }
-                                //Ciclo para mostrar los colaboradores, se muestra el nombre del colaborador en la tabla
-                                while ($i = mysqli_fetch_array($tiendas_explanada)) {
-                                ?>
-                            <tr>
-                                    <!-- Muestra la fecha-->
-                                    <td width="220">
-                                        <input type="hidden" name="id_tiexp" value="<?php echo $i['id_tiexp']; ?>">
-                                        <input type="date" name="fecha" value="<?php echo $i['fecha']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
-                                    </td>
-                                    <!-- Muestra los grupos -->
-                                    <td width="220">
-                                        <input type="text" name="grupos" value="<?php echo $i['grupos']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
-                                    </td>
-                                    <!-- Muestra el pax -->
-                                    <td width="220">
-                                        <input type="number" name="pax" value="<?php echo $i['pax']; ?>" class="form-control" style="font-size: 14px;" readonly>
-                                    </td>
-                                    <!-- Muestra los visitantes por experiencia -->
-                                    <td width="220">
-                                         <input type="text" name="visitantes" value="<?php echo $i['visitantes']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
-                                    </td>
-                                    <td width="220">
-                                        <center>
-                                            <button type="submit" class="btneditar" formnovalidate>
-                                                <i class="bi bi-pencil-square"></i>
-                                            </button>
-                                        </center>
-                                    </td>
-                            </tr>
+
+                    <label for="inputfecha" class="col-sm-1 col-form-label">al:</label>
+                    <div class="col-sm-4">
+                        <input type="date" name="fin" class="form-control" value="<?php echo isset($_GET['fin']) ? $_GET['fin'] : ''; ?>" required>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <button type="submit">Buscar</button>
+                    </div>
+                </div>
+            </form>
+
+
+            <!-- Comienza l atbla que muestra los grupos, el pax y los visitantes -->
+            <div class="info_texp" style="overflow-x:auto;  ">
+                <table class="tabla_texp">
+                    <tr class="encabezado">
+                        <th width="800" style="font-size: 16px;">
+                            <b>Fecha</b>
+                        </th>
+                        <th width="2000" style="font-size: 16px;">
+                            <b>Grupos</b>
+                        </th>
+                        <th width="2500" style="font-size: 16px;">
+                            <b>PAX</b>
+                        </th>
+                        <th width="1700" style="font-size: 16px;">
+                            <b>Visitantes</b>
+                        </th>
+                        <?php if ($rol == 'admin') { ?>
+                        <th width="1000" style="font-size: 16px;">
+                            <b>Actualizar</b>
+                        </th>
+                        <?php } ?>
+                    </tr>
+                    <tr>
                         <?php
-                                } //Acaba el ciclo while 
+                        if (isset($_POST['inicio']) && isset($_POST['fin'])) {
+                            $fechainicio = $_POST['inicio'];
+                            $fechafin = $_POST['fin'];
+                            //Consulta para mostrar la informacion de tiendas explanada, si se selecciona una fecha, se muestra la informacion de esa fecha en especifico, se muestra la fecha, los grupos, el pax y los visitantes por experiencia, si no se selecciona una fecha, se muestra toda la informacion de la tabla tiendas_explanada, 
+                            $tiendas_explanada = mysqli_query($conec, "SELECT * FROM tiendas_explanada WHERE fecha BETWEEN '$fechainicio' AND '$fechafin' ORDER BY fecha DESC ");
+                        } else {
+                            $tiendas_explanada = mysqli_query($conec, "SELECT * FROM tiendas_explanada ORDER BY fecha DESC");
+                        }
+                        //Ciclo para mostrar los colaboradores, se muestra el nombre del colaborador en la tabla
+                        while ($i = mysqli_fetch_array($tiendas_explanada)) {
                         ?>
-                        </tr>
-                        </table>
-                    </div>
-                </section>
+                    <tr>
+                        <form action="actualizarTExp.php" method="POST">
+                            <!-- Muestra la fecha-->
+                            <td width="220">
+                                <input type="hidden" name="id_tiexp" value="<?php echo $i['id_tiexp']; ?>">
+                                <input type="date" name="fecha" value="<?php echo $i['fecha']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+                            </td>
+                            <!-- Muestra los grupos -->
+                            <td width="220">
+                                <input type="text" name="grupos" value="<?php echo $i['grupos']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+                            </td>
+                            <!-- Muestra el pax -->
+                            <td width="220">
+                                <input type="number" name="pax" value="<?php echo $i['pax']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                            </td>
+                            <!-- Muestra los visitantes por experiencia -->
+                            <td width="220">
+                                <input type="text" name="visitantes" value="<?php echo $i['visitantes']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+                            </td>
+                            <?php if ($rol == 'admin') { ?>
+                            <td width="220">
+                                <center>
+                                    <button type="submit" class="btneditar" formnovalidate>
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>   
+                                </center>
+                            </td>
+                            <?php } ?>
+                        </form>
+                    </tr>
+                <?php
+                        } //Acaba el ciclo while 
+                ?>
+                </tr>
+                </table>
+            </div>
             </form>
         </div>
     </main>

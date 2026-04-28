@@ -321,7 +321,7 @@ if (!isset($usuario)) {
       return;
     }
 
-    document.getElementById("tituloModal").innerText = "Registros de " + nombre;
+    document.getElementById("tituloModal").innerText = "Registros de " + nombre + " del " + inicio + " al " + fin;
 
     // abrir modal
     document.getElementById("modal").style.display = "block";
