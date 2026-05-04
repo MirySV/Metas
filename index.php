@@ -130,7 +130,10 @@ if (!isset($usuario)) {
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
                             <h5 class="pt-5 mt-5 mb-4 fs-2 lh-1 fw-bold">
                                 <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="ventas_persona.php" style="text-decoration: none; color: white;">Ventas por persona</a>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalVentas"
+                                        style="text-decoration: none; color: white;">
+                                        Ventas por persona
+                                    </a>
                                 </font>
                             </h5>
                         </div>
@@ -162,6 +165,77 @@ if (!isset($usuario)) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
+
+<div class="modal fade" id="modalVentas" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Selecciona parámetros</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Temporada -->
+        <label class="form-label">Temporada:</label><br>
+
+        <button class="btn btn-outline-primary" onclick="setTemporada('semanasanta')">Semana Santa</button>
+        <button class="btn btn-outline-primary" onclick="setTemporada('verano')">Verano</button>
+        <button class="btn btn-outline-primary" onclick="setTemporada('diciembre')">Diciembre</button>
+
+        <input type="hidden" id="temporada">
+
+        <br><br>
+
+        <!-- Fechas -->
+        <label>Fecha inicio:</label>
+        <input type="date" id="fechaInicio" class="form-control">
+
+        <label class="mt-2">Fecha fin:</label>
+        <input type="date" id="fechaFin" class="form-control">
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-success" onclick="irAVentas()">Ingresar</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function setTemporada(valor) {
+  document.getElementById("temporada").value = valor;
+}
+
+function irAVentas() {
+  const temp = document.getElementById("temporada").value;
+  const inicio = document.getElementById("fechaInicio").value;
+  const fin = document.getElementById("fechaFin").value;
+
+  if (!temp || !inicio || !fin) {
+    alert("Completa todos los campos");
+    return;
+  }
+
+  // Redirigir con parámetros
+  window.location.href = "ventas_persona.php?temporada=" 
+    + temp + "&inicio=" + inicio + "&fin=" + fin;
+}
+
+function setTemporada(valor) {
+  document.getElementById("temporada").value = valor;
+
+  document.querySelectorAll(".modal-body button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+
+  event.target.classList.add("active");
+}
+</script>
 
 </body>
 
