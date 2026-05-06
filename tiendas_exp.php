@@ -164,7 +164,7 @@ if (!isset($usuario)) {
                         </div>
                     </div>
                     <br>
-                    <button type="submit">Guardar</button>
+                    <button type="submit" onclick="return confirm('¿Esta seguro que desea guardar esta informacion?')">Guardar</button>
                 </section>
             </form>
         </div>
@@ -246,7 +246,7 @@ if (!isset($usuario)) {
                             <?php if ($rol == 'admin') { ?>
                             <td width="220">
                                 <center>
-                                    <button type="submit" class="btneditar" formnovalidate>
+                                    <button type="submit" class="btneditar" formnovalidate onclick="return confirm('¿Está seguro que desea actualizar esta informacion?')">
                                         <i class="bi bi-pencil-square"></i>
                                     </button>   
                                 </center>

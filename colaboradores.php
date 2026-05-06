@@ -35,6 +35,7 @@ if (!isset($usuario)) {
     main {
       flex: 1;
     }
+
     .navbarcolaboradores {
       display: grid;
       grid-template-columns: auto 1fr auto;
@@ -51,6 +52,7 @@ if (!isset($usuario)) {
       padding-right: 150px;
       text-decoration: none;
     }
+
     .cerrarsesion {
       font-family: "Macondo", cursive;
       font-size: 22px;
@@ -58,13 +60,16 @@ if (!isset($usuario)) {
       right: 20px;
       top: 40px;
     }
+
     .cerrarsesion a {
       text-decoration: none;
       color: #330a04;
     }
+
     .cerrarsesion a:hover {
       color: #ffffff;
     }
+
     #tabla_colaboradores {
       /*width: 100%;*/
       margin: 0 auto;
@@ -73,9 +78,11 @@ if (!isset($usuario)) {
       border-collapse: collapse;
       font-size: 12px;
     }
+
     table {
       border-collapse: collapse;
     }
+
     th,
     td {
       border: 1px solid #77240f81;
@@ -133,17 +140,16 @@ if (!isset($usuario)) {
 
     button {
       background-color: #de85315c;
-      border: 1px ;
+      border: 1px;
       border-radius: 4px;
       padding: 4px 5px;
       /*font-family: "Glory", sans-serif;*/
       margin: 0px 15px 0px 7px;
     }
 
-    .btnmodal{
+    .btnmodal {
       border-radius: 4px;
     }
-    
   </style>
   <title>Tiendas Africam Safari</title>
 </head>
@@ -153,7 +159,7 @@ if (!isset($usuario)) {
     <a href="login.php">
       <img src="./assets/img/logo.png" width="130px" />
     </a>
-      <a class="text-black m-0" id="nombrepagcolab" href="index.php">Colaboradores</a>
+    <a class="text-black m-0" id="nombrepagcolab" href="index.php">Colaboradores</a>
     <div class="cerrarsesion">
       <a href="logout.php">Cerrar sesión</a>
     </div>
@@ -173,7 +179,7 @@ if (!isset($usuario)) {
             <option value="MATUNDA ESPECTACULOS">MATUNDA ESPECTACULOS</option>
             <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>
             <option value="ZAWADI ASIATICOS">ZAWADI ASIATICOS</option>
-            <option value="MOROCCO SOURVENIRS">MOROCCO SOURVENIRS</option>
+            <option value="MOROCCO SOUVENIRS">MOROCCO SOUVENIRS</option>
             <option value="NIEVES MOROCCO">NIEVES MOROCCO</option>
             <option value="MICHELADAS">MICHELADAS</option>
             <option value="CARRITO DE LEONES">CARRITO DE LEONES</option>
@@ -249,7 +255,7 @@ if (!isset($usuario)) {
                 <option value="MATUNDA ESPECTACULOS">
                 <option value="ZAWADI DUKAZURI">
                 <option value="ZAWADI ASIATICOS">
-                <option value="MOROCCO SOURVENIRS">
+                <option value="MOROCCO SOUVENIRS">
                 <option value="NIEVES MOROCCO">
                 <option value="MICHELADAS">
                 <option value="CARRITO DE LEONES">
@@ -271,7 +277,7 @@ if (!isset($usuario)) {
             <td width="220">
               <!-- Aqui va el boton de actualizar -->
               <?php if ($rol == 'admin') { ?>
-                <button class="btnmodal" style="margin-right: 90px;" type="submit" formnovalidate>Actualizar</button>
+                <button class="btnmodal" style="margin-right: 90px;" type="submit" formnovalidate onclick="return confirm('¿Esta seguro que desea actualizar esta informacion?')">Actualizar</button>
               <?php } ?>
               <input type="date" id="inicio_<?php echo $i[0]; ?>" name="inicio" required class="date">
               <input type="date" id="fin_<?php echo $i[0]; ?>" name="fin" required class="date">
@@ -287,12 +293,25 @@ if (!isset($usuario)) {
       </table>
 
       <!--Modal para mostrar los resultados de la busqueda de los registros del colaborador, se muestra el nombre del colaborador y las fechas seleccionadas para mostrar los registros de ese colaborador en ese rango de fechas-->
-      <div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);">
-        <div style="background-color:white; margin:5% auto; padding:20px; width:80%; max-height:80%; overflow:auto;">
-          <h3 id="tituloModal"></h3>
-          <div id="tablaResultados"></div>
-          <br>
-          <button class="btnmodal" onclick="cerrarModal()">Cerrar</button>
+
+      <div class="modal fade" id="modal" tabindex="-1">
+        <div class="modal-dialog modal-xl"> <!-- más grande -->
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <h5 class="modal-title" id="tituloModal"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+              <div id="tablaResultados"></div>
+            </div>
+
+            <div class="modal-footer">
+              <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+
+          </div>
         </div>
       </div>
 
@@ -312,6 +331,12 @@ if (!isset($usuario)) {
 </body>
 
 <script>
+  let modal;
+
+  document.addEventListener("DOMContentLoaded", function() {
+    modal = new bootstrap.Modal(document.getElementById('modal'));
+  });
+
   function buscar(id_empleado, nombre) {
     let inicio = document.getElementById("inicio_" + id_empleado).value;
     let fin = document.getElementById("fin_" + id_empleado).value;
@@ -321,10 +346,10 @@ if (!isset($usuario)) {
       return;
     }
 
-    document.getElementById("tituloModal").innerText = "Registros de " + nombre + " del " + inicio + " al " + fin;
+    document.getElementById("tituloModal").innerText =
+      "Registros de " + nombre + " del " + inicio + " al " + fin;
 
-    // abrir modal
-    document.getElementById("modal").style.display = "block";
+    modal.show();
 
     // enviar datos a PHP
     fetch("reporte.php", {
@@ -339,10 +364,6 @@ if (!isset($usuario)) {
         console.log(data);
         document.getElementById("tablaResultados").innerHTML = data;
       });
-  }
-
-  function cerrarModal() {
-    document.getElementById("modal").style.display = "none";
   }
 </script>
 

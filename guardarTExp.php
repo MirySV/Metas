@@ -16,12 +16,13 @@ if (!isset($usuario)) {
     header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
 }
 //Recibe los datos del formulario de tiendas exp , la fecha, los grupos y los visitantes por experiencia para guardar la informacion en la base de datos
+
 $fecha = $_POST['fecha'];
 $grupos = $_POST['grupos'];
 $vxe = $_POST['vxe'];
 $pax=$vxe*0.65;
 
-$verificar = mysqli_query($conec, "SELECT * FROM tiendas_explanada WHERE fecha = '$fecha' AND id_tiexp != '$id_tiexp'");
+$verificar = mysqli_query($conec, "SELECT * FROM tiendas_explanada WHERE fecha = '$fecha'");
 
 if (mysqli_num_rows($verificar) > 0) {
     echo '<script>
@@ -33,7 +34,7 @@ if (mysqli_num_rows($verificar) > 0) {
 $insertar_info = mysqli_query($conec, "INSERT INTO tiendas_explanada (fecha, grupos, visitantes, pax) VALUES ('$fecha', '$grupos', '$vxe', '$pax')");
 if ($insertar_info) {
      echo '<script>
-            alert("Datos guardados correctamente");
+            alert("Los datos se han guardado correctamente");
             window.location.href="tiendas_exp.php";
           </script>';
 } else {

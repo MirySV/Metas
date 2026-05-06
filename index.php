@@ -171,7 +171,7 @@ if (!isset($usuario)) {
     <div class="modal-content">
 
       <div class="modal-header">
-        <h5 class="modal-title">Selecciona parámetros</h5>
+        <h5 class="modal-title">Selecciona tus parámetros</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
