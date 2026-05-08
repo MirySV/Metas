@@ -170,45 +170,77 @@ if (!isset($usuario)) {
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <div class="modal-header">
-        <h5 class="modal-title">Selecciona tus parámetros</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
+      <form action="ventas_persona.php" method="POST">
 
-      <div class="modal-body">
+        <div class="modal-header">
+          <h5 class="modal-title">Selecciona tus parámetros</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
 
-        <!-- Temporada -->
-        <label class="form-label">Temporada:</label><br>
+        <div class="modal-body">
 
-        <button class="btn btn-outline-primary" onclick="setTemporada('semanasanta')">Semana Santa</button>
-        <button class="btn btn-outline-primary" onclick="setTemporada('verano')">Verano</button>
-        <button class="btn btn-outline-primary" onclick="setTemporada('diciembre')">Diciembre</button>
+          <!-- TEMPORADA -->
+          <label class="form-label">Temporada:</label><br>
 
-        <input type="hidden" id="temporada">
+          <button type="button" class="btn btn-outline-primary temporada-btn"
+            onclick="setTemporada('semanasanta', this)">
+            Semana Santa
+          </button>
 
-        <br><br>
+          <button type="button" class="btn btn-outline-primary temporada-btn"
+            onclick="setTemporada('verano', this)">
+            Verano
+          </button>
 
-        <!-- Fechas -->
-        <label>Fecha inicio:</label>
-        <input type="date" id="fechaInicio" class="form-control">
+          <button type="button" class="btn btn-outline-primary temporada-btn"
+            onclick="setTemporada('diciembre', this)">
+            Diciembre
+          </button>
 
-        <label class="mt-2">Fecha fin:</label>
-        <input type="date" id="fechaFin" class="form-control">
+          <!-- INPUT OCULTO -->
+          <input type="hidden" name="temporada" id="temporada">
 
-      </div>
+          <br><br>
 
-      <div class="modal-footer">
-        <button class="btn btn-success" onclick="irAVentas()">Ingresar</button>
-        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-      </div>
+          <!-- FECHAS -->
+          <label>Fecha inicio:</label>
+          <input type="date" name="inicio" id="fechaInicio" class="form-control">
+
+          <label class="mt-2">Fecha fin:</label>
+          <input type="date" name="fin" id="fechaFin" class="form-control">
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">
+            Ingresar
+          </button>
+
+          <button type="button" class="btn btn-secondary"
+            data-bs-dismiss="modal">
+            Cancelar
+          </button>
+        </div>
+
+      </form>
 
     </div>
   </div>
 </div>
 
 <script>
-function setTemporada(valor) {
-  document.getElementById("temporada").value = valor;
+function setTemporada(valor, boton) {
+
+    // guardar valor
+    document.getElementById("temporada").value = valor;
+
+    // quitar active a todos
+    document.querySelectorAll(".temporada-btn").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    // activar seleccionado
+    boton.classList.add("active");
 }
 
 function irAVentas() {
