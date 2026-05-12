@@ -6,8 +6,8 @@ session_start();
 
 //Verifica si el usuario tiene una sesion iniciada y si el rol del usuario es admin, en caso de que no tenga una sesion iniciada o el rol del usuario no sea admin, se muestra un mensaje de error y se detiene la ejecucion del codigo
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 'admin') {
-    echo "No tienes permisos para acceder a esta pagina";
-    exit();
+  echo "No tienes permisos para acceder a esta pagina, favor de iniciar sesion";
+  exit();
 }
 
 $usuario = $_SESSION['username'];
@@ -16,26 +16,6 @@ $rol = $_SESSION['rol'];
 if (!isset($usuario)) {
   header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
 }
-
-if(isset($_POST['temporada']) &&
-   isset($_POST['inicio']) &&
-   isset($_POST['fin'])){
-
-    $temporada = $_POST['temporada'];
-    $inicio = $_POST['inicio'];
-    $fin = $_POST['fin'];
-
-$inserta_temporada = mysqli_query($conec, "INSERT INTO temporadas (temporada, fecha_inicio, fecha_fin) VALUES ('$temporada', '$inicio', '$fin')");
-if ($inserta_temporada) { 
-    /*echo '<script>
-            alert("La temporada se ha guardado correctamente");
-            window.location.href="ventas_persona.php";
-          </script>';*/
-} else {
-    echo "No se pudo guardar la temporada, por favor intente de nuevo";
-}
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -62,7 +42,8 @@ if ($inserta_temporada) {
     main {
       flex: 1;
     }
-    .navbarvxp {
+
+    .navbarcom {
       display: grid;
       grid-template-columns: auto 1fr auto;
       align-items: center;
@@ -78,6 +59,7 @@ if ($inserta_temporada) {
       padding-right: 150px;
       text-decoration: none;
     }
+
     .cerrarsesion {
       font-family: "Macondo", cursive;
       font-size: 22px;
@@ -85,37 +67,40 @@ if ($inserta_temporada) {
       right: 20px;
       top: 40px;
     }
+
     .cerrarsesion a {
       text-decoration: none;
       color: #330a04;
     }
+
     .cerrarsesion a:hover {
       color: #ffffff;
     }
-    #tabla_colaboradores {
+
+    .inputVxP {
+      /*border-radius: 10px;*/
+      /*padding: 40px;*/
+      width: 90%;
+      margin: 40px auto;
+    }
+
+    .tabla_VxP {
       /*width: 100%;*/
       margin: 0 auto;
-      margin-top: 50px;
-      margin-left: 100px;
+      margin-top: 30px;
       border-collapse: collapse;
-      font-size: 12px;
+      /*font-size: 12px;*/
     }
+
     table {
       border-collapse: collapse;
     }
+
     th,
     td {
       border: 1px solid #77240f81;
       padding: 10px;
       font-size: 14px;
-    }
-
-    /*tr:nth-child(even) {
-      background-color: #73241127;
-    }*/
-
-    tr:hover {
-      background-color: #de853136;
     }
 
     .encabezado {
@@ -126,68 +111,115 @@ if ($inserta_temporada) {
       color: white;
     }
 
-    .filtro_acciones {
-      margin: 20px 480px 20px 480px;
-    }
-
-    .filtro_tiendas {
-      display: flex;
-      justify-content: center;
-    }
-
-    .info_colaboradores {
-      overflow-x: auto;
-      margin: 50px 120px 50px 120px;
-      border-collapse: collapse;
-      /*font-family: "Glory", sans-serif;*/
-    }
-
-    #tiendas {
-      padding: 5px;
-      font-size: 14px;
-      /*font-family: "Glory", sans-serif;*/
-      border-radius: 4px;
-    }
-
-    #tienda {
-      border-radius: 4px;
-      border: 1px;
-    }
-
-    .date {
-      width: 100px;
-    }
-
     button {
       background-color: #de85315c;
-      border: 1px ;
+      border: 1px;
       border-radius: 4px;
       padding: 4px 5px;
       /*font-family: "Glory", sans-serif;*/
       margin: 0px 15px 0px 7px;
     }
 
-    .btnmodal{
+    .cerrar_temporada {
+      background-color: #de85315c;
+      border: 1px;
       border-radius: 4px;
+      padding: 10px 20px; 
+      display: block;
+      margin: 0 auto;
+      margin-bottom: 70px;
     }
-    
   </style>
   <title>Tiendas Africam Safari</title>
 </head>
 
 <body>
-  <header class="navbarvxp">
+  <header class="navbarcom">
     <a href="login.php">
       <img src="./assets/img/logo.png" width="130px" />
     </a>
-      <a class="text-black m-0" id="nombrepagvxp" href="index.php">Ventas por Persona</a>
+    <a class="text-black m-0" id="nombrepagvxp" href="index.php">Ventas por Persona</a>
     <div class="cerrarsesion">
       <a href="logout.php">Cerrar sesión</a>
     </div>
   </header>
 
   <main>
-    
+    <!-- Comienza l atbla que muestra los toda la informacion de ventas por persona -->
+    <div class="inputVxP">
+      <div class="info_texp" style="overflow-x:auto;  ">
+        <table class="tabla_VxP">
+          <tr class="encabezado">
+            <th width="800" style="font-size: 16px;">
+              <b>Tienda</b>
+            </th>
+            <th width="2000" style="font-size: 16px;">
+              <b>......</b>
+            </th>
+            <th width="2500" style="font-size: 16px;">
+              <b>.....</b>
+            </th>
+            <th width="1700" style="font-size: 16px;">
+              <b>.....</b>
+            </th>
+            <th width="1000" style="font-size: 16px;">
+              <b>......</b>
+            </th>
+          </tr>
+          <tr>
+            <?php
+            if (isset($_POST['inicio']) && isset($_POST['fin'])) {
+              $fechainicio = $_POST['inicio'];
+              $fechafin = $_POST['fin'];
+              //Consulta para mostrar la informacion de tiendas explanada, si se selecciona una fecha, se muestra la informacion de esa fecha en especifico, se muestra la fecha, los grupos, el pax y los visitantes por experiencia, si no se selecciona una fecha, se muestra toda la informacion de la tabla tiendas_explanada, 
+              $tiendas_explanada = mysqli_query($conec, "SELECT * FROM tiendas_explanada WHERE fecha BETWEEN '$fechainicio' AND '$fechafin' ORDER BY fecha DESC ");
+            } else {
+              $tiendas_explanada = mysqli_query($conec, "SELECT * FROM tiendas_explanada ORDER BY fecha DESC");
+            }
+            //Ciclo para mostrar los colaboradores, se muestra el nombre del colaborador en la tabla
+            while ($i = mysqli_fetch_array($tiendas_explanada)) {
+            ?>
+          <tr>
+            <form action="actualizarTExp.php" method="POST">
+              <!-- Muestra la fecha-->
+              <td width="220">
+                <input type="hidden" name="id_tiexp" value="<?php echo $i['id_tiexp']; ?>">
+                <input type="date" name="fecha" value="<?php echo $i['fecha']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+              </td>
+              <!-- Muestra los grupos -->
+              <td width="220">
+                <input type="text" name="grupos" value="<?php echo $i['grupos']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+              </td>
+              <!-- Muestra el pax -->
+              <td width="220">
+                <input type="number" name="pax" value="<?php echo $i['pax']; ?>" class="form-control" style="font-size: 14px;" readonly>
+              </td>
+              <!-- Muestra los visitantes por experiencia -->
+              <td width="220">
+                <input type="text" name="visitantes" value="<?php echo $i['visitantes']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+              </td>
+              <?php if ($rol == 'admin') { ?>
+                <td width="220">
+                  <center>
+                    <button type="submit" class="btneditar" formnovalidate onclick="return confirm('¿Está seguro que desea actualizar esta informacion?')">
+                      <i class="bi bi-pencil-square"></i>
+                    </button>
+                  </center>
+                </td>
+              <?php } ?>
+            </form>
+          </tr>
+        <?php
+            } //Acaba el ciclo while 
+        ?>
+        </tr>
+        </table>
+      </div>
+    </div>
+
+    <div>
+      <button class="cerrar_temporada">Cerrar temporada</button>
+    </div>
   </main>
 
   <!-- Footer -->

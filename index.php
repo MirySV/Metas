@@ -170,7 +170,7 @@ if (!isset($usuario)) {
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <form action="ventas_persona.php" method="POST">
+      <form action="guardarTemporada.php" method="POST">
 
         <div class="modal-header">
           <h5 class="modal-title">Selecciona tus parámetros</h5>
@@ -183,17 +183,17 @@ if (!isset($usuario)) {
           <label class="form-label">Temporada:</label><br>
 
           <button type="button" class="btn btn-outline-primary temporada-btn"
-            onclick="setTemporada('semanasanta', this)">
+            onclick="setTemporada('Semana Santa', this)">
             Semana Santa
           </button>
 
           <button type="button" class="btn btn-outline-primary temporada-btn"
-            onclick="setTemporada('verano', this)">
+            onclick="setTemporada('Verano', this)">
             Verano
           </button>
 
           <button type="button" class="btn btn-outline-primary temporada-btn"
-            onclick="setTemporada('diciembre', this)">
+            onclick="setTemporada('Diciembre', this)">
             Diciembre
           </button>
 
