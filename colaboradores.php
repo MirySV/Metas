@@ -177,6 +177,7 @@ if (!isset($usuario)) {
             <option value="NIEVES ESPECTACULOS">NIEVES ESPECTACULOS</option>
             <option value="AVENTURA AMAZONICA">AVENTURA AMAZONICA</option>
             <option value="MATUNDA ESPECTACULOS">MATUNDA ESPECTACULOS</option>
+            <option value="FOTO EXPERIENCIAS">FOTO EXPERIENCIAS</option>
             <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>
             <option value="ZAWADI ASIATICOS">ZAWADI ASIATICOS</option>
             <option value="MOROCCO SOUVENIRS">MOROCCO SOUVENIRS</option>
@@ -190,6 +191,7 @@ if (!isset($usuario)) {
             <option value="PENDA">PENDA</option>
             <option value="MAHALI">MAHALI</option>
             <option value="NIEVES MOMBASA">NIEVES MOMBASA</option>
+            <option value="KIBOKO">KIBOKO</option>
             <option value="KU-HU-ZU">KU-HU-ZU</option>
             <option value="FOTO SAFARI">FOTO SAFARI</option>
             <option value="ZAWADI HUELLAS">ZAWADI HUELLAS</option>
@@ -253,6 +255,7 @@ if (!isset($usuario)) {
                 <option value="NIEVES ESPECTACULOS">
                 <option value="AVENTURA AMAZONICA">
                 <option value="MATUNDA ESPECTACULOS">
+                <option value="FOTO EXPERIENCIAS">
                 <option value="ZAWADI DUKAZURI">
                 <option value="ZAWADI ASIATICOS">
                 <option value="MOROCCO SOUVENIRS">
@@ -266,6 +269,7 @@ if (!isset($usuario)) {
                 <option value="PENDA">
                 <option value="MAHALI">
                 <option value="NIEVES MOMBASA">
+                <option value="KIBOKO">
                 <option value="KU-HU-ZU">
                 <option value="FOTO SAFARI">
                 <option value="ZAWADI HUELLAS">
