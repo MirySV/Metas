@@ -154,16 +154,28 @@ if (!isset($usuario)) {
               <b>Tienda</b>
             </th>
             <th width="2000" style="font-size: 16px;">
-              <b>......</b>
+              <b>Meta Año Anterior</b>
             </th>
             <th width="2500" style="font-size: 16px;">
-              <b>.....</b>
+              <b>VXP Real Año Anterior</b>
             </th>
             <th width="1700" style="font-size: 16px;">
-              <b>.....</b>
+              <b>VXP Real Temporada Anterior</b>
             </th>
             <th width="1000" style="font-size: 16px;">
-              <b>......</b>
+              <b>VXP Real Puente Anterior</b>
+            </th>
+            <th width="1000" style="font-size: 16px;">
+              <b>Meta Actual</b>
+            </th>
+            <th width="1000" style="font-size: 16px;">
+              <b>Venta Real</b>
+            </th>
+            <th width="1000" style="font-size: 16px;">
+              <b>Resultados</b>
+            </th>
+            <th width="1000" style="font-size: 16px;">
+              <b>Comision</b>
             </th>
           </tr>
           <tr>
@@ -172,39 +184,44 @@ if (!isset($usuario)) {
               $fechainicio = $_POST['inicio'];
               $fechafin = $_POST['fin'];
               //Consulta para mostrar la informacion de tiendas explanada, si se selecciona una fecha, se muestra la informacion de esa fecha en especifico, se muestra la fecha, los grupos, el pax y los visitantes por experiencia, si no se selecciona una fecha, se muestra toda la informacion de la tabla tiendas_explanada, 
-              $tiendas_explanada = mysqli_query($conec, "SELECT * FROM tiendas_explanada WHERE fecha BETWEEN '$fechainicio' AND '$fechafin' ORDER BY fecha DESC ");
+              $temporadas = mysqli_query($conec, "SELECT t.nombre, tc.cantTempActYear, tc.cantTempAnterior, tc.puenteAnterior, tc.meta, tc.venta_real, tc.resultados, tc.comision FROM temp_comparativos AS tc INNER JOIN tiendas AS t INNER JOIN temporadas AS temp ON tc.id_tienda = t.id_tienda WHERE tc.id_temporada = temp.id_temporada AND fecha_inicio AND fecha_fin BETWEEN '$fechainicio' AND '$fechafin'");
             } else {
-              $tiendas_explanada = mysqli_query($conec, "SELECT * FROM tiendas_explanada ORDER BY fecha DESC");
+              $temporadas = mysqli_query($conec, "SELECT t.nombre, tc.cantTempActYear, tc.cantTempAnterior, tc.puenteAnterior, tc.meta, tc.venta_real, tc.resultados, tc.comision FROM temp_comparativos AS tc INNER JOIN tiendas AS t ON tc.id_tienda = t.id_tienda");
             }
             //Ciclo para mostrar los colaboradores, se muestra el nombre del colaborador en la tabla
-            while ($i = mysqli_fetch_array($tiendas_explanada)) {
+            while ($i = mysqli_fetch_array($temporadas)) {
             ?>
           <tr>
             <form action="actualizarTExp.php" method="POST">
-              <!-- Muestra la fecha-->
+              <!-- Muestra el nombre de la tienda -->
               <td width="220">
-                <input type="hidden" name="id_tiexp" value="<?php echo $i['id_tiexp']; ?>">
-                <input type="date" name="fecha" value="<?php echo $i['fecha']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+                <input type="hidden" name="id_comparativos" value="<?php echo $i['id_comparativos']; ?>">
+                <input type="text" name="fecha" value="<?php echo $i['nombre']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
               </td>
-              <!-- Muestra los grupos -->
+              <!-- Muestra la cantidad de temporadas actuales -->
               <td width="220">
-                <input type="text" name="grupos" value="<?php echo $i['grupos']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+                <input type="number" name="grupos" value="<?php echo $i['cantTempActYear']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
               </td>
               <!-- Muestra el pax -->
               <td width="220">
-                <input type="number" name="pax" value="<?php echo $i['pax']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                <input type="number" name="pax" value="<?php echo $i['cantTempAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
               </td>
               <!-- Muestra los visitantes por experiencia -->
               <td width="220">
-                <input type="text" name="visitantes" value="<?php echo $i['visitantes']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+                <input type="text" name="visitantes" value="<?php echo $i['puenteAnterior']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
               </td>
               <?php if ($rol == 'admin') { ?>
                 <td width="220">
-                  <center>
-                    <button type="submit" class="btneditar" formnovalidate onclick="return confirm('¿Está seguro que desea actualizar esta informacion?')">
-                      <i class="bi bi-pencil-square"></i>
-                    </button>
-                  </center>
+                  <input type="number" name="pax" value="<?php echo $i['meta']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                </td>
+                <td width="220">
+                  <input type="number" name="pax" value="<?php echo $i['venta_real']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                </td>
+                <td width="220">
+                  <input type="number" name="pax" value="<?php echo $i['resultados']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                </td>
+                <td width="220">
+                  <input type="number" name="pax" value="<?php echo $i['comision']; ?>" class="form-control" style="font-size: 14px;" readonly>
                 </td>
               <?php } ?>
             </form>

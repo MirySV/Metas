@@ -166,108 +166,117 @@ if (!isset($usuario)) {
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
 
-<div class="modal fade" id="modalVentas" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
+    <!-- Modal -->
+    <div class="modal fade" id="modalVentas" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
 
-      <form action="guardarTemporada.php" method="POST">
+                <form action="guardarTemporada.php" method="POST" onsubmit="return validarFormulario()">
 
-        <div class="modal-header">
-          <h5 class="modal-title">Selecciona tus parámetros</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="modal-header">
+                        <h5 class="modal-title">Selecciona tus parámetros</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <h5>Selecciona tipo</h5>
+                        <button type="button" class="btn btn-primary" onclick="mostrarTemporadas()">Temporada</button>
+
+                        <button type="button" class="btn btn-success" onclick="mostrarPuentes()">Puente</button>
+
+                        <br><br>
+
+                        <!-- TEMPORADAS -->
+                        <div id="temporadas" style="display:none;">
+                            <h5>Temporadas</h5>
+                            <button type="button" class="btn btn-outline-primary opcion-btn" onclick="setOpcion('Semana Santa', this)"> Semana Santa</button>
+
+                            <button type="button" class="btn btn-outline-primary opcion-btn" onclick="setOpcion('Verano', this)">Verano</button>
+
+                            <button type="button" class="btn btn-outline-primary opcion-btn" onclick="setOpcion('Diciembre', this)">Diciembre</button>
+                        </div>
+
+                        <!-- PUENTES -->
+                        <div id="puentes" style="display:none;">
+                            <h5>Puentes</h5>
+                            <button type="button" class="btn btn-outline-success opcion-btn" onclick="setOpcion('5 de Mayo', this)">5 de Mayo</button>
+
+                            <button type="button" class="btn btn-outline-success opcion-btn" onclick="setOpcion('30 de Abril', this)">30 de Abril</button>
+                        </div>
+
+                        <br>
+
+                        <!-- FECHAS -->
+                        <div id="fechas" style="display:none;">
+                            <label>Fecha inicio:</label>
+                            <input type="date" name="inicio" id="fechaInicio" class="form-control">
+                            <label class="mt-2">Fecha fin:</label>
+                            <input type="date" name="fin" id="fechaFin" class="form-control">
+                        </div>
+
+                        <!-- INPUT OCULTO -->
+                        <input type="hidden" name="temporada" id="temporada">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success"> Ingresar </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <div class="modal-body">
-
-          <!-- TEMPORADA -->
-          <label class="form-label">Temporada:</label><br>
-
-          <button type="button" class="btn btn-outline-primary temporada-btn"
-            onclick="setTemporada('Semana Santa', this)">
-            Semana Santa
-          </button>
-
-          <button type="button" class="btn btn-outline-primary temporada-btn"
-            onclick="setTemporada('Verano', this)">
-            Verano
-          </button>
-
-          <button type="button" class="btn btn-outline-primary temporada-btn"
-            onclick="setTemporada('Diciembre', this)">
-            Diciembre
-          </button>
-
-          <!-- INPUT OCULTO -->
-          <input type="hidden" name="temporada" id="temporada">
-
-          <br><br>
-
-          <!-- FECHAS -->
-          <label>Fecha inicio:</label>
-          <input type="date" name="inicio" id="fechaInicio" class="form-control">
-
-          <label class="mt-2">Fecha fin:</label>
-          <input type="date" name="fin" id="fechaFin" class="form-control">
-
-        </div>
-
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">
-            Ingresar
-          </button>
-
-          <button type="button" class="btn btn-secondary"
-            data-bs-dismiss="modal">
-            Cancelar
-          </button>
-        </div>
-
-      </form>
-
     </div>
-  </div>
-</div>
 
-<script>
-function setTemporada(valor, boton) {
+    <script>
+        function mostrarTemporadas() {
 
-    // guardar valor
-    document.getElementById("temporada").value = valor;
+            document.getElementById("temporadas").style.display = "block";
+            document.getElementById("puentes").style.display = "none";
 
-    // quitar active a todos
-    document.querySelectorAll(".temporada-btn").forEach(btn => {
-        btn.classList.remove("active");
-    });
+        }
 
-    // activar seleccionado
-    boton.classList.add("active");
+        function mostrarPuentes() {
+
+            document.getElementById("puentes").style.display = "block";
+            document.getElementById("temporadas").style.display = "none";
+
+        }
+
+        function setOpcion(valor, boton) {
+
+            // guardar valor
+            document.getElementById("temporada").value = valor;
+
+            // mostrar fechas
+            document.getElementById("fechas").style.display = "block";
+
+            // quitar active
+            document.querySelectorAll(".opcion-btn").forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+            // activar seleccionado
+            boton.classList.add("active");
+
+        }
+
+        function validarFormulario() {
+
+    let temporada = document.getElementById("temporada").value;
+    let inicio = document.getElementById("fechaInicio").value;
+    let fin = document.getElementById("fechaFin").value;
+
+    if (temporada == "" || inicio == "" || fin == "") {
+
+        alert("Completa todos los campos");
+        return false;
+
+    }
+
+    return true;
 }
+    </script>
 
-function irAVentas() {
-  const temp = document.getElementById("temporada").value;
-  const inicio = document.getElementById("fechaInicio").value;
-  const fin = document.getElementById("fechaFin").value;
-
-  if (!temp || !inicio || !fin) {
-    alert("Completa todos los campos");
-    return;
-  }
-
-  // Redirigir con parámetros
-  window.location.href = "ventas_persona.php?temporada=" 
-    + temp + "&inicio=" + inicio + "&fin=" + fin;
-}
-
-function setTemporada(valor) {
-  document.getElementById("temporada").value = valor;
-
-  document.querySelectorAll(".modal-body button").forEach(btn => {
-    btn.classList.remove("active");
-  });
-
-  event.target.classList.add("active");
-}
-</script>
 
 </body>
 
