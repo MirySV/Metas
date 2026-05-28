@@ -1,39 +1,61 @@
 <?php
 
-include 'conexion.php'; //Conexion a la base de datos
-
+include 'conexion.php';
 session_start();
-
-//Verifica si el usuario tiene una sesion iniciada y si el rol del usuario es admin, en caso de que no tenga una sesion iniciada o el rol del usuario no sea admin, se muestra un mensaje de error y se detiene la ejecucion del codigo
+//Validar sesión
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 'admin') {
     echo "No tienes permisos para acceder a esta pagina";
     exit();
 }
 
 $usuario = $_SESSION['username'];
-$rol = $_SESSION['rol'];
-//echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
 if (!isset($usuario)) {
-  header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
+    header('Location: index.php');
+    exit();
 }
 
-if(isset($_POST['temporada']) &&
-   isset($_POST['inicio']) &&
-   isset($_POST['fin'])){
+//Verificar datos
+if (
+    isset($_POST['tipo']) &&
+    isset($_POST['inicio']) &&
+    isset($_POST['fin'])
+) {
+    $tipo = $_POST['tipo'];
+    if ($tipo == "temporada") {
+        $temporada = $_POST['temporada'];
+        $inicio = $_POST['inicio'];
+        $fin = $_POST['fin'];
 
-    $temporada = $_POST['temporada'];
-    $inicio = $_POST['inicio'];
-    $fin = $_POST['fin'];
+        $guardar = mysqli_query($conec, "INSERT INTO temporadas (temporada, fecha_inicio, fecha_fin, estatus) VALUES ('$temporada','$inicio','$fin', 1)");
+        if ($guardar) {
+            $id_temporada = mysqli_insert_id($conec);
+            echo '<script>
+                alert("Temporada guardada correctamente");
+                window.location.href =
+                "ventas_pax.php?id_temporada=' . $id_temporada . '";
+            </script>';
+        } else {
+            echo "Error al guardar temporada";
+        }
+    }
+    else if ($tipo == "puente") {
+        $puente = $_POST['puente'];
+        $inicio = $_POST['inicio'];
+        $fin = $_POST['fin'];
 
-$inserta_temporada = mysqli_query($conec, "INSERT INTO temporadas (temporada, fecha_inicio, fecha_fin) VALUES ('$temporada', '$inicio', '$fin')");
-if ($inserta_temporada) { 
-    echo '<script>
-            alert("La temporada se ha guardado correctamente");
-            window.location.href="ventas_persona.php";
-          </script>';
+        $guardar = mysqli_query($conec, "INSERT INTO puentes (puente, fecha_inicio, fecha_fin, estatus) VALUES('$puente','$inicio','$fin', 1)");
+        if ($guardar) {
+            $id_puente = mysqli_insert_id($conec);
+            echo '<script>
+                alert("Puente guardado correctamente");
+                window.location.href =
+                "ventas_pax.php?id_puente=' . $id_puente . '";
+                </script>';
+        } else {
+            echo "Error al guardar puente";
+        }
+    }
 } else {
-    echo "No se pudo guardar la temporada, por favor intente de nuevo";
+    echo "Faltan datos";
 }
-}
-
 ?>

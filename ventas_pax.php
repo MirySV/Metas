@@ -12,6 +12,8 @@ if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 'admin') {
 
 $usuario = $_SESSION['username'];
 $rol = $_SESSION['rol'];
+$id_temporada = $_GET['id_temporada'] ?? 0;
+$fecha = $_GET['fecha'] ?? '';
 //echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
 if (!isset($usuario)) {
   header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
@@ -124,7 +126,7 @@ if (!isset($usuario)) {
       background-color: #de85315c;
       border: 1px;
       border-radius: 4px;
-      padding: 10px 20px; 
+      padding: 10px 20px;
       display: block;
       margin: 0 auto;
       margin-bottom: 70px;
@@ -138,14 +140,23 @@ if (!isset($usuario)) {
     <a href="login.php">
       <img src="./assets/img/logo.png" width="130px" />
     </a>
-    <a class="text-black m-0" id="nombrepagvxp" href="index.php">Ventas por Persona</a>
+    <a class="text-black m-0" id="nombrepagvxp" href="index.php">Ventas por Pax</a>
     <div class="cerrarsesion">
       <a href="logout.php">Cerrar sesión</a>
     </div>
   </header>
 
   <main>
-    <!-- Comienza l atbla que muestra los toda la informacion de ventas por persona -->
+
+    <form method="GET" action="ventas_pax.php">
+      <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
+      <input type="date" name="fecha">
+      <button type="submit">Ver día</button>
+      <a href="ventas_pax.php?id_temporada=<?php echo $id_temporada; ?>">
+        <button type="button">Vista general</button>
+      </a>
+    </form>
+    <!-- Comienza la tabla que muestra los toda la informacion de ventas por pax -->
     <div class="inputVxP">
       <div class="info_texp" style="overflow-x:auto;  ">
         <table class="tabla_VxP">
@@ -180,48 +191,57 @@ if (!isset($usuario)) {
           </tr>
           <tr>
             <?php
-            if (isset($_POST['inicio']) && isset($_POST['fin'])) {
-              $fechainicio = $_POST['inicio'];
-              $fechafin = $_POST['fin'];
-              //Consulta para mostrar la informacion de tiendas explanada, si se selecciona una fecha, se muestra la informacion de esa fecha en especifico, se muestra la fecha, los grupos, el pax y los visitantes por experiencia, si no se selecciona una fecha, se muestra toda la informacion de la tabla tiendas_explanada, 
-              $temporadas = mysqli_query($conec, "SELECT t.nombre, tc.cantTempActYear, tc.cantTempAnterior, tc.puenteAnterior, tc.meta, tc.venta_real, tc.resultados, tc.comision FROM temp_comparativos AS tc INNER JOIN tiendas AS t INNER JOIN temporadas AS temp ON tc.id_tienda = t.id_tienda WHERE tc.id_temporada = temp.id_temporada AND fecha_inicio AND fecha_fin BETWEEN '$fechainicio' AND '$fechafin'");
+            //Si el id_temporada es diferente de 0, se muestra la informacion de la temporada seleccionada, en caso contrario se muestra toda la informacion de todas las temporadas
+            if ($id_temporada != 0) {
+
+              //Si la fecha es diferente de vacio, se muestra la informacion de la temporada seleccionada en esa fecha, en caso contrario se muestra toda la informacion de la temporada seleccionada
+              if ($fecha != '') {
+                $temporadas = mysqli_query($conec,"SELECT tc.id_comparativos,t.nombre,tc.metaYearAnterior,tc.cantTempActYear,tc.cantTempAnterior,tc.puenteAnterior,ROUND((tc.cantTempActYear + tc.cantTempAnterior + tc.puenteAnterior) / 3, 2) AS meta,tc.venta_real,tc.resultados,tc.comision, temp.estatus FROM temp_comparativos AS tc INNER JOIN tiendas AS t ON tc.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON tc.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin");
+              }
+              //Si la fecha es igual a vacio, se muestra toda la informacion de la temporada seleccionada
+              else {
+                $temporadas = mysqli_query($conec,"SELECT tc.id_comparativos,t.nombre,tc.metaYearAnterior,tc.cantTempActYear,tc.cantTempAnterior,tc.puenteAnterior,ROUND((tc.cantTempActYear + tc.cantTempAnterior + tc.puenteAnterior) / 3, 2) AS meta,tc.venta_real,tc.resultados,tc.comision, temp.estatus FROM temp_comparativos AS tc INNER JOIN tiendas AS t ON tc.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON tc.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada'");
+              }
+              //Si el id_temporada es igual a 0, se muestra toda la informacion de todas las temporadas
             } else {
-              $temporadas = mysqli_query($conec, "SELECT t.nombre, tc.cantTempActYear, tc.cantTempAnterior, tc.puenteAnterior, tc.meta, tc.venta_real, tc.resultados, tc.comision FROM temp_comparativos AS tc INNER JOIN tiendas AS t ON tc.id_tienda = t.id_tienda");
+              $temporadas = mysqli_query($conec,"SELECT tc.id_comparativos,t.nombre,tc.metaYearAnterior,tc.cantTempActYear,tc.cantTempAnterior,tc.puenteAnterior,ROUND((tc.cantTempActYear + tc.cantTempAnterior + tc.puenteAnterior) / 3, 2) AS meta,tc.venta_real,tc.resultados,tc.comision, temp.estatus FROM temp_comparativos AS tc INNER JOIN tiendas AS t ON tc.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON tc.id_temporada = temp.id_temporada");
             }
-            //Ciclo para mostrar los colaboradores, se muestra el nombre del colaborador en la tabla
             while ($i = mysqli_fetch_array($temporadas)) {
             ?>
           <tr>
-            <form action="actualizarTExp.php" method="POST">
+            <form action="actualizarVPax.php" method="POST">
               <!-- Muestra el nombre de la tienda -->
               <td width="220">
                 <input type="hidden" name="id_comparativos" value="<?php echo $i['id_comparativos']; ?>">
-                <input type="text" name="fecha" value="<?php echo $i['nombre']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+                <input type="text" name="nombre" value="<?php echo $i['nombre']; ?>" class="form-control" style="font-size: 14px;" readonly>
               </td>
               <!-- Muestra la cantidad de temporadas actuales -->
               <td width="220">
-                <input type="number" name="grupos" value="<?php echo $i['cantTempActYear']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+                <input type="number" name="metaYearAnterior" value="<?php echo $i['metaYearAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
               </td>
               <!-- Muestra el pax -->
               <td width="220">
-                <input type="number" name="pax" value="<?php echo $i['cantTempAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                <input type="number" name="cantTempActYear" value="<?php echo $i['cantTempActYear']; ?>" class="form-control" style="font-size: 14px;" readonly>
               </td>
               <!-- Muestra los visitantes por experiencia -->
               <td width="220">
-                <input type="text" name="visitantes" value="<?php echo $i['puenteAnterior']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+                <input type="number" name="cantTempAnterior" value="<?php echo $i['cantTempAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
               </td>
               <?php if ($rol == 'admin') { ?>
                 <td width="220">
-                  <input type="number" name="pax" value="<?php echo $i['meta']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                  <input type="number" name="puenteAnterior" value="<?php echo $i['puenteAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
                 </td>
                 <td width="220">
-                  <input type="number" name="pax" value="<?php echo $i['venta_real']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                  <input type="number" name="meta" value="<?php echo $i['meta']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || $i['estatus'] == 0){echo "readonly";} ?>>
                 </td>
                 <td width="220">
-                  <input type="number" name="pax" value="<?php echo $i['resultados']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                  <input type="number" name="venta_real" value="<?php echo $i['venta_real']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || $i['estatus'] == 0){echo "readonly";} ?>>
                 </td>
                 <td width="220">
-                  <input type="number" name="pax" value="<?php echo $i['comision']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                  <input type="number" name="resultados" value="<?php echo $i['resultados']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || $i['estatus'] == 0){echo "readonly";} ?>>
+                </td>
+                <td width="220">
+                  <input type="number" name="comision" value="<?php echo $i['comision']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || $i['estatus'] == 0){echo "readonly";} ?>>
                 </td>
               <?php } ?>
             </form>
@@ -235,7 +255,10 @@ if (!isset($usuario)) {
     </div>
 
     <div>
-      <button class="cerrar_temporada">Cerrar temporada</button>
+      <form action="cerrarTemporada.php" method="POST">
+        <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
+        <button type="submit" class="cerrar_temporada">Cerrar temporada</button>
+      </form>
     </div>
   </main>
 

@@ -81,6 +81,10 @@ if (!isset($usuario)) {
         font {
             font-family: "Macondo", cursive;
         }
+
+        .form-control::placeholder {
+            color: #65646454;
+        }
     </style>
     <title>Tiendas Africam Safari</title>
 </head>
@@ -132,7 +136,7 @@ if (!isset($usuario)) {
                                 <font dir="auto" style="vertical-align: inherit;">
                                     <a href="#" data-bs-toggle="modal" data-bs-target="#modalVentas"
                                         style="text-decoration: none; color: white;">
-                                        Ventas por persona
+                                        Ventas por Pax
                                     </a>
                                 </font>
                             </h5>
@@ -186,7 +190,7 @@ if (!isset($usuario)) {
 
                         <br><br>
 
-                        <!-- TEMPORADAS -->
+                        <!-- Temporadas -->
                         <div id="temporadas" style="display:none;">
                             <h5>Temporadas</h5>
                             <button type="button" class="btn btn-outline-primary opcion-btn" onclick="setOpcion('Semana Santa', this)"> Semana Santa</button>
@@ -196,17 +200,15 @@ if (!isset($usuario)) {
                             <button type="button" class="btn btn-outline-primary opcion-btn" onclick="setOpcion('Diciembre', this)">Diciembre</button>
                         </div>
 
-                        <!-- PUENTES -->
+                        <!-- Puentes -->
                         <div id="puentes" style="display:none;">
                             <h5>Puentes</h5>
-                            <button type="button" class="btn btn-outline-success opcion-btn" onclick="setOpcion('5 de Mayo', this)">5 de Mayo</button>
-
-                            <button type="button" class="btn btn-outline-success opcion-btn" onclick="setOpcion('30 de Abril', this)">30 de Abril</button>
+                            <input type="text" name="puente" id="puente" class="form-control" placeholder="Nombre del puente">
                         </div>
 
                         <br>
 
-                        <!-- FECHAS -->
+                        <!-- Fechas -->
                         <div id="fechas" style="display:none;">
                             <label>Fecha inicio:</label>
                             <input type="date" name="inicio" id="fechaInicio" class="form-control">
@@ -214,7 +216,8 @@ if (!isset($usuario)) {
                             <input type="date" name="fin" id="fechaFin" class="form-control">
                         </div>
 
-                        <!-- INPUT OCULTO -->
+                        <!-- Input oculto -->
+                        <input type="hidden" name="tipo" id="tipo">
                         <input type="hidden" name="temporada" id="temporada">
                     </div>
 
@@ -233,6 +236,12 @@ if (!isset($usuario)) {
             document.getElementById("temporadas").style.display = "block";
             document.getElementById("puentes").style.display = "none";
 
+            document.getElementById("fechas").style.display = "block";
+
+            document.getElementById("tipo").value = "temporada";
+
+            //limpiar puente
+            document.getElementById("puente").value = "";
         }
 
         function mostrarPuentes() {
@@ -240,6 +249,17 @@ if (!isset($usuario)) {
             document.getElementById("puentes").style.display = "block";
             document.getElementById("temporadas").style.display = "none";
 
+            document.getElementById("fechas").style.display = "block";
+
+            document.getElementById("tipo").value = "puente";
+
+            //limpiar temporada
+            document.getElementById("temporada").value = "";
+
+            //quitar active
+            document.querySelectorAll(".opcion-btn").forEach(btn => {
+                btn.classList.remove("active");
+            });
         }
 
         function setOpcion(valor, boton) {
@@ -262,19 +282,40 @@ if (!isset($usuario)) {
 
         function validarFormulario() {
 
-    let temporada = document.getElementById("temporada").value;
-    let inicio = document.getElementById("fechaInicio").value;
-    let fin = document.getElementById("fechaFin").value;
+            let tipo = document.getElementById("tipo").value;
 
-    if (temporada == "" || inicio == "" || fin == "") {
+            let temporada = document.getElementById("temporada").value;
+            let puente = document.getElementById("puente").value;
 
-        alert("Completa todos los campos");
-        return false;
+            let inicio = document.getElementById("fechaInicio").value;
+            let fin = document.getElementById("fechaFin").value;
 
-    }
+            //validar tipo
+            if (tipo == "") {
+                alert("Selecciona temporada o puente");
+                return false;
+            }
 
-    return true;
-}
+            //validar temporadas
+            if (tipo == "temporada" && temporada == "") {
+                alert("Selecciona una temporada");
+                return false;
+            }
+
+            //validar puentes
+            if (tipo == "puente" && puente == "") {
+                alert("Ingresa el nombre del puente");
+                return false;
+            }
+
+            //validar fechas
+            if (inicio == "" || fin == "") {
+                alert("Selecciona las fechas");
+                return false;
+            }
+
+            return true;
+        }
     </script>
 
 
