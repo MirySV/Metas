@@ -6,10 +6,20 @@ session_start();
 $usuario = $_SESSION['username'];
 $rol = $_SESSION['rol'];
 //echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
+
 if (!isset($usuario)) {
     header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
 }
+
+// Buscar temporada activa
+$temporadaActiva = mysqli_query($conec, "SELECT id_temporada, temporada FROM temporadas WHERE estatus = 1 LIMIT 1");
+$datosTemporada = mysqli_fetch_assoc($temporadaActiva);
+
+// Buscar puente activo
+$puenteActivo = mysqli_query($conec, "SELECT id_puente, puente FROM puentes WHERE estatus = 1 LIMIT 1");
+$datosPuente = mysqli_fetch_assoc($puenteActivo);
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -133,12 +143,28 @@ if (!isset($usuario)) {
                     <div class="card card-cover h-100 overflow-hidden mi-card rounded-4 shadow-lg">
                         <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
                             <h5 class="pt-5 mt-5 mb-4 fs-2 lh-1 fw-bold">
-                                <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalVentas"
-                                        style="text-decoration: none; color: white;">
-                                        Ventas por Pax
-                                    </a>
-                                </font>
+
+                                <?php
+                                // Revisa si hay temporada activa
+                                if ($datosTemporada) {
+                                ?>
+                                    <a href="ventas_pax.php?id_temporada=<?php echo $datosTemporada['id_temporada']; ?>"style="text-decoration:none; color:white;">Ventas por Pax</a>
+                                <?php
+                                }
+                                // Revisa si hay puente activo
+                                else if ($datosPuente) {
+                                ?>
+                                    <a href="ventas_puente.php?id_puente=<?php echo $datosPuente['id_puente']; ?>" style="text-decoration:none; color:white;">Ventas por Pax</a>
+                                <?php
+                                }
+                                // Si no hay ninguno activo entra directamente al modal para seleccionar temporada o puente
+                                else {
+                                ?>
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalVentas" style="text-decoration:none;color:white;">Ventas por Pax</a>
+                                <?php
+                                }
+                                ?>
+
                             </h5>
                         </div>
                     </div>
