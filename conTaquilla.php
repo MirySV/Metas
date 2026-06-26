@@ -1,6 +1,6 @@
 <?PHP 
  //$conn1 = ibase_connect("10.10.50.5/3050:M:\Microsip Datos\TAQUILLAS.FDB", "sysdba", "masterkey");
- $conn2 = ibase_connect("C:\Microsip Datos\PARQUE.FDB", "sysdba", "masterkey");
+ $conn1 = ibase_connect("C:\Microsip Datos\TAQUILLA.FDB", "sysdba", "sys.20.T97");
  
 
  //if ($conn1) 
