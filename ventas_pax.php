@@ -161,6 +161,33 @@ if ($id_temporada != 0) {
       <button type="submit">Ver día</button>
       <a href="ventas_pax.php?id_temporada=<?php echo $id_temporada; ?>" class="btn btn-secondary">Vista general</a>
     </form>
+
+    <!-- Boton para cargar excel de ventas real -->
+  <form action="cargar_excel.php" method="POST" enctype="multipart/form-data">
+
+    <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
+    <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
+    <input type="hidden" name="fecha" value="<?php echo $fecha; ?>">
+
+    <input
+        type="file"
+        name="archivo"
+        id="archivoExcel"
+        accept=".xlsx,.xls"
+        style="display:none"
+        onchange="this.form.submit();">
+
+    <button
+        type="button"
+        class="btn btn-success"
+        onclick="document.getElementById('archivoExcel').click();">
+
+        <i class="bi bi-upload"></i> Cargar Excel
+
+    </button>
+
+</form>
+
     <!-- Comienza la tabla que muestra los toda la informacion de ventas por pax -->
     <div class="inputVxP">
       <div class="info_texp" style="overflow-x:auto;  ">
@@ -188,9 +215,6 @@ if ($id_temporada != 0) {
               <th width="1700" style="font-size: 16px;">Resultados</th>
               <th width="1700" style="font-size: 16px;">Comisión</th>
               <?php if ($rol == 'admin') { ?>
-                <th width="1000" style="font-size: 16px;">
-                  <b>Cargar Venta Real</b>
-                </th>
                 <th width="1000" style="font-size: 16px;">
                   <b>Actualizar</b>
                 </th>
@@ -376,22 +400,6 @@ if ($id_temporada != 0) {
                   <?php } ?>
 
                   <?php if ($rol == 'admin') { ?>
-                    <?php if ($fecha != '') { ?>
-                      <td width="220">
-                        <center>
-
-                          <button
-                            type="button"
-                            class="btneditar"
-                            onclick="document.getElementById('archivo<?php echo $i['id_comparativosDia']; ?>').click();">
-
-                            <i class="bi bi-upload"></i>
-
-                          </button>
-
-                        </center>
-                      </td>
-                    <?php } ?>
                     <td width="220">
                       <center>
                         <button type="submit" class="btneditar" formnovalidate onclick="return confirm('¿Está seguro que desea actualizar esta informacion?')">
