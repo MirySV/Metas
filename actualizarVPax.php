@@ -16,18 +16,40 @@ if (!isset($usuario)) {
     exit();
 }
 
-$id_comparativos = $_POST['id_comparativos'];
-$venta_real = $_POST['venta_real'];
-$resultados = $_POST['resultados'];
-$comision = $_POST['comision'];
+$id_comparativos = $_POST['id_comparativos'] ?? null;
+$id_comparativosDia = $_POST['id_comparativosDia'] ?? null;
 
-$consulta = mysqli_query($conec,"SELECT cantTempActYear, cantTempAnterior, puenteAnterior FROM temp_comparativos WHERE id_comparativos = '$id_comparativos'");
+$meta = $_POST['meta'] ?? null;
+$meta_dia = $_POST['meta_dia'] ?? null;
 
-$datos = mysqli_fetch_assoc($consulta);
+$venta_real = $_POST['venta_real'] ?? null;
+$venta_total = $_POST['venta_total'] ?? null;
 
-$meta = round(($datos['cantTempActYear'] + $datos['cantTempAnterior'] + $datos['puenteAnterior']) / 3, 2);
+$resultados = $_POST['resultados'] ?? null;
+$crecimiento = $_POST['crecimiento'] ?? null;
 
-$actualizar = mysqli_query($conec,"UPDATE temp_comparativos SET meta = '$meta', venta_real = '$venta_real', resultados = '$resultados',comision = '$comision' WHERE id_comparativos = '$id_comparativos'");
+$comision = $_POST['comision'] ?? null;
+
+
+if ($id_comparativos != null) {
+
+    $actualizar = mysqli_query($conec,"UPDATE comparativos SET meta = '$meta', venta_total = '$venta_total', crecimiento = '$crecimiento',comision = '$comision' WHERE id_comparativos = '$id_comparativos'");
+
+}
+
+//VISTA POR DÍA 
+
+elseif ($id_comparativosDia != null) {
+
+    $actualizar = mysqli_query($conec,"UPDATE comparativos_dia SET meta_dia = '$meta_dia', venta_real = '$venta_real', resultados = '$resultados', comision = '$comision' WHERE id_comparativosDia = '$id_comparativosDia'");
+
+}
+
+else{
+
+    die("No se recibió ningún identificador.");
+}
+
 
 if ($actualizar) {
 
@@ -39,6 +61,7 @@ if ($actualizar) {
 } else {
 
     echo "Error al actualizar: " . mysqli_error($conec);
+
 }
 
 ?>

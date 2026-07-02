@@ -163,13 +163,13 @@ if ($id_temporada != 0) {
     </form>
 
     <!-- Boton para cargar excel de ventas real -->
-  <form action="cargar_excel.php" method="POST" enctype="multipart/form-data">
+    <form action="cargar_excel.php" method="POST" enctype="multipart/form-data">
 
-    <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
-    <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
-    <input type="hidden" name="fecha" value="<?php echo $fecha; ?>">
+      <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
+      <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
+      <input type="hidden" name="fecha" value="<?php echo $fecha; ?>">
 
-    <input
+      <input
         type="file"
         name="archivo"
         id="archivoExcel"
@@ -177,16 +177,20 @@ if ($id_temporada != 0) {
         style="display:none"
         onchange="this.form.submit();">
 
-    <button
-        type="button"
-        class="btn btn-success"
-        onclick="document.getElementById('archivoExcel').click();">
+      <?php if ($rol == 'admin') { ?>
+        <button
+          type="button"
+          class="btn btn-success"
+          onclick="document.getElementById('archivoExcel').click();">
 
-        <i class="bi bi-upload"></i> Cargar Excel
+          <i class="bi bi-upload"></i> Cargar Excel
 
-    </button>
+        </button>
+      <?php } ?>
 
-</form>
+
+
+    </form>
 
     <!-- Comienza la tabla que muestra los toda la informacion de ventas por pax -->
     <div class="inputVxP">
@@ -321,29 +325,21 @@ if ($id_temporada != 0) {
                   </td>
                   <!-- Muestra la cantidad de temporadas actuales -->
                   <td width="220">
-                    <input type="number" name="metaYearAnterior" value="<?php echo $i['metaYearAnterior']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                                                                                                                                echo "readonly";
-                                                                                                                                                              } ?>>
+                    <input type="number" name="metaYearAnterior" value="<?php echo $i['metaYearAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
                   </td>
                   <!-- Muestra el pax -->
                   <td width="220">
-                    <input type="number" name="cantTempActYear" value="<?php echo $i['cantTempActYear']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                                                                                                                              echo "readonly";
-                                                                                                                                                            } ?>>
+                    <input type="number" name="cantTempActYear" value="<?php echo $i['cantTempActYear']; ?>" class="form-control" style="font-size: 14px;" readonly>
                   </td>
                   <!-- Muestra los visitantes por experiencia -->
                   <td width="220">
-                    <input type="number" name="cantTempAnterior" value="<?php echo $i['cantTempAnterior']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                                                                                                                                echo "readonly";
-                                                                                                                                                              } ?>>
+                    <input type="number" name="cantTempAnterior" value="<?php echo $i['cantTempAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
                   </td>
                   <td width="220">
-                    <input type="number" name="puenteAnterior" value="<?php echo $i['puenteAnterior']; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                                                                                                                            echo "readonly";
-                                                                                                                                                          } ?>>
+                    <input type="number" name="puenteAnterior" value="<?php echo $i['puenteAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
                   </td>
 
-                  <?php if ($fecha != '') { ?>
+                  <?php if ($fecha != '') {?>
                     <!-- CAMPOS DE LA VISTA POR DÍA -->
                     <td width="220">
                       <input type="number" name="meta_dia"
@@ -376,25 +372,25 @@ if ($id_temporada != 0) {
                     <td width="220">
                       <input type="number" name="meta"
                         value="<?php echo $i['meta']; ?>"
-                        class="form-control">
+                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {echo "readonly";} ?>>
                     </td>
 
                     <td width="220">
                       <input type="number" name="venta_total"
                         value="<?php echo $i['venta_total']; ?>"
-                        class="form-control">
+                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {echo "readonly";} ?>>
                     </td>
 
                     <td width="220">
                       <input type="number" name="crecimiento"
                         value="<?php echo $i['crecimiento']; ?>"
-                        class="form-control">
+                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {echo "readonly";} ?>>
                     </td>
 
                     <td width="220">
                       <input type="number" name="comision"
                         value="<?php echo $i['comision']; ?>"
-                        class="form-control">
+                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {echo "readonly";} ?>>
                     </td>
 
                   <?php } ?>
