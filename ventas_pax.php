@@ -197,7 +197,7 @@ if ($id_temporada != 0) {
       <div class="info_texp" style="overflow-x:auto;  ">
         <table class="tabla_VxP">
           <tr class="encabezado">
-            <th width="800" style="font-size: 16px;">
+            <th width="2800" style="font-size: 16px;">
               <b>Tienda</b>
             </th>
             <th width="2000" style="font-size: 16px;">
@@ -212,20 +212,23 @@ if ($id_temporada != 0) {
             <th width="1700" style="font-size: 16px;">
               <b>VXP Real Puente Anterior</b>
             </th>
-            <?php if ($fecha != '') { ?>
 
+            <!-- CAMPOS DE LA VISTA POR DÍA -->
+            <?php if ($fecha != '') { ?>
+              
               <th width="1700" style="font-size: 16px;">Meta Día</th>
               <th width="1700" style="font-size: 16px;">Venta Real</th>
-              <th width="1700" style="font-size: 16px;">Resultados</th>
+              <th width="1000" style="font-size: 16px;">Resultados</th>
+              <th width="1000" style="font-size: 16px;">Porcentaje Comisión</th>
               <th width="1700" style="font-size: 16px;">Comisión</th>
               <?php if ($rol == 'admin') { ?>
-                <th width="1000" style="font-size: 16px;">
+                <th width="800" style="font-size: 16px;">
                   <b>Actualizar</b>
                 </th>
               <?php } ?>
 
             <?php } else { ?>
-
+              <!-- CAMPOS DE LA VISTA GENERAL -->
               <th width="1700" style="font-size: 16px;">Meta Actual</th>
               <th width="1700" style="font-size: 16px;">Venta Total</th>
               <th width="1700" style="font-size: 16px;">Crecimiento</th>
@@ -260,9 +263,32 @@ if ($id_temporada != 0) {
               $visitantes = $fila['TOTAL_VISITANTES'];
               //echo $visitantes;
 
+              //Update de la meta_dia en la tabla comparativos_dia, multiplicando la metaYearAnterior por el numero de visitantes obtenidos de la consulta a la base de datos de taquilla
               mysqli_query($conec, "UPDATE comparativos_dia SET meta_dia = metaYearAnterior * $visitantes WHERE id_temporada = '$id_temporada'AND fecha = '$fecha'");
 
-              $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados,cd.comision, temp.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON cd.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' AND cd.fecha = '$fecha'");
+              // Obtener el PAX de Foto Experiencias para ese día
+              $consulta = mysqli_query($conec, "SELECT grupos, pax FROM tiendas_explanada WHERE fecha = '$fecha'  AND id_tienda = 7");
+
+              if ($datos = mysqli_fetch_assoc($consulta)) {
+
+                $pax = $datos['pax'];
+                $grupos = $datos['grupos'];
+
+                // Meta para EXPLANADA = Meta Año Anterior × PAX
+                mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.meta_dia = cd.metaYearAnterior * $pax WHERE cd.id_temporada = '$id_temporada' AND cd.fecha = '$fecha' AND t.nombre = 'EXPLANADA'");
+
+                // Meta para FOTO EXPERIENCIAS = Meta Año Anterior × Grupos
+                mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.meta_dia = cd.metaYearAnterior * $grupos WHERE cd.id_temporada = '$id_temporada' AND cd.fecha = '$fecha' AND t.nombre = 'FOTO EXPERIENCIAS'");
+              }
+
+              //uUpdate de la columna resultados en la tabla comparativos_dia, calculando el porcentaje de venta_real sobre meta_dia y redondeando a 2 decimales, solo para los registros donde meta_dia no sea igual a 0
+              mysqli_query($conec, "UPDATE comparativos_dia SET resultados = ROUND(((venta_real / meta_dia) - 1) * 100, 2) WHERE id_temporada = '$id_temporada' AND fecha = '$fecha' AND meta_dia > 0");
+
+              //Upddate de la columna comision en la tabla comparativos_dia
+              mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.comision = ROUND(cd.venta_real * (t.porcentaje / 100), 2) WHERE cd.id_temporada = '$id_temporada' AND cd.fecha = '$fecha'");
+
+              //tempoporada por dia
+              $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados, t.porcentaje, cd.comision, temp.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON cd.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' AND cd.fecha = '$fecha'");
             } else {
               // temporada general
               $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total,c.crecimiento,c.comision, temp.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON c.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
@@ -271,7 +297,7 @@ if ($id_temporada != 0) {
 
             if ($fecha != '') {
               // puente por día
-              $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados,cd.comision, puentes.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN puentes ON cd.id_temporada = puentes.id_puente WHERE puentes.id_puente = '$id_puente' AND cd.fecha = '$fecha'");
+              $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados, t.porcentaje, cd.comision, puentes.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN puentes ON cd.id_temporada = puentes.id_puente WHERE puentes.id_puente = '$id_puente' AND cd.fecha = '$fecha'");
             } else {
               // puente general
               $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total,c.crecimiento,c.comision, puentes.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN puentes ON c.id_temporada = puentes.id_puente WHERE puentes.id_puente = '$id_puente' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
@@ -339,7 +365,7 @@ if ($id_temporada != 0) {
                     <input type="number" name="puenteAnterior" value="<?php echo $i['puenteAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
                   </td>
 
-                  <?php if ($fecha != '') {?>
+                  <?php if ($fecha != '') { ?>
                     <!-- CAMPOS DE LA VISTA POR DÍA -->
                     <td width="220">
                       <input type="number" name="meta_dia"
@@ -354,8 +380,14 @@ if ($id_temporada != 0) {
                     </td>
 
                     <td width="220">
-                      <input type="number" name="resultados"
-                        value="<?php echo $i['resultados']; ?>"
+                      <input type="text" name="resultados"
+                        value="<?php echo round($i['resultados']); ?>%"
+                        class="form-control">
+                    </td>
+
+                    <td width="220">
+                      <input type="text" name="porcentaje"
+                        value="<?php echo round($i['porcentaje']); ?>%"
                         class="form-control">
                     </td>
 
@@ -372,25 +404,33 @@ if ($id_temporada != 0) {
                     <td width="220">
                       <input type="number" name="meta"
                         value="<?php echo $i['meta']; ?>"
-                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {echo "readonly";} ?>>
+                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                echo "readonly";
+                                              } ?>>
                     </td>
 
                     <td width="220">
                       <input type="number" name="venta_total"
                         value="<?php echo $i['venta_total']; ?>"
-                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {echo "readonly";} ?>>
+                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                echo "readonly";
+                                              } ?>>
                     </td>
 
                     <td width="220">
                       <input type="number" name="crecimiento"
                         value="<?php echo $i['crecimiento']; ?>"
-                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {echo "readonly";} ?>>
+                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                echo "readonly";
+                                              } ?>>
                     </td>
 
                     <td width="220">
                       <input type="number" name="comision"
                         value="<?php echo $i['comision']; ?>"
-                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {echo "readonly";} ?>>
+                        class="form-control" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                echo "readonly";
+                                              } ?>>
                     </td>
 
                   <?php } ?>

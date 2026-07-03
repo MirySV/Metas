@@ -5,7 +5,7 @@
 include 'conexion.php'; //Conexion a la base de datos
 //var_dump($_POST);
 session_start();
-var_dump($_POST);
+//var_dump($_POST);
 //Verifica si el usuario tiene una sesion iniciada y si el rol del usuario es admin, en caso de que no tenga una sesion iniciada o el rol del usuario no sea admin, se muestra un mensaje de error y se detiene la ejecucion del codigo
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] != 'admin') {
     echo "No tienes permisos para actualizar";
@@ -25,7 +25,7 @@ $grupos = $_POST['grupos'];
 $pax = $_POST['pax'];
 $visitantes= $_POST['visitantes'];
 
-    $actualizar_tienda = mysqli_query($conec, "UPDATE tiendas_explanada SET fecha='$fecha', grupos='$grupos', pax='$visitantes' * 0.65, visitantes='$visitantes' WHERE id_tiexp='$id_tiexp'");
+    $actualizar_tienda = mysqli_query($conec, "UPDATE tiendas_explanada SET fecha='$fecha', grupos='$grupos', pax=($visitantes * 0.65), visitantes='$visitantes' WHERE id_tiexp='$id_tiexp'");
 
     if ($actualizar_tienda) {
         echo '<script>

@@ -213,9 +213,9 @@ if (!isset($usuario)) {
                     </tr>
                     <tr>
                         <?php
-                        if (isset($_POST['inicio']) && isset($_POST['fin'])) {
-                            $fechainicio = $_POST['inicio'];
-                            $fechafin = $_POST['fin'];
+                        if (isset($_GET['inicio']) && isset($_GET['fin'])) {
+                            $fechainicio = $_GET['inicio'];
+                            $fechafin = $_GET['fin'];
                             //Consulta para mostrar la informacion de tiendas explanada, si se selecciona una fecha, se muestra la informacion de esa fecha en especifico, se muestra la fecha, los grupos, el pax y los visitantes por experiencia, si no se selecciona una fecha, se muestra toda la informacion de la tabla tiendas_explanada, 
                             $tiendas_explanada = mysqli_query($conec, "SELECT * FROM tiendas_explanada WHERE fecha BETWEEN '$fechainicio' AND '$fechafin' ORDER BY fecha DESC ");
                         } else {
