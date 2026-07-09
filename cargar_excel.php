@@ -120,9 +120,8 @@ for ($fila = 1; $fila <= $ultimaFila; $fila++) {
     $nombre = strtoupper(trim($nombre));
     $nombre = preg_replace('/\s+/', ' ', $nombre);
 
-    // ----------------------
     // CASOS ESPECIALES
-    // ----------------------
+    
 
     // EXPLANADA
     if ($nombre == "EXPLANADA JIRAFAS") {
@@ -162,9 +161,7 @@ for ($fila = 1; $fila <= $ultimaFila; $fila++) {
         $nombre = preg_replace('/\s+\d+$/', '', $nombre);
     }
 
-    // ----------------------
     // EQUIVALENCIAS
-    // ----------------------
 
     if (isset($equivalencias[$nombre])) {
         echo "Antes: ".$nombre."<br>";
@@ -172,9 +169,7 @@ for ($fila = 1; $fila <= $ultimaFila; $fila++) {
     echo "Después: ".$nombre."<br>";
     }
 
-    // ----------------------
     // SUMAR
-    // ----------------------
 
     if (!isset($ventas[$nombre])) {
         $ventas[$nombre] = 0;
@@ -193,7 +188,8 @@ foreach ($ventas as $nombre => $venta) {
         $id_tienda = $tienda['id_tienda'];
 
         // Actualizar únicamente ese día
-        mysqli_query($conec, "UPDATE comparativos_dia SET venta_real = '$venta' WHERE id_tienda = '$id_tienda' AND fecha = '$fecha'");
+        /*mysqli_query($conec, "UPDATE comparativos_dia SET venta_real = '$venta' WHERE id_tienda = '$id_tienda' AND fecha = '$fecha'");*/
+        mysqli_query($conec, " UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.venta_real = '$venta', cd.porcentaje_comision = t.porcentaje, cd.comision = ROUND('$venta' * (t.porcentaje / 100), 2) WHERE cd.id_tienda = '$id_tienda' AND cd.fecha = '$fecha'");
     }
 }
 
