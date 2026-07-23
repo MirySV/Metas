@@ -262,6 +262,17 @@ if ($id_temporada != 0) {
           </tr>
           <?php
 
+
+        $perteneceTemporada = mysqli_query($conec, "SELECT fecha_inicio, fecha_fin FROM temporadas WHERE id_temporada = '$id_temporada'");
+        $tempoarada = mysqli_fetch_assoc($perteneceTemporada);
+        $fecha_inicio = $tempoarada['fecha_inicio'];
+        $fecha_fin = $tempoarada['fecha_fin'];
+
+        if ($fecha != '' && ($fecha < $fecha_inicio || $fecha > $fecha_fin)) {
+            echo "<script>alert('La fecha seleccionada no pertenece a la temporada seleccionada.'); window.location.href='ventas_pax.php?id_temporada=$id_temporada';</script>";
+            exit();
+        }
+
           //Comienza mi prueba de if para las consultas de la tabla por temporada y puente segun las fechas y las temporadas abiertas o cerradas
           $datos = null;
           if ($id_temporada != 0) {
@@ -279,10 +290,10 @@ if ($id_temporada != 0) {
               $fila = ibase_fetch_assoc($visitantesxdia);
 
               $visitantes = $fila['TOTAL_VISITANTES'];
-              //echo $visitantes;
+              echo $visitantes;
 
               //Update de la meta_dia en la tabla comparativos_dia, multiplicando la metaYearAnterior por el numero de visitantes obtenidos de la consulta a la base de datos de taquilla
-              mysqli_query($conec, "UPDATE comparativos_dia SET meta_dia = metaYearAnterior * $visitantes WHERE id_temporada = '$id_temporada'AND fecha = '$fecha'");
+              mysqli_query($conec, "UPDATE comparativos_dia SET meta_dia = metaYearAnterior * $visitantes WHERE id_temporada = '$id_temporada'AND fecha = '$fecha' AND id_tienda NOT IN (2,7) AND (meta_dia IS NULL OR meta_dia = 0)");
 
               // Obtener el PAX de Foto Experiencias para ese día
               $consulta = mysqli_query($conec, "SELECT grupos, pax FROM tiendas_explanada WHERE fecha = '$fecha'  AND id_tienda = 7");
@@ -291,31 +302,33 @@ if ($id_temporada != 0) {
 
                 $pax = $datos['pax'];
                 $grupos = $datos['grupos'];
+               echo "PAX: $pax, Grupos: $grupos";
 
                 // Meta para EXPLANADA = Meta Año Anterior × PAX
-                mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.meta_dia = cd.metaYearAnterior * $pax WHERE cd.id_temporada = '$id_temporada' AND cd.fecha = '$fecha' AND t.nombre = 'EXPLANADA'");
+                mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.meta_dia = cd.metaYearAnterior * $pax WHERE cd.id_temporada = '$id_temporada' AND cd.fecha = '$fecha' AND t.id_tienda = 2");
 
                 // Meta para FOTO EXPERIENCIAS = Meta Año Anterior × Grupos
-                mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.meta_dia = cd.metaYearAnterior * $grupos WHERE cd.id_temporada = '$id_temporada' AND cd.fecha = '$fecha' AND t.nombre = 'FOTO EXPERIENCIAS'");
+                mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.meta_dia = cd.metaYearAnterior * $grupos WHERE cd.id_temporada = '$id_temporada' AND cd.fecha = '$fecha' AND t.id_tienda = 7");
               }
 
               //Update de la columna resultados en la tabla comparativos_dia, calculando el porcentaje de venta_real sobre meta_dia y redondeando a 2 decimales, solo para los registros donde meta_dia no sea igual a 0
-              mysqli_query($conec, "UPDATE comparativos_dia SET resultados = CASE WHEN venta_real = 0 THEN 0 ELSE ROUND(((venta_real / meta_dia) - 1) * 100, 2) END WHERE id_temporada = '$id_temporada' AND fecha = '$fecha' AND meta_dia > 0");
+              /*mysqli_query($conec, "UPDATE comparativos_dia SET resultados = CASE WHEN venta_real = 0 THEN 0 ELSE ROUND(((venta_real / meta_dia) - 1) * 100, 2) END WHERE id_temporada = '$id_temporada' AND fecha = '$fecha' AND meta_dia > 0");*/
 
               //Update de la columna comision en la tabla comparativos_dia
               /*mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.comision = ROUND(cd.venta_real * (t.porcentaje / 100), 2) WHERE cd.id_temporada = '$id_temporada' AND cd.fecha = '$fecha'");*/
 
               //tempoporada por dia
-              $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.id_tienda,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados, t.porcentaje, cd.comision, temp.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON cd.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' AND cd.fecha = '$fecha'");
+              $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.id_tienda,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados, cd.porcentaje_comision, cd.comision, temp.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON cd.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' AND cd.fecha = '$fecha'");
             } else {
               // temporada general
               $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total,c.crecimiento,c.comision, temp.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON c.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
             }
+
           } elseif ($id_puente != 0) {
 
             if ($fecha != '') {
               // puente por día
-              $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.id_tienda,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados, t.porcentaje, cd.comision, puentes.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN puentes ON cd.id_temporada = puentes.id_puente WHERE puentes.id_puente = '$id_puente' AND cd.fecha = '$fecha'");
+              $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.id_tienda,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados, cd.porcentaje_comision, cd.comision, puentes.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN puentes ON cd.id_temporada = puentes.id_puente WHERE puentes.id_puente = '$id_puente' AND cd.fecha = '$fecha'");
             } else {
               // puente general
               $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total,c.crecimiento,c.comision, puentes.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN puentes ON c.id_temporada = puentes.id_puente WHERE puentes.id_puente = '$id_puente' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
@@ -355,7 +368,7 @@ if ($id_temporada != 0) {
                       <input type="hidden" name="id_tienda" value="<?php echo $i['id_tienda']; ?>">
                       <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
                       <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
-                      <input type="hidden" name="porcentaje_original" value="<?php echo $i['porcentaje']; ?>">
+                      <input type="hidden" name="porcentaje_original" value="<?php echo $i['porcentaje_comision']; ?>">
                       <input type="hidden" name="fecha" value="<?php echo $fecha; ?>">
                       <input type="text" name="nombre" value="<?php echo $i['nombre']; ?>" class="form-control" style="font-size: 14px;" readonly>
                       <input type="file" name="archivo" id="archivo<?php echo $i['id_comparativosDia']; ?>" accept=".xlsx,.xls" style="display:none;">
@@ -405,6 +418,7 @@ if ($id_temporada != 0) {
                           <input type="number" name="meta_dia"
                           value="<?php echo $i['meta_dia']; ?>"
                           class="form-control" style="font-size: 14px;">
+                          <input type="hidden" name="meta_dia_original" value="<?php echo $i['meta_dia']; ?>">
                       </div>
                     </td>
 
@@ -414,6 +428,7 @@ if ($id_temporada != 0) {
                           <input type="number" name="venta_real"
                           value="<?php echo $i['venta_real']; ?>"
                           class="form-control" style="font-size: 14px;">
+                          <input type="hidden" name="venta_real_original" value="<?php echo $i['venta_real']; ?>">
                       </div>
                     </td>
 
@@ -429,8 +444,9 @@ if ($id_temporada != 0) {
                     <td width="220">
                       <div class="input-group">
                         <input type="text" name="porcentaje"
-                          value="<?php echo round($i['porcentaje']); ?>"
+                          value="<?php echo round($i['porcentaje_comision']); ?>"
                           class="form-control" style="font-size: 14px;">
+                          <input type="hidden" name="porcentaje_original" value="<?php echo round($i['porcentaje_comision']); ?>">
                           <span class="input-group-text">%</span>
                       </div>
                     </td>
@@ -505,7 +521,7 @@ if ($id_temporada != 0) {
       <div>
         <form action="cerrarTemporada.php" method="POST">
           <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
-          <button type="submit" class="cerrar_temporada">Cerrar temporada</button>
+          <button type="submit" class="cerrar_temporada"formnovalidate onclick="return confirm('¿Está seguro que desea cerrar esta temporada?')">Cerrar temporada</button>
         </form>
       </div>
     <?php } ?>

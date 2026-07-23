@@ -17,6 +17,10 @@ $rol = $_SESSION['rol'];
 $fecha = $_POST['fecha'];
 $id_temporada = $_POST['id_temporada'];
 $id_puente = $_POST['id_puente'];
+$id_tienda = $_POST['id_tienda'];
+$porcentaje_original = $_POST['porcentaje_original'];
+$porcentaje = $_POST['porcentaje'];
+$venta_real = $_POST['venta_real'];
 
 if (!isset($_SESSION['rol'])) {
     echo "No tienes permisos para acceder a esta pagina, favor de iniciar sesion";
@@ -188,8 +192,16 @@ foreach ($ventas as $nombre => $venta) {
         $id_tienda = $tienda['id_tienda'];
 
         // Actualizar únicamente ese día
-        /*mysqli_query($conec, "UPDATE comparativos_dia SET venta_real = '$venta' WHERE id_tienda = '$id_tienda' AND fecha = '$fecha'");*/
-        mysqli_query($conec, " UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.venta_real = '$venta', cd.porcentaje_comision = t.porcentaje, cd.comision = ROUND('$venta' * (t.porcentaje / 100), 2) WHERE cd.id_tienda = '$id_tienda' AND cd.fecha = '$fecha'");
+        /*mysqli_query($conec, " UPDATE comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda SET cd.venta_real = '$venta', cd.porcentaje_comision = t.porcentaje, cd.comision = ROUND('$venta' * (t.porcentaje / 100), 2) WHERE cd.id_tienda = '$id_tienda' AND cd.fecha = '$fecha'");*/
+
+        mysqli_query($conec,"UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.venta_real = '$venta',cd.porcentaje_comision = CASE WHEN cd.porcentaje_comision IS NULL OR cd.porcentaje_comision = 0 THEN t.porcentaje ELSE cd.porcentaje_comision END WHERE cd.id_tienda = '$id_tienda' AND cd.fecha = '$fecha'");
+
+        mysqli_query($conec, "UPDATE comparativos_dia SET comision = ROUND(venta_real * (porcentaje_comision / 100),2) WHERE id_tienda='$id_tienda' AND fecha='$fecha';");
+
+        mysqli_query($conec, "UPDATE comparativos_dia SET resultados = CASE WHEN venta_real = 0 THEN 0 ELSE ROUND(((venta_real / meta_dia) - 1) * 100, 2) END WHERE id_tienda = '$id_tienda' AND fecha = '$fecha' AND meta_dia > 0");
+        
+        /*mysqli_query($conec, " UPDATE comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda SET cd.porcentaje_comision = t.porcentaje, cd.comision = ROUND('$venta' * (t.porcentaje / 100), 2) WHERE cd.id_tienda = '$id_tienda' AND cd.fecha = '$fecha'");*/
+        
     }
 }
 
@@ -197,6 +209,32 @@ foreach ($ventas as $nombre => $venta) {
 print_r($ventas);
 echo "</pre>";
 exit;*/
+
+
+if ($id_temporada != 0) {
+    $cuandoes = "id_temporada = '$id_temporada'";
+} else {
+    $cuandoes = "id_puente = '$id_puente'";
+}
+//Actualizar la venta_total de la temporada de la vista general
+$resultado_venta_total = mysqli_query($conec, "SELECT id_tienda, SUM(venta_real) AS venta_total FROM comparativos_dia WHERE " . $cuandoes . " GROUP BY id_tienda");
+
+    while($fila = mysqli_fetch_assoc($resultado_venta_total)) {
+        $id_tienda = $fila['id_tienda'];
+        $venta_total = $fila['venta_total'];
+
+        mysqli_query($conec, "UPDATE comparativos SET venta_total = '$venta_total' WHERE " . $cuandoes . " AND id_tienda = '$id_tienda'");
+    }
+
+    //Actualizar la comision de la temporada de la vista general
+$resultado_comision = mysqli_query($conec, "SELECT id_tienda, SUM(comision) AS comision_total FROM comparativos_dia WHERE " . $cuandoes . " GROUP BY id_tienda");
+
+    while($fila = mysqli_fetch_assoc($resultado_comision)) {
+        $id_tienda = $fila['id_tienda'];
+        $comision_total = $fila['comision_total'];
+
+        mysqli_query($conec, "UPDATE comparativos SET comision = '$comision_total' WHERE " . $cuandoes . " AND id_tienda = '$id_tienda'");
+    }
 
 if ($id_temporada != 0) {
     header("Location: ventas_pax.php?id_temporada=$id_temporada&fecha=$fecha");
