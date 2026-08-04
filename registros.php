@@ -287,7 +287,6 @@ if (!empty($_POST['tarjeta'])) {
               background-size:cover;
               background-position:center;
               background-attachment:fixed;">
-
   <?php
 
   //include "navbar.php";
