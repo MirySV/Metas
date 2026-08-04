@@ -16,7 +16,8 @@ if (!isset($usuario)) {
     exit();
 }
 
-$id_temporada = $_POST['id_temporada'] ?? null;
+$id_temporada = $_POST['id_temporada'] ?? 0;
+$id_puente    = $_POST['id_puente'] ?? 0;
 $fecha = $_POST['fecha'] ?? null;
 $id_comparativos = $_POST['id_comparativos'] ?? null;
 $id_comparativosDia = $_POST['id_comparativosDia'] ?? null;
@@ -90,11 +91,19 @@ $actualizar = mysqli_query($conec, "UPDATE comparativos_dia SET meta_dia = '$met
 
 if ($actualizar) {
 
+    if ($id_puente != 0) {
+        $pagina = "ventas_puentes.php?id_puente=$id_puente&fecha=$fecha";
+    } else {
+        $pagina = "ventas_pax.php?id_temporada=$id_temporada&fecha=$fecha";
+    }
+
     echo '<script>
             alert("La información se actualizó correctamente");
-            window.location.href="ventas_pax.php?id_temporada=' . $id_temporada . '&fecha=' . $fecha . '";
-        </script>';
-} else {
+            window.location.href="' . $pagina . '";
+          </script>';
+}
+else {
 
     echo "Error al actualizar: " . mysqli_error($conec);
+
 }

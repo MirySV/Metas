@@ -212,6 +212,9 @@ if (!isset($usuario)) {
           <th width="1300" style="font-size: 16px;">
             <b>Tienda</b>
           </th>
+          <th width="1300" style="font-size: 16px;">
+            <b>Descanso</b>
+          </th>
           <th width="2800" style="font-size: 16px;">
             <b>Acciones</b>
           </th>
@@ -230,7 +233,7 @@ if (!isset($usuario)) {
             }
           } else {
             //Consulta para mostrar todos los colaboradores, se hace un inner join entre empleados y tiendas para mostrar el nombre del colaborador de acuerdo a la tienda a la que pertenece
-            $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda = t.id_tienda");
+            $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda = t.id_tienda");
           }
           //Ciclo para mostrar los colaboradores, se muestra el nombre del colaborador en la tabla
           while ($i = mysqli_fetch_array($colaboradores)) {
@@ -275,6 +278,22 @@ if (!isset($usuario)) {
                 <option value="ZAWADI HUELLAS">
                 <option value="OCEANIA">
                 <option value="AVIARIO AUSTRALIANO">
+              </datalist>
+            </td>
+            <td width="220">
+              <!-- Aqui va el campo para editar el dia de descanso -->
+              <input type="hidden" name="id_empleado" value="<?php echo $i[0]; ?>">
+
+              <input id="descanso" list="dia<?php echo $i[3]; ?>" name="descanso" value="<?php echo $i[3]; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+
+              <datalist id="dia<?php echo $i[3]; ?>">
+                <option value="LUNES">
+                <option value="MARTES">
+                <option value="MIERCOLES">
+                <option value="JUEVES">
+                <option value="VIERNES">
+                <option value="SABADO">
+                <option value="DOMINGO">
               </datalist>
             </td>
             <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->

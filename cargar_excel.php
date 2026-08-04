@@ -17,10 +17,10 @@ $rol = $_SESSION['rol'];
 $fecha = $_POST['fecha'];
 $id_temporada = $_POST['id_temporada'];
 $id_puente = $_POST['id_puente'];
-$id_tienda = $_POST['id_tienda'];
-$porcentaje_original = $_POST['porcentaje_original'];
-$porcentaje = $_POST['porcentaje'];
-$venta_real = $_POST['venta_real'];
+//$id_tienda = $_POST['id_tienda'];
+//$porcentaje_original = $_POST['porcentaje_original'];
+//$porcentaje = $_POST['porcentaje'];
+//$venta_real = $_POST['venta_real'];
 
 if (!isset($_SESSION['rol'])) {
     echo "No tienes permisos para acceder a esta pagina, favor de iniciar sesion";
@@ -236,10 +236,59 @@ $resultado_comision = mysqli_query($conec, "SELECT id_tienda, SUM(comision) AS c
         mysqli_query($conec, "UPDATE comparativos SET comision = '$comision_total' WHERE " . $cuandoes . " AND id_tienda = '$id_tienda'");
     }
 
+    $datos = null;
+    if ($id_temporada != 0){
+        $consultarPeriodo = mysqli_query($conec, "SELECT fecha_inicio, fecha_fin FROM temporadas WHERE id_temporada = '$id_temporada'");
+        } else {
+        $consultarPeriodo = mysqli_query($conec, "SELECT fecha_inicio, fecha_fin FROM puentes WHERE id_puente = '$id_puente'");
+        }
+        $periodo = mysqli_fetch_assoc($consultarPeriodo);
+        
+        $fecha_inicio = date('d.m.Y', strtotime($periodo['fecha_inicio']));
+        $fecha_fin = date('d.m.Y', strtotime($periodo['fecha_fin']));
+    
+
+    include 'conTaquilla.php'; //Conexion a la base de datos de ibase de taquilla
+
+              //Consulta para saber el numero de visitantes por dia consultando a la base de datos de taquilla
+              $totalvisitantes = ibase_query($conn1, "SELECT SUM(ADULTOS_PV) + SUM(ADULTOS_VE) + SUM(NINOS_PV) + SUM(NINOS_VE) + SUM(BEBES_PV) + SUM(BEBES_VE) AS TOTAL_VISITANTES FROM mg_rep3('N','$fecha_inicio', '$fecha_fin',0)");
+
+              $fila = ibase_fetch_assoc($totalvisitantes);
+
+              $visitantesTotal = $fila['TOTAL_VISITANTES'];
+              //echo $visitantesTotal;
+    if ($visitantesTotal > 0) {
+        $ventas = mysqli_query($conec, "SELECT id_tienda, venta_total FROM comparativos WHERE " . $cuandoes);
+
+        while ($fila = mysqli_fetch_assoc($ventas)) {
+            $vxp = round(($fila['venta_total'] / $visitantesTotal), 2);
+            mysqli_query($conec, "UPDATE comparativos SET cantTempAct = '$vxp' WHERE " . $cuandoes . " AND id_tienda = '" . $fila['id_tienda'] . "'");
+        }
+    }
+
+    // Obtener el PAX de Foto Experiencias para ese día
+              $consulta = mysqli_query($conec, "SELECT SUM(grupos) AS total_grupos, SUM(pax) AS total_pax FROM tiendas_explanada WHERE fecha BETWEEN '".$periodo['fecha_inicio']."'AND '".$periodo['fecha_fin']."' AND id_tienda = 7");
+
+              if ($datos = mysqli_fetch_assoc($consulta)) {
+
+                $totalpax = $datos['total_pax'];
+                $totalgrupos = $datos['total_grupos'];
+                echo "PAX: $totalpax, Grupos: $totalgrupos";
+
+                // VXP Real Actual para EXPLANADA = Venta total / Total de PAX
+                mysqli_query($conec, "UPDATE comparativos SET cantTempAct = ROUND(venta_total / $totalpax, 2) WHERE id_temporada = $cuandoes AND id_tienda = 2");
+
+                // VXP Real Actual para FOTO EXPERIENCIAS = Venta total / Total de Grupos
+                mysqli_query($conec, "UPDATE comparativos SET cantTempAct = ROUND(venta_total / $totalgrupos, 2) WHERE id_temporada = $cuandoes AND id_tienda = 7");
+              }
+
+              mysqli_query($conec,"UPDATE comparativos SET crecimiento = CASE WHEN cantTempActYear = 0 THEN 0 ELSE ROUND(((cantTempAct / cantTempActYear) - 1) , 2) END WHERE $cuandoes");
+
+
 if ($id_temporada != 0) {
     header("Location: ventas_pax.php?id_temporada=$id_temporada&fecha=$fecha");
 } else {
-    header("Location: ventas_pax.php?id_puente=$id_puente&fecha=$fecha");
+    header("Location: ventas_puentes.php?id_puente=$id_puente&fecha=$fecha");
 }
 exit();
 

@@ -192,23 +192,23 @@ if ($id_temporada != 0) {
 
     </form>
 
-<!-- Fecha consultada -->
+    <!-- Fecha consultada -->
     <?php if ($fecha != '') { ?>
-    <div class="d-flex justify-content-center mb-4">
+      <div class="d-flex justify-content-center mb-4">
         <div class="card shadow-sm px-4 py-3 border-0">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-calendar-event-fill fs-2 me-3" style="color:#77240f;"></i>
+          <div class="d-flex align-items-center">
+            <i class="bi bi-calendar-event-fill fs-2 me-3" style="color:#77240f;"></i>
 
-                <div>
-                    <div class="text-muted">Fecha consultada</div>
-                    <div class="fw-bold fs-4">
-                        <?php echo date('d/m/Y', strtotime($fecha)); ?>
-                    </div>
-                </div>
+            <div>
+              <div class="text-muted">Fecha consultada</div>
+              <div class="fw-bold fs-4">
+                <?php echo date('d/m/Y', strtotime($fecha)); ?>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
-<?php } ?>
+      </div>
+    <?php } ?>
 
     <!-- Comienza la tabla que muestra los toda la informacion de ventas por pax -->
     <div class="inputVxP">
@@ -249,6 +249,7 @@ if ($id_temporada != 0) {
               <!-- CAMPOS DE LA VISTA GENERAL -->
               <th width="1700" style="font-size: 16px;">Meta Actual</th>
               <th width="1700" style="font-size: 16px;">Venta Total</th>
+              <th width="1700" style="font-size: 16px;">VXP Real Actual</th>
               <th width="1700" style="font-size: 16px;">Crecimiento</th>
               <th width="1700" style="font-size: 16px;">Comisión</th>
               <?php if ($rol == 'admin') { ?>
@@ -262,16 +263,25 @@ if ($id_temporada != 0) {
           </tr>
           <?php
 
+          echo "id_temporada: $id_temporada <br>";
+echo "id_puente: $id_puente <br>";
+          if ($id_temporada != 0) {
 
-        $perteneceTemporada = mysqli_query($conec, "SELECT fecha_inicio, fecha_fin FROM temporadas WHERE id_temporada = '$id_temporada'");
-        $tempoarada = mysqli_fetch_assoc($perteneceTemporada);
-        $fecha_inicio = $tempoarada['fecha_inicio'];
-        $fecha_fin = $tempoarada['fecha_fin'];
+            $consulta = mysqli_query($conec, "SELECT fecha_inicio, fecha_fin FROM temporadas WHERE id_temporada = '$id_temporada'");
+          } else {
 
-        if ($fecha != '' && ($fecha < $fecha_inicio || $fecha > $fecha_fin)) {
-            echo "<script>alert('La fecha seleccionada no pertenece a la temporada seleccionada.'); window.location.href='ventas_pax.php?id_temporada=$id_temporada';</script>";
+            $consulta = mysqli_query($conec, "SELECT fecha_inicio, fecha_fin FROM puentes WHERE id_puente = '$id_puente'");
+          }
+
+          $periodo = mysqli_fetch_assoc($consulta);
+
+          $fecha_inicio = $periodo['fecha_inicio'];
+          $fecha_fin = $periodo['fecha_fin'];
+
+          if ($fecha != '' && ($fecha < $fecha_inicio || $fecha > $fecha_fin)) {
+            echo "<script>alert('La fecha seleccionada no pertenece al periodo seleccionado.'); window.location.href='ventas_pax.php?id_temporada=$id_temporada';</script>";
             exit();
-        }
+          }
 
           //Comienza mi prueba de if para las consultas de la tabla por temporada y puente segun las fechas y las temporadas abiertas o cerradas
           $datos = null;
@@ -302,7 +312,7 @@ if ($id_temporada != 0) {
 
                 $pax = $datos['pax'];
                 $grupos = $datos['grupos'];
-               echo "PAX: $pax, Grupos: $grupos";
+                echo "PAX: $pax, Grupos: $grupos";
 
                 // Meta para EXPLANADA = Meta Año Anterior × PAX
                 mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.meta_dia = cd.metaYearAnterior * $pax WHERE cd.id_temporada = '$id_temporada' AND cd.fecha = '$fecha' AND t.id_tienda = 2");
@@ -321,9 +331,8 @@ if ($id_temporada != 0) {
               $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.id_tienda,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados, cd.porcentaje_comision, cd.comision, temp.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON cd.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' AND cd.fecha = '$fecha'");
             } else {
               // temporada general
-              $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total,c.crecimiento,c.comision, temp.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON c.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
+              $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total, c.cantTempAct, c.crecimiento,c.comision, temp.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON c.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
             }
-
           } elseif ($id_puente != 0) {
 
             if ($fecha != '') {
@@ -331,7 +340,7 @@ if ($id_temporada != 0) {
               $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.id_tienda,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados, cd.porcentaje_comision, cd.comision, puentes.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN puentes ON cd.id_temporada = puentes.id_puente WHERE puentes.id_puente = '$id_puente' AND cd.fecha = '$fecha'");
             } else {
               // puente general
-              $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total,c.crecimiento,c.comision, puentes.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN puentes ON c.id_temporada = puentes.id_puente WHERE puentes.id_puente = '$id_puente' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
+              $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total, c.cantTempAct, c.crecimiento,c.comision, puentes.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN puentes ON c.id_temporada = puentes.id_puente WHERE puentes.id_puente = '$id_puente' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
             }
           }
 
@@ -386,27 +395,27 @@ if ($id_temporada != 0) {
                   <!-- Muestra la cantidad de temporadas actuales -->
                   <td width="220">
                     <div class="input-group">
-                        <span class="input-group-text">$</span>
-                            <input type="number" name="metaYearAnterior" value="<?php echo $i['metaYearAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                      <span class="input-group-text">$</span>
+                      <input type="number" name="metaYearAnterior" value="<?php echo $i['metaYearAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
                     </div>
                   </td>
                   <!-- Muestra el pax -->
                   <td width="220">
                     <div class="input-group">
-                        <span class="input-group-text">$</span>
-                    <input type="number" name="cantTempActYear" value="<?php echo $i['cantTempActYear']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                      <span class="input-group-text">$</span>
+                      <input type="number" name="cantTempActYear" value="<?php echo $i['cantTempActYear']; ?>" class="form-control" style="font-size: 14px;" readonly>
                   </td>
                   <!-- Muestra los visitantes por experiencia -->
                   <td width="220">
                     <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        <input type="number" name="cantTempAnterior" value="<?php echo $i['cantTempAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                      <span class="input-group-text">$</span>
+                      <input type="number" name="cantTempAnterior" value="<?php echo $i['cantTempAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
                     </div>
                   </td>
                   <td width="220">
                     <div class="input-group">
-                        <span class="input-group-text">$</span>
-                        <input type="number" name="puenteAnterior" value="<?php echo $i['puenteAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                      <span class="input-group-text">$</span>
+                      <input type="number" name="puenteAnterior" value="<?php echo $i['puenteAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
                     </div>
                   </td>
 
@@ -415,30 +424,30 @@ if ($id_temporada != 0) {
                     <td width="220">
                       <div class="input-group">
                         <span class="input-group-text">$</span>
-                          <input type="number" name="meta_dia"
+                        <input type="number" name="meta_dia"
                           value="<?php echo $i['meta_dia']; ?>"
                           class="form-control" style="font-size: 14px;">
-                          <input type="hidden" name="meta_dia_original" value="<?php echo $i['meta_dia']; ?>">
+                        <input type="hidden" name="meta_dia_original" value="<?php echo $i['meta_dia']; ?>">
                       </div>
                     </td>
 
                     <td width="220">
                       <div class="input-group">
                         <span class="input-group-text">$</span>
-                          <input type="number" name="venta_real"
+                        <input type="number" name="venta_real"
                           value="<?php echo $i['venta_real']; ?>"
                           class="form-control" style="font-size: 14px;">
-                          <input type="hidden" name="venta_real_original" value="<?php echo $i['venta_real']; ?>">
+                        <input type="hidden" name="venta_real_original" value="<?php echo $i['venta_real']; ?>">
                       </div>
                     </td>
 
                     <td width="220">
                       <div class="input-group">
                         <input type="text" name="resultados"
-                        value="<?php echo round($i['resultados']); ?>"
-                        class="form-control" style="font-size: 14px;">
+                          value="<?php echo round($i['resultados']); ?>"
+                          class="form-control" style="font-size: 14px;">
                         <span class="input-group-text">%</span>
-                        </div>
+                      </div>
                     </td>
 
                     <td width="220">
@@ -446,15 +455,15 @@ if ($id_temporada != 0) {
                         <input type="text" name="porcentaje"
                           value="<?php echo round($i['porcentaje_comision']); ?>"
                           class="form-control" style="font-size: 14px;">
-                          <input type="hidden" name="porcentaje_original" value="<?php echo round($i['porcentaje_comision']); ?>">
-                          <span class="input-group-text">%</span>
+                        <input type="hidden" name="porcentaje_original" value="<?php echo round($i['porcentaje_comision']); ?>">
+                        <span class="input-group-text">%</span>
                       </div>
                     </td>
 
                     <td width="220">
                       <div class="input-group">
                         <span class="input-group-text">$</span>
-                          <input type="number" name="comision"
+                        <input type="number" name="comision"
                           value="<?php echo $i['comision']; ?>"
                           class="form-control" style="font-size: 14px;">
                       </div>
@@ -465,35 +474,58 @@ if ($id_temporada != 0) {
                     <!-- CAMPOS DE LA VISTA GENERAL -->
 
                     <td width="220">
-                      <input type="number" name="meta"
-                        value="<?php echo $i['meta']; ?>"
-                        class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                echo "readonly";
-                                              } ?>>
+                      <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" name="meta"
+                          value="<?php echo $i['meta']; ?>"
+                          class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                                          echo "readonly";
+                                                                        } ?>>
+                      </div>
                     </td>
 
                     <td width="220">
-                      <input type="number" name="venta_total"
-                        value="<?php echo $i['venta_total']; ?>"
-                        class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                echo "readonly";
-                                              } ?>>
+                      <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" name="venta_total"
+                          value="<?php echo $i['venta_total']; ?>"
+                          class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                                          echo "readonly";
+                                                                        } ?>>
+                      </div>
                     </td>
 
                     <td width="220">
-                      <input type="number" name="crecimiento"
-                        value="<?php echo $i['crecimiento']; ?>"
-                        class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                echo "readonly";
-                                              } ?>>
+                      <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" name="cantTempAct"
+                          value="<?php echo $i['cantTempAct']; ?>"
+                          class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                                          echo "readonly";
+                                                                        } ?>>
+                      </div>
                     </td>
 
                     <td width="220">
-                      <input type="number" name="comision"
-                        value="<?php echo $i['comision']; ?>"
-                        class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                echo "readonly";
-                                              } ?>>
+                      <div class="input-group">
+                        <span class="input-group-text">%</span>
+                        <input type="number" name="crecimiento"
+                          value="<?php echo $i['crecimiento']; ?>"
+                          class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                                          echo "readonly";
+                                                                        } ?>>
+                      </div>
+                    </td>
+
+                    <td width="220">
+                      <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="number" name="comision"
+                          value="<?php echo $i['comision']; ?>"
+                          class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                                          echo "readonly";
+                                                                        } ?>>
+                      </div>
                     </td>
 
                   <?php } ?>
@@ -521,7 +553,7 @@ if ($id_temporada != 0) {
       <div>
         <form action="cerrarTemporada.php" method="POST">
           <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
-          <button type="submit" class="cerrar_temporada"formnovalidate onclick="return confirm('¿Está seguro que desea cerrar esta temporada?')">Cerrar temporada</button>
+          <button type="submit" class="cerrar_temporada" formnovalidate onclick="return confirm('¿Está seguro que desea cerrar esta temporada?')">Cerrar temporada</button>
         </form>
       </div>
     <?php } ?>

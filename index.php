@@ -154,7 +154,7 @@ $datosPuente = mysqli_fetch_assoc($puenteActivo);
                                 // Revisa si hay puente activo
                                 else if ($datosPuente) {
                                 ?>
-                                    <a href="ventas_puente.php?id_puente=<?php echo $datosPuente['id_puente']; ?>" style="text-decoration:none; color:white;">Ventas por Pax</a>
+                                    <a href="ventas_puentes.php?id_puente=<?php echo $datosPuente['id_puente']; ?>" style="text-decoration:none; color:white;">Ventas por Pax</a>
                                 <?php
                                 }
                                 // Si no hay ninguno activo entra directamente al modal para seleccionar temporada o puente

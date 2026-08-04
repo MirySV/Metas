@@ -29,8 +29,9 @@ $fila = mysqli_fetch_array($buscar_tienda);
 if ($fila) {
 
     $id_tienda = $fila['id_tienda'];
+    $descanso = $_POST['descanso'];
 
-    $actualizar_tienda = mysqli_query($conec, "UPDATE empleados SET id_tienda='$id_tienda' WHERE id_empleado='$id_empleado'");
+    $actualizar_tienda = mysqli_query($conec, "UPDATE empleados SET id_tienda='$id_tienda', descanso='$descanso' WHERE id_empleado='$id_empleado'");
 
     if ($actualizar_tienda) {
         echo '<script>

@@ -22,29 +22,63 @@ if ($tienda) {
   $nombre_tienda = "Tienda desconocida";
 }
 
- //echo $id_tienda;
+//echo $id_tienda;
+//Consulta original
+//$scar=mysqli_query($conec,"SELECT * FROM registros as r,empleados as e WHERE r.idEmpleado=e.idEmpleado AND codigo=".$_POST['tarjeta']." AND r.fecha='".$fecha."'");
 
+// Consulta cruzada entre 'bd_metas' y 'bd_reloj'
 if (!empty($_POST['tarjeta'])) {
-  //Consulta original
-  //$scar=mysqli_query($conec,"SELECT * FROM registros as r,empleados as e WHERE r.idEmpleado=e.idEmpleado AND codigo=".$_POST['tarjeta']." AND r.fecha='".$fecha."'");
 
-  // Consulta cruzada entre 'bd_metas' y 'bd_reloj'
-  $scar = mysqli_query($conec, "SELECT * FROM metas.registros AS m INNER JOIN reloj.empleados AS j ON m.id_empleado=j.idEmpleado WHERE codigo=" . $_POST['tarjeta'] . " AND m.fecha='" . $fecha . "'");
-    if (mysqli_num_rows($scar) <= 0) {
-    $empleado = mysqli_query($conec, "SELECT idEmpleado FROM reloj.empleados WHERE codigo=" . $_POST['tarjeta'] . "");
-    $idEmpl = mysqli_fetch_array($empleado);
-    if (mysqli_num_rows($empleado) > 0) {
-      //$foto = $_POST['tarjeta'] . ".JPG";
-      //$m = rand(1, 9);
-      //$s = rand(10, 40);
-      //$salidas = mysqli_query($conec, "SELECT DISTINCT DATE_FORMAT( h_s,'%H:%" . $m . ":%" . $s . "') FROM horarios as h,empleados as e WHERE h.idHorarios=e.idHorarios AND e.codigo=" . $_POST['tarjeta'] . "");
-      //$sal = mysqli_fetch_array($salidas);
-      $insrtRegi = mysqli_query($conec, "INSERT INTO registros (id_registro, id_tienda, id_empleado, fecha, hora_entrada) VALUES (NULL, '" . $id_tienda . "', '" . $idEmpl[0] . "', '" . $fecha . "', '" . $hora . "');");
+  // Buscar empleado en reloj
+  $empleado = mysqli_query($conec, "SELECT idEmpleado FROM reloj.empleados WHERE codigo = " . $_POST['tarjeta'] . "");
+
+  if (mysqli_num_rows($empleado) > 0) {
+
+    $idEmpl = mysqli_fetch_assoc($empleado);
+    $idEmpleado = $idEmpl['idEmpleado'];
+
+    // Buscar el empleado en Metas para conocer su tienda
+    $empleadoMetas = mysqli_query($conec, "SELECT id_tienda FROM metas.empleados WHERE id_empleado='$idEmpleado'
+        ");
+
+    if (mysqli_num_rows($empleadoMetas) == 0) {
+
+      $mensaje = "<div class='alerta'>⚠️ <strong>El empleado aún no ha sido dado de alta en Tiendas.</strong></div>";
     } else {
-      $mensaje = "<div class='alerta'>⚠️ <strong>El empleado aun no ha sido dado de alta..</strong> </div>";
+
+      $datosEmpleado = mysqli_fetch_assoc($empleadoMetas);
+
+      // Verificar que pertenece a esta tienda
+      if ($datosEmpleado['id_tienda'] != $id_tienda) {
+
+        $mensaje = "<div class='alerta'>⚠️ <strong>El empleado no pertenece a esta tienda.</strong></div>";
+      } else {
+
+        // Verificar que ya checó en el reloj general
+        $checador = mysqli_query($conec, "SELECT * FROM reloj.registros WHERE idEmpleado='$idEmpleado' AND fecha='$fecha'");
+
+        if (mysqli_num_rows($checador) == 0) {
+
+          $mensaje = "<div class='alerta'>⚠️ <strong>Primero debe registrar su entrada en el reloj general.</strong></div>";
+        } else {
+
+          // Verificar que no esté registrado en Metas
+          $registrado = mysqli_query($conec, "SELECT * FROM metas.registros WHERE id_empleado='$idEmpleado' AND fecha='$fecha' AND id_tienda='$id_tienda'");
+
+          if (mysqli_num_rows($registrado) > 0) {
+
+            $mensaje = "<div class='alerta1'>🔵 <strong>El empleado ya se encuentra registrado el día de hoy.</strong></div>";
+          } else {
+
+            // Insertar registro
+            mysqli_query($conec, "INSERT INTO metas.registros (id_registro,id_tienda,id_empleado,fecha,hora_entrada) VALUES (NULL,'$id_tienda','$idEmpleado','$fecha','$hora')");
+          }
+        }
+      }
     }
   } else {
-    $mensaje = "<div class='alerta1'>🔵 <strong>El empleado ya se encuentra registrado el dia de hoy.</strong></div>";
+
+    $mensaje = "<div class='alerta'>⚠️ <strong>El empleado no existe en el reloj.</strong></div>";
   }
 }
 
@@ -79,6 +113,10 @@ if (!empty($_POST['tarjeta'])) {
       color: white;
       padding: 15px 20px;
       border-radius: 6px;
+      margin: auto;
+      margin-top: 20px;
+      width: 550px;
+      justify-content: center;
       font-family: Arial, sans-serif;
       font-size: 18px;
       display: flex;
@@ -115,6 +153,10 @@ if (!empty($_POST['tarjeta'])) {
       color: white;
       padding: 15px 20px;
       border-radius: 6px;
+      margin: auto;
+      margin-top: 20px;
+      width: 550px;
+      justify-content: center;
       font-family: Arial, sans-serif;
       font-size: 18px;
       display: flex;
@@ -127,6 +169,81 @@ if (!empty($_POST['tarjeta'])) {
 
     .alerta1 strong {
       font-size: 20px;
+    }
+
+    .fondo {
+      margin-top: 25px;
+    }
+
+    .card {
+      border: none;
+      border-radius: 20px !important;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, .35);
+      padding: 15px 10px;
+      background: rgba(255, 255, 255, .96);
+    }
+
+    .nombre-tienda {
+      text-align: center;
+      color: white;
+      font-size: 42px;
+      font-weight: bold;
+      margin-top: 25px;
+      text-shadow: 2px 2px 8px black;
+    }
+
+    #tarjeta {
+      width: 58%;
+      height: 48px;
+      font-size: 24px;
+      text-align: center;
+      border-radius: 10px;
+      border: 2px solid #198754;
+      margin-right: 10px;
+      margin-bottom: 0;
+      transition: .2s;
+    }
+
+    #tarjeta:focus {
+      outline: none;
+      border-color: #157347;
+      box-shadow: 0 0 10px rgba(25, 135, 84, .3);
+    }
+
+    input[type=submit] {
+      width: 28%;
+      height: 48px;
+      background: #198754;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: .25s;
+    }
+
+    input[type=submit]:hover {
+      background: #157347;
+      transform: translateY(-2px);
+    }
+
+    .table {
+      margin-top: 35px;
+      border-radius: 15px;
+      overflow: hidden;
+      background: #222831;
+    }
+
+    .table thead {
+      background: #198754;
+    }
+
+    .table td {
+      padding: 14px;
+    }
+
+    .table tbody tr:hover {
+      background: #303841;
     }
 
     @keyframes parpadeo {
@@ -149,15 +266,27 @@ if (!empty($_POST['tarjeta'])) {
 
   <style>
     #reloj {
-      font-size: 3em;
-      /* Aqui se ajusta el tamaño del texto*/
-      font-weight: bold;
+      font-size: 52px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+      text-shadow: 0 3px 10px rgba(0, 0, 0, .25);
+      /*font-size: 3em;
+      /* Aqui se ajusta el tamaño del texto
+      font-weight: bold;*/
     }
   </style>
 </head>
 <!--<body onLoad="document.forms[0].tarjeta.focus()">-->
 
-<body style="background-image: url('assets/<?php echo $id_tienda; ?>.png'); background-size: cover;">
+<!--<body style="background-image: url('assets/<?php echo $id_tienda; ?>.png'); background-size: cover;">-->
+
+<body style="background:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
+              url('assets/<?php echo $id_tienda; ?>.png');
+              background-size:cover;
+              background-position:center;
+              background-attachment:fixed;">
 
   <?php
 
@@ -166,7 +295,7 @@ if (!empty($_POST['tarjeta'])) {
 
   ?>
   <!--------------------------------------- FORMULARIO  ------------------------------------------>
- <!--<h3><?php echo $nombre_tienda; ?></h3>-->
+  <!--<h1 class="nombre-tienda"><?php echo $nombre_tienda; ?></h1>-->
 
 
   <div class="container px-1 px-sm-5 mx-auto">
@@ -195,7 +324,7 @@ if (!empty($_POST['tarjeta'])) {
                     <?php echo obtenerHoraActual(); ?>
                   </div>
 
-                  <div class="mb-1">
+                  <div class="mb-3 d-flex justify-content-center align-items-center gap-2">
                     <!--   <label for="" class="form-label">MATRICULA</label>-->
                     <input type="text" id="tarjeta" name="tarjeta" onLoad="enfocar()" required>
                     <input type="submit" name="insertar" value="Aceptar">
@@ -208,7 +337,9 @@ if (!empty($_POST['tarjeta'])) {
         </div>
       </section>
     </form>
-    <center><h5><?php echo @$mensaje; ?></h5></center>
+    <center>
+      <h5><?php echo @$mensaje; ?></h5>
+    </center>
     <table class="table table-dark">
       <thead>
         <tr>
@@ -219,7 +350,7 @@ if (!empty($_POST['tarjeta'])) {
       </thead>
       <tbody>
         <?php
-        $mostrarR = mysqli_query($conec, "SELECT j.nombre, m.hora_entrada FROM metas.registros as m INNER JOIN reloj.empleados as j ON m.id_empleado=j.idEmpleado WHERE m.fecha = '" . $fecha . "' AND j.fecha = '" . $fecha . "'  AND m.id_tienda = '" . $id_tienda . "' ORDER BY hora_entrada DESC");
+        $mostrarR = mysqli_query($conec, "SELECT j.nombre, m.hora_entrada FROM metas.registros AS m INNER JOIN reloj.empleados AS j ON m.id_empleado = j.idEmpleado WHERE m.fecha = '$fecha' AND m.id_tienda = '$id_tienda' ORDER BY m.hora_entrada DESC");
         $c = 1;
         while ($i = mysqli_fetch_array($mostrarR)) {
           $cont = $c++;
