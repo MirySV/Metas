@@ -20,7 +20,7 @@ if (!isset($usuario)) {
 
 include 'conexion.php'; //Conexion a la base de datos
 
-mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + cantTempAnterior + puenteAnterior) / 3,2) WHERE id_puente = '$id_puente'");
+mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((metaYearAnterior + cantTempActYear + cantTempAnterior) / 3,2) WHERE id_puente = '$id_puente'");
 
 ?>
 
@@ -173,7 +173,7 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + ca
                 style="display:none"
                 onchange="this.form.submit();">
 
-            <?php if ($fecha != '' && $rol == 'admin') { ?>
+            <?php if (!empty($fecha) && $rol == 'admin') { ?>
                 <button
                     type="button"
                     class="btn btn-success"
@@ -187,7 +187,7 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + ca
         </form>
 
         <!-- Fecha consultada -->
-        <?php if ($fecha != '') { ?>
+        <?php if (!empty($fecha)) { ?>
             <div class="d-flex justify-content-center mb-4">
                 <div class="card shadow-sm px-4 py-3 border-0">
                     <div class="d-flex align-items-center">
@@ -226,7 +226,7 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + ca
                         </th>
 
                         <!-- CAMPOS DE LA VISTA POR DÍA -->
-                        <?php if ($fecha != '') { ?>
+                        <?php if (!empty($fecha)) { ?>
 
                             <th width="1700" style="font-size: 16px;">Meta Día</th>
                             <th width="1700" style="font-size: 16px;">Venta Real</th>
@@ -283,7 +283,7 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + ca
                     //Comienza mi prueba de if para las consultas de la tabla por temporada y puente segun las fechas y las temporadas abiertas o cerradas
                     $datos = null;
 
-                        if ($fecha != '') {
+                        if (!empty($fecha)) {
                             // puente por día
                             $fechafb = date('d.m.Y', strtotime($fecha));
                             //echo "Fecha Firebird: $fechafb";
@@ -299,19 +299,20 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + ca
                             echo $visitantes;
 
                             //Update de la meta_dia en la tabla comparativos_dia, multiplicando la metaYearAnterior por el numero de visitantes obtenidos de la consulta a la base de datos de taquilla
-                            mysqli_query($conec, "UPDATE comparativos_dia SET meta_dia = metaYearAnterior * $visitantes WHERE id_puente = '$id_puente'AND fecha = '$fecha' AND id_tienda NOT IN (2,7) AND (meta_dia IS NULL OR meta_dia = 0)");
+                            mysqli_query($conec, "UPDATE comparativos_dia SET meta_dia = metaYearAnterior * $visitantes WHERE id_puente = '$id_puente' AND fecha = '$fecha' AND id_tienda NOT IN (2,7) AND (meta_dia IS NULL OR meta_dia = 0)");
 
                             // Obtener el PAX de Foto Experiencias para ese día
-                            $consulta = mysqli_query($conec, "SELECT grupos, pax FROM tiendas_explanada WHERE fecha = '$fecha'  AND id_tienda = 7");
+                            $consulta = mysqli_query($conec, "SELECT grupos, pax, visitantes FROM tiendas_explanada WHERE fecha = '$fecha'  AND id_tienda = 7");
 
-                            if ($datos = mysqli_fetch_assoc($consulta)) {
+                            if ($fotoexp = mysqli_fetch_assoc($consulta)) {
 
-                                $pax = $datos['pax'];
-                                $grupos = $datos['grupos'];
-                                echo "PAX: $pax, Grupos: $grupos";
+                                $pax = $fotoexp['pax'];
+                                $grupos = $fotoexp['grupos'];
+                                $visitantes = $fotoexp['visitantes'];
+                                echo "PAX: $pax, Grupos: $grupos, Visitantes: $visitantes";
 
                                 // Meta para EXPLANADA = Meta Año Anterior × PAX
-                                mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.meta_dia = cd.metaYearAnterior * $pax WHERE cd.id_puente = '$id_puente' AND cd.fecha = '$fecha' AND t.id_tienda = 2");
+                                mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.meta_dia = cd.metaYearAnterior * $visitantes WHERE cd.id_puente = '$id_puente' AND cd.fecha = '$fecha' AND t.id_tienda = 2");
 
                                 // Meta para FOTO EXPERIENCIAS = Meta Año Anterior × Grupos
                                 mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.meta_dia = cd.metaYearAnterior * $grupos WHERE cd.id_puente = '$id_puente' AND cd.fecha = '$fecha' AND t.id_tienda = 7");
@@ -322,15 +323,14 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + ca
 
                             //Update de la columna comision en la tabla comparativos_dia
                             /*mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.comision = ROUND(cd.venta_real * (t.porcentaje / 100), 2) WHERE cd.id_temporada = '$id_temporada' AND cd.fecha = '$fecha'");*/
-
-                        if ($fecha != '') {
+                        }
+                        if (!empty($fecha)) {
                             // puente por día
                             $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.id_tienda,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados, cd.porcentaje_comision, cd.comision, puentes.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN puentes ON cd.id_puente = puentes.id_puente WHERE puentes.id_puente = '$id_puente' AND cd.fecha = '$fecha'");
                         } else {
                             // puente general
                             $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total, c.cantTempAct, c.crecimiento,c.comision, puentes.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN puentes ON c.id_puente = puentes.id_puente WHERE puentes.id_puente = '$id_puente' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
                         }
-                    }
 
                     if ($datos) {
                         while ($i = mysqli_fetch_array($datos)) {
@@ -339,7 +339,7 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + ca
                                 <form action="actualizarVPax.php" method="POST">
                                     <!-- Muestra el nombre de la tienda -->
                                     <td width="220">
-                                        <?php if ($fecha != '') { ?>
+                                        <?php if (!empty($fecha)) { ?>
 
                                             <!-- CAMPOS DE LA VISTA POR DÍA -->
                                             <input type="hidden" name="id_comparativosDia" value="<?php echo $i['id_comparativosDia']; ?>">
@@ -386,7 +386,7 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + ca
                                         </div>
                                     </td>
 
-                                    <?php if ($fecha != '') { ?>
+                                    <?php if (!empty($fecha)) { ?>
                                         <!-- CAMPOS DE LA VISTA POR DÍA -->
                                         <td width="220">
                                             <div class="input-group">
@@ -410,7 +410,7 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + ca
 
                                         <td width="220">
                                             <div class="input-group">
-                                                <input type="text" name="resultados"
+                                                <input type="number" name="resultados"
                                                     value="<?php echo round($i['resultados']); ?>"
                                                     class="form-control" style="font-size: 14px;">
                                                 <span class="input-group-text">%</span>
@@ -419,10 +419,12 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + ca
 
                                         <td width="220">
                                             <div class="input-group">
-                                                <input type="text" name="porcentaje"
-                                                    value="<?php echo round($i['porcentaje_comision']); ?>"
-                                                    class="form-control" style="font-size: 14px;">
-                                                <input type="hidden" name="porcentaje_original" value="<?php echo round($i['porcentaje_comision']); ?>">
+                                                <input type="number" name="porcentaje"
+                                                    value="<?php echo ($i['porcentaje_comision']); ?>"
+                                                    class="form-control" style="font-size: 14px;"
+                                                    step="0.01"
+                                                    min="0">
+                                                <input type="hidden" name="porcentaje_original" value="<?php echo ($i['porcentaje_comision']); ?>">
                                                 <span class="input-group-text">%</span>
                                             </div>
                                         </td>
@@ -512,15 +514,15 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + ca
                         } //Acaba el ciclo while 
                     } //Acaba el ciclo if que verifica si hay datos para mostrar 
                     ?>
-                </table>
+                </table>  
             </div>
         </div>
 
-        <?php if ($id_temporada != 0) { ?>
+        <?php if ($id_puente != 0) { ?>
             <div>
-                <form action="cerrarTemporada.php" method="POST">
-                    <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
-                    <button type="submit" class="cerrar_temporada" formnovalidate onclick="return confirm('¿Está seguro que desea cerrar esta temporada?')">Cerrar temporada</button>
+                <form action="cerrarPuente.php" method="POST">
+                    <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
+                    <button type="submit" class="cerrar_puente" formnovalidate onclick="return confirm('¿Está seguro que desea cerrar este puente?')">Cerrar puente</button>
                 </form>
             </div>
         <?php } ?>

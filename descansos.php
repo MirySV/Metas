@@ -3,6 +3,7 @@ include "conexion.php";
 //date_default_timezone_set('America/Mazatlan');
 date_default_timezone_set('America/Mexico_City');
 $fecha = date("Y-m-d");
+//$fecha = "2026-08-08";
 $hora = "00:00:00";
 
 $insertados = 0;
@@ -17,9 +18,10 @@ $dias = [
     "Sunday"    => "DOMINGO"
 ];
 
-$dia = $dias[date("l")];
+//$dia = $dias[date("l")];
+$dia = $dias[date("l", strtotime($fecha))];
 
-$empleados = mysqli_query($conec, "SELECT * FROM empleados WHERE descanso='$dia' AND status=1");
+$empleados = mysqli_query($conec, "SELECT * FROM empleados WHERE descanso='$dia' AND tipo_jornada=1 AND status=1");
 
 while ($emp = mysqli_fetch_assoc($empleados)) {
 

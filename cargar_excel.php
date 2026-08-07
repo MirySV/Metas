@@ -267,19 +267,31 @@ $resultado_comision = mysqli_query($conec, "SELECT id_tienda, SUM(comision) AS c
     }
 
     // Obtener el PAX de Foto Experiencias para ese día
-              $consulta = mysqli_query($conec, "SELECT SUM(grupos) AS total_grupos, SUM(pax) AS total_pax FROM tiendas_explanada WHERE fecha BETWEEN '".$periodo['fecha_inicio']."'AND '".$periodo['fecha_fin']."' AND id_tienda = 7");
+              $consulta = mysqli_query($conec, "SELECT SUM(grupos) AS total_grupos, SUM(pax) AS total_pax, SUM(visitantes) AS total_visitantes FROM tiendas_explanada WHERE fecha BETWEEN '".$periodo['fecha_inicio']."'AND '".$periodo['fecha_fin']."' AND id_tienda = 7");
 
               if ($datos = mysqli_fetch_assoc($consulta)) {
 
                 $totalpax = $datos['total_pax'];
                 $totalgrupos = $datos['total_grupos'];
-                echo "PAX: $totalpax, Grupos: $totalgrupos";
+                $totalvisitantes = $datos['total_visitantes'];
+                echo "PAX: $totalpax, Grupos: $totalgrupos, Visitantes: $totalvisitantes";
+
+                if ($id_temporada != 0) {
 
                 // VXP Real Actual para EXPLANADA = Venta total / Total de PAX
                 mysqli_query($conec, "UPDATE comparativos SET cantTempAct = ROUND(venta_total / $totalpax, 2) WHERE id_temporada = $cuandoes AND id_tienda = 2");
 
                 // VXP Real Actual para FOTO EXPERIENCIAS = Venta total / Total de Grupos
                 mysqli_query($conec, "UPDATE comparativos SET cantTempAct = ROUND(venta_total / $totalgrupos, 2) WHERE id_temporada = $cuandoes AND id_tienda = 7");
+                
+                }  elseif ($id_puente != 0){
+                // VXP Real Actual para EXPLANADA = Venta total / Total de PAX
+                mysqli_query($conec, "UPDATE comparativos SET cantTempAct = ROUND(venta_total / $totalvisitantes, 2) WHERE id_puente = $cuandoes AND id_tienda = 2");
+
+                // VXP Real Actual para FOTO EXPERIENCIAS = Venta total / Total de Grupos
+                mysqli_query($conec, "UPDATE comparativos SET cantTempAct = ROUND(venta_total / $totalgrupos, 2) WHERE id_puente = $cuandoes AND id_tienda = 7");
+                }
+                 
               }
 
               mysqli_query($conec,"UPDATE comparativos SET crecimiento = CASE WHEN cantTempActYear = 0 THEN 0 ELSE ROUND(((cantTempAct / cantTempActYear) - 1) , 2) END WHERE $cuandoes");
