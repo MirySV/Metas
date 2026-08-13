@@ -11,8 +11,8 @@ if (!isset($_SESSION['rol'])) {
 $usuario = $_SESSION['username'];
 $rol = $_SESSION['rol'];
 $id_temporada = $_GET['id_temporada'] ?? 0;
-$id_puente = $_GET['id_puente'] ?? 0;
 $fecha = $_GET['fecha'] ?? '';
+$general = $_GET['general'] ?? 0;
 //echo $fecha;
 //echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
 if (!isset($usuario)) {
@@ -21,6 +21,18 @@ if (!isset($usuario)) {
 
 include 'conexion.php'; //Conexion a la base de datos
 
+if ($id_temporada != 0 && $fecha == '' && $general != 1) {
+
+    $consulta = mysqli_query($conec, "SELECT fecha_inicio FROM temporadas WHERE id_temporada = '$id_temporada'
+    ");
+
+    $temporada = mysqli_fetch_assoc($consulta);
+
+    if ($temporada) {
+        header("Location: ventas_pax.php?id_temporada=$id_temporada&fecha=" . $temporada['fecha_inicio']);
+        exit();
+    }
+}
 
 if ($id_temporada != 0) {
   mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((cantTempActYear + cantTempAnterior + puenteAnterior) / 3,2) WHERE id_temporada = '$id_temporada'");
@@ -157,16 +169,17 @@ if ($id_temporada != 0) {
 
     <form method="GET" action="ventas_pax.php">
       <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
-      <input type="date" name="fecha">
+      <input type="date" name="fecha" value="<?php echo $fecha; ?>">
       <button type="submit">Ver día</button>
-      <a href="ventas_pax.php?id_temporada=<?php echo $id_temporada; ?>" class="btn btn-secondary">Vista general</a>
+      <a href="ventas_pax.php?id_temporada=<?php echo $id_temporada; ?>&general=1" class="btn btn-secondary">
+                Vista general
+            </a>
     </form>
 
     <!-- Boton para cargar excel de ventas real -->
     <form action="cargar_excel.php" method="POST" enctype="multipart/form-data">
 
       <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
-      <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
       <input type="hidden" name="fecha" value="<?php echo $fecha; ?>">
 
       <input
@@ -177,23 +190,21 @@ if ($id_temporada != 0) {
         style="display:none"
         onchange="this.form.submit();">
 
-      <?php if ($rol == 'admin') { ?>
-        <button
-          type="button"
-          class="btn btn-success"
-          onclick="document.getElementById('archivoExcel').click();">
-
-          <i class="bi bi-upload"></i> Cargar Excel
-
-        </button>
-      <?php } ?>
+      <?php if (!empty($fecha) && $rol == 'admin') { ?>
+                    <button
+                        type="button"
+                        class="btn btn-success"
+                        onclick="document.getElementById('archivoExcel').click();">
+                        <i class="bi bi-upload"></i> Cargar Excel
+                    </button>
+                <?php } ?>
 
 
 
     </form>
 
     <!-- Fecha consultada -->
-    <?php if ($fecha != '') { ?>
+    <?php if (!empty($fecha)) { ?>
       <div class="d-flex justify-content-center mb-4">
         <div class="card shadow-sm px-4 py-3 border-0">
           <div class="d-flex align-items-center">
@@ -232,7 +243,8 @@ if ($id_temporada != 0) {
             </th>
 
             <!-- CAMPOS DE LA VISTA POR DÍA -->
-            <?php if ($fecha != '') { ?>
+            <?php if (!empty($fecha)) { ?>
+
 
               <th width="1700" style="font-size: 16px;">Meta Día</th>
               <th width="1700" style="font-size: 16px;">Venta Real</th>
@@ -263,31 +275,34 @@ if ($id_temporada != 0) {
           </tr>
           <?php
 
-          echo "id_temporada: $id_temporada <br>";
-echo "id_puente: $id_puente <br>";
-          if ($id_temporada != 0) {
+          //echo "id_temporada: $id_temporada <br>";
+          $consulta = mysqli_query($conec, "SELECT fecha_inicio, fecha_fin FROM temporadas WHERE id_temporada = '$id_temporada'");
 
-            $consulta = mysqli_query($conec, "SELECT fecha_inicio, fecha_fin FROM temporadas WHERE id_temporada = '$id_temporada'");
-          } else {
+                        $periodo = mysqli_fetch_assoc($consulta);
 
-            $consulta = mysqli_query($conec, "SELECT fecha_inicio, fecha_fin FROM puentes WHERE id_puente = '$id_puente'");
-          }
+                        if (!$periodo) {
+                            echo "<script> 
+                                alert('La temporada seleccionada no existe.');
+                                window.location.href='index.php';
+                                </script>";
+                            exit();
+                        }
 
-          $periodo = mysqli_fetch_assoc($consulta);
+                        $fecha_inicio = $periodo['fecha_inicio'];
+                        $fecha_fin = $periodo['fecha_fin'];
 
-          $fecha_inicio = $periodo['fecha_inicio'];
-          $fecha_fin = $periodo['fecha_fin'];
+                        if ($fecha != '' && ($fecha < $fecha_inicio || $fecha > $fecha_fin)) {
+                            echo "<script>
+                                alert('La fecha seleccionada no pertenece a la temporada seleccionada.');
+                                window.location.href='ventas_pax.php?id_temporada=$id_temporada';
+                                </script>";
+                            exit();
+                        }
 
-          if ($fecha != '' && ($fecha < $fecha_inicio || $fecha > $fecha_fin)) {
-            echo "<script>alert('La fecha seleccionada no pertenece al periodo seleccionado.'); window.location.href='ventas_pax.php?id_temporada=$id_temporada';</script>";
-            exit();
-          }
 
           //Comienza mi prueba de if para las consultas de la tabla por temporada y puente segun las fechas y las temporadas abiertas o cerradas
           $datos = null;
-          if ($id_temporada != 0) {
-
-            if ($fecha != '') {
+          if (!empty($fecha)) {
               // temporada por día
               $fechafb = date('d.m.Y', strtotime($fecha));
               //echo "Fecha Firebird: $fechafb";
@@ -308,10 +323,10 @@ echo "id_puente: $id_puente <br>";
               // Obtener el PAX de Foto Experiencias para ese día
               $consulta = mysqli_query($conec, "SELECT grupos, pax FROM tiendas_explanada WHERE fecha = '$fecha'  AND id_tienda = 7");
 
-              if ($datos = mysqli_fetch_assoc($consulta)) {
+              if ($datosFoto = mysqli_fetch_assoc($consulta)) {
 
-                $pax = $datos['pax'];
-                $grupos = $datos['grupos'];
+                $pax = $datosFoto['pax'];
+                $grupos = $datosFoto['grupos'];
                 echo "PAX: $pax, Grupos: $grupos";
 
                 // Meta para EXPLANADA = Meta Año Anterior × PAX
@@ -326,42 +341,14 @@ echo "id_puente: $id_puente <br>";
 
               //Update de la columna comision en la tabla comparativos_dia
               /*mysqli_query($conec, "UPDATE comparativos_dia cd INNER JOIN tiendas t ON cd.id_tienda = t.id_tienda SET cd.comision = ROUND(cd.venta_real * (t.porcentaje / 100), 2) WHERE cd.id_temporada = '$id_temporada' AND cd.fecha = '$fecha'");*/
-
+              }
+            if (!empty($fecha)) {
               //tempoporada por dia
               $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.id_tienda,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados, cd.porcentaje_comision, cd.comision, temp.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON cd.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' AND cd.fecha = '$fecha'");
             } else {
               // temporada general
               $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total, c.cantTempAct, c.crecimiento,c.comision, temp.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON c.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
             }
-          } elseif ($id_puente != 0) {
-
-            if ($fecha != '') {
-              // puente por día
-              $datos = mysqli_query($conec, "SELECT cd.id_comparativosDia,t.nombre,cd.id_tienda,cd.metaYearAnterior,cd.cantTempActYear,cd.cantTempAnterior,cd.puenteAnterior,cd.meta_dia,cd.venta_real,cd.resultados, cd.porcentaje_comision, cd.comision, puentes.estatus FROM comparativos_dia AS cd INNER JOIN tiendas AS t ON cd.id_tienda = t.id_tienda INNER JOIN puentes ON cd.id_temporada = puentes.id_puente WHERE puentes.id_puente = '$id_puente' AND cd.fecha = '$fecha'");
-            } else {
-              // puente general
-              $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total, c.cantTempAct, c.crecimiento,c.comision, puentes.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN puentes ON c.id_temporada = puentes.id_puente WHERE puentes.id_puente = '$id_puente' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
-            }
-          }
-
-          //Siento que esta parte esta de mas, considero que no es necesario, la dejare comentada por si las dudas
-          //Si el id_temporada es diferente de 0, se muestra la informacion de la temporada seleccionada, en caso contrario se muestra toda la informacion de todas las temporadas
-          /*if ($id_temporada != 0) {
-
-              //Si la fecha es diferente de vacio, se muestra la informacion de la temporada seleccionada en esa fecha, en caso contrario se muestra toda la informacion de la temporada seleccionada
-              if ($fecha != '') {
-
-                $temporadas = mysqli_query($conec, "SELECT tc.id_comparativos,t.nombre,tc.metaYearAnterior,tc.cantTempActYear,tc.cantTempAnterior,tc.puenteAnterior,tc.meta,tc.venta_total,tc.crecimiento,tc.comision, temp.estatus FROM temp_comparativos AS tc INNER JOIN tiendas AS t ON tc.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON tc.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada' AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin");
-              }
-
-              //Si la fecha es igual a vacio, se muestra toda la informacion de la temporada seleccionada
-              else {
-                $temporadas = mysqli_query($conec, "SELECT tc.id_comparativos,t.nombre,tc.metaYearAnterior,tc.cantTempActYear,tc.cantTempAnterior,tc.puenteAnterior,tc.meta,tc.venta_total,tc.crecimiento,tc.comision, temp.estatus FROM temp_comparativos AS tc INNER JOIN tiendas AS t ON tc.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON tc.id_temporada = temp.id_temporada WHERE temp.id_temporada = '$id_temporada'");
-              }
-              //Si el id_temporada es igual a 0, se muestra toda la informacion de todas las temporadas
-            } else {
-              $temporadas = mysqli_query($conec, "SELECT tc.id_comparativos,t.nombre,tc.metaYearAnterior,tc.cantTempActYear,tc.cantTempAnterior,tc.puenteAnterior,tc.meta,tc.venta_total,tc.crecimiento,tc.comision, temp.estatus FROM temp_comparativos AS tc INNER JOIN tiendas AS t ON tc.id_tienda = t.id_tienda INNER JOIN temporadas AS temp ON tc.id_temporada = temp.id_temporada");
-            }*/
 
           if ($datos) {
             while ($i = mysqli_fetch_array($datos)) {
@@ -376,7 +363,6 @@ echo "id_puente: $id_puente <br>";
                       <input type="hidden" name="id_comparativosDia" value="<?php echo $i['id_comparativosDia']; ?>">
                       <input type="hidden" name="id_tienda" value="<?php echo $i['id_tienda']; ?>">
                       <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
-                      <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
                       <input type="hidden" name="porcentaje_original" value="<?php echo $i['porcentaje_comision']; ?>">
                       <input type="hidden" name="fecha" value="<?php echo $fecha; ?>">
                       <input type="text" name="nombre" value="<?php echo $i['nombre']; ?>" class="form-control" style="font-size: 14px;" readonly>
@@ -387,7 +373,6 @@ echo "id_puente: $id_puente <br>";
                       <!-- CAMPOS DE LA VISTA GENERAL -->
                       <input type="hidden" name="id_comparativos" value="<?php echo $i['id_comparativos']; ?>">
                       <input type="hidden" name="id_temporada" value="<?php echo $id_temporada; ?>">
-                      <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
                       <input type="text" name="nombre" value="<?php echo $i['nombre']; ?>" class="form-control" style="font-size: 14px;" readonly>
 
                     <?php } ?>
@@ -419,7 +404,7 @@ echo "id_puente: $id_puente <br>";
                     </div>
                   </td>
 
-                  <?php if ($fecha != '') { ?>
+                   <?php if (!empty($fecha)) { ?>
                     <!-- CAMPOS DE LA VISTA POR DÍA -->
                     <td width="220">
                       <div class="input-group">

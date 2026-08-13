@@ -12,13 +12,28 @@ $usuario = $_SESSION['username'];
 $rol = $_SESSION['rol'];
 $id_puente = $_GET['id_puente'] ?? 0;
 $fecha = $_GET['fecha'] ?? '';
+$general = $_GET['general'] ?? 0;
 //echo $fecha;
 //echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
+
 if (!isset($usuario)) {
     header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
 }
 
 include 'conexion.php'; //Conexion a la base de datos
+
+if ($id_puente != 0 && $fecha == '' && $general != 1) {
+
+    $consulta = mysqli_query($conec, "SELECT fecha_inicio FROM puentes WHERE id_puente = '$id_puente'
+    ");
+
+    $puente = mysqli_fetch_assoc($consulta);
+
+    if ($puente) {
+        header("Location: ventas_puentes.php?id_puente=$id_puente&fecha=" . $puente['fecha_inicio']);
+        exit();
+    }
+}
 
 mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((metaYearAnterior + cantTempActYear + cantTempAnterior) / 3,2) WHERE id_puente = '$id_puente'");
 
@@ -156,132 +171,135 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((metaYearAnterior + c
             <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
             <input type="date" name="fecha" value="<?php echo $fecha; ?>">
             <button type="submit">Ver día</button>
-            <a href="ventas_puentes.php?id_puente=<?php echo $id_puente; ?>" class="btn btn-secondary">Vista general</a>
-        </form>
-
-        <!-- Boton para cargar excel de ventas real -->
-        <form action="cargar_excel.php" method="POST" enctype="multipart/form-data">
-
-            <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
-            <input type="hidden" name="fecha" value="<?php echo $fecha; ?>">
-
-            <input
-                type="file"
-                name="archivo"
-                id="archivoExcel"
-                accept=".xlsx,.xls"
-                style="display:none"
-                onchange="this.form.submit();">
-
-            <?php if (!empty($fecha) && $rol == 'admin') { ?>
-                <button
-                    type="button"
-                    class="btn btn-success"
-                    onclick="document.getElementById('archivoExcel').click();">
-                    <i class="bi bi-upload"></i> Cargar Excel
-                </button>
-            <?php } ?>
-
-
+            <a href="ventas_puentes.php?id_puente=<?php echo $id_puente; ?>&general=1" class="btn btn-secondary">
+                Vista general
+            </a>
 
         </form>
 
-        <!-- Fecha consultada -->
-        <?php if (!empty($fecha)) { ?>
-            <div class="d-flex justify-content-center mb-4">
-                <div class="card shadow-sm px-4 py-3 border-0">
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-calendar-event-fill fs-2 me-3" style="color:#77240f;"></i>
+            <!-- Boton para cargar excel de ventas real -->
+            <form action="cargar_excel.php" method="POST" enctype="multipart/form-data">
 
-                        <div>
-                            <div class="text-muted">Fecha consultada</div>
-                            <div class="fw-bold fs-4">
-                                <?php echo date('d/m/Y', strtotime($fecha)); ?>
+                <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
+                <input type="hidden" name="fecha" value="<?php echo $fecha; ?>">
+
+                <input
+                    type="file"
+                    name="archivo"
+                    id="archivoExcel"
+                    accept=".xlsx,.xls"
+                    style="display:none"
+                    onchange="this.form.submit();">
+
+                <?php if (!empty($fecha) && $rol == 'admin') { ?>
+                    <button
+                        type="button"
+                        class="btn btn-success"
+                        onclick="document.getElementById('archivoExcel').click();">
+                        <i class="bi bi-upload"></i> Cargar Excel
+                    </button>
+                <?php } ?>
+
+
+
+            </form>
+
+            <!-- Fecha consultada -->
+            <?php if (!empty($fecha)) { ?>
+                <div class="d-flex justify-content-center mb-4">
+                    <div class="card shadow-sm px-4 py-3 border-0">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-calendar-event-fill fs-2 me-3" style="color:#77240f;"></i>
+
+                            <div>
+                                <div class="text-muted">Fecha consultada</div>
+                                <div class="fw-bold fs-4">
+                                    <?php echo date('d/m/Y', strtotime($fecha)); ?>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        <?php } ?>
+            <?php } ?>
 
-        <!-- Comienza la tabla que muestra los toda la informacion de ventas por pax -->
-        <div class="inputVxP">
-            <div class="info_texp" style="overflow-x:auto;  ">
-                <table class="tabla_VxP">
-                    <tr class="encabezado">
-                        <th width="2800" style="font-size: 16px;">
-                            <b>Tienda</b>
-                        </th>
-                        <th width="1500" style="font-size: 16px;">
-                            <b>Meta Año Anterior</b>
-                        </th>
-                        <th width="1500" style="font-size: 16px;">
-                            <b>VXP Real Año Anterior</b>
-                        </th>
-                        <th width="1200" style="font-size: 16px;">
-                            <b>VXP Real Temporada Anterior</b>
-                        </th>
-                        <th width="1500" style="font-size: 16px;">
-                            <b>VXP Real Puente Anterior</b>
-                        </th>
+            <!-- Comienza la tabla que muestra los toda la informacion de ventas por pax -->
+            <div class="inputVxP">
+                <div class="info_texp" style="overflow-x:auto;  ">
+                    <table class="tabla_VxP">
+                        <tr class="encabezado">
+                            <th width="2800" style="font-size: 16px;">
+                                <b>Tienda</b>
+                            </th>
+                            <th width="1500" style="font-size: 16px;">
+                                <b>Meta Año Anterior</b>
+                            </th>
+                            <th width="1500" style="font-size: 16px;">
+                                <b>VXP Real Año Anterior</b>
+                            </th>
+                            <th width="1200" style="font-size: 16px;">
+                                <b>VXP Real Temporada Anterior</b>
+                            </th>
+                            <th width="1500" style="font-size: 16px;">
+                                <b>VXP Real Puente Anterior</b>
+                            </th>
 
-                        <!-- CAMPOS DE LA VISTA POR DÍA -->
-                        <?php if (!empty($fecha)) { ?>
+                            <!-- CAMPOS DE LA VISTA POR DÍA -->
+                            <?php if (!empty($fecha)) { ?>
 
-                            <th width="1700" style="font-size: 16px;">Meta Día</th>
-                            <th width="1700" style="font-size: 16px;">Venta Real</th>
-                            <th width="1000" style="font-size: 16px;">Resultados</th>
-                            <th width="1000" style="font-size: 16px;">Porcentaje Comisión</th>
-                            <th width="1700" style="font-size: 16px;">Comisión</th>
-                            <?php if ($rol == 'admin') { ?>
-                                <th width="800" style="font-size: 16px;">
-                                    <b>Actualizar</b>
-                                </th>
+                                <th width="1700" style="font-size: 16px;">Meta Día</th>
+                                <th width="1700" style="font-size: 16px;">Venta Real</th>
+                                <th width="1000" style="font-size: 16px;">Resultados</th>
+                                <th width="1000" style="font-size: 16px;">Porcentaje Comisión</th>
+                                <th width="1700" style="font-size: 16px;">Comisión</th>
+                                <?php if ($rol == 'admin') { ?>
+                                    <th width="800" style="font-size: 16px;">
+                                        <b>Actualizar</b>
+                                    </th>
+                                <?php } ?>
+
+                            <?php } else { ?>
+                                <!-- CAMPOS DE LA VISTA GENERAL -->
+                                <th width="1700" style="font-size: 16px;">Meta Actual</th>
+                                <th width="1700" style="font-size: 16px;">Venta Total</th>
+                                <th width="1700" style="font-size: 16px;">VXP Real Actual</th>
+                                <th width="1700" style="font-size: 16px;">Crecimiento</th>
+                                <th width="1700" style="font-size: 16px;">Comisión</th>
+                                <?php if ($rol == 'admin') { ?>
+                                    <th width="1000" style="font-size: 16px;">
+                                        <b>Actualizar</b>
+                                    </th>
+                                <?php } ?>
+
                             <?php } ?>
 
-                        <?php } else { ?>
-                            <!-- CAMPOS DE LA VISTA GENERAL -->
-                            <th width="1700" style="font-size: 16px;">Meta Actual</th>
-                            <th width="1700" style="font-size: 16px;">Venta Total</th>
-                            <th width="1700" style="font-size: 16px;">VXP Real Actual</th>
-                            <th width="1700" style="font-size: 16px;">Crecimiento</th>
-                            <th width="1700" style="font-size: 16px;">Comisión</th>
-                            <?php if ($rol == 'admin') { ?>
-                                <th width="1000" style="font-size: 16px;">
-                                    <b>Actualizar</b>
-                                </th>
-                            <?php } ?>
+                        </tr>
+                        <?php
 
-                        <?php } ?>
+                        $consulta = mysqli_query($conec, "SELECT fecha_inicio, fecha_fin FROM puentes WHERE id_puente = '$id_puente'");
 
-                    </tr>
-                    <?php
+                        $periodo = mysqli_fetch_assoc($consulta);
 
-                    $consulta = mysqli_query($conec, "SELECT fecha_inicio, fecha_fin FROM puentes WHERE id_puente = '$id_puente'");
-
-                    $periodo = mysqli_fetch_assoc($consulta);
-
-                    if (!$periodo) {
-                        echo "<script> 
+                        if (!$periodo) {
+                            echo "<script> 
                                 alert('El puente seleccionado no existe.');
                                 window.location.href='index.php';
                                 </script>";
-                        exit();
-                    }
+                            exit();
+                        }
 
-                    $fecha_inicio = $periodo['fecha_inicio'];
-                    $fecha_fin = $periodo['fecha_fin'];
+                        $fecha_inicio = $periodo['fecha_inicio'];
+                        $fecha_fin = $periodo['fecha_fin'];
 
-                    if ($fecha != '' && ($fecha < $fecha_inicio || $fecha > $fecha_fin)) {
-                        echo "<script>
+                        if ($fecha != '' && ($fecha < $fecha_inicio || $fecha > $fecha_fin)) {
+                            echo "<script>
                                 alert('La fecha seleccionada no pertenece al puente seleccionado.');
                                 window.location.href='ventas_puentes.php?id_puente=$id_puente';
                                 </script>";
-                        exit();
-                    }
+                            exit();
+                        }
 
-                    //Comienza mi prueba de if para las consultas de la tabla por temporada y puente segun las fechas y las temporadas abiertas o cerradas
-                    $datos = null;
+                        //Comienza mi prueba de if para las consultas de la tabla por temporada y puente segun las fechas y las temporadas abiertas o cerradas
+                        $datos = null;
 
                         if (!empty($fecha)) {
                             // puente por día
@@ -332,200 +350,200 @@ mysqli_query($conec, "UPDATE comparativos SET meta = ROUND((metaYearAnterior + c
                             $datos = mysqli_query($conec, "SELECT c.id_comparativos,t.nombre,c.metaYearAnterior,c.cantTempActYear,c.cantTempAnterior,c.puenteAnterior,c.meta,c.venta_total, c.cantTempAct, c.crecimiento,c.comision, puentes.estatus FROM comparativos AS c INNER JOIN tiendas AS t ON c.id_tienda = t.id_tienda INNER JOIN puentes ON c.id_puente = puentes.id_puente WHERE puentes.id_puente = '$id_puente' /*AND '$fecha' BETWEEN temp.fecha_inicio AND temp.fecha_fin*/");
                         }
 
-                    if ($datos) {
-                        while ($i = mysqli_fetch_array($datos)) {
-                    ?>
-                            <tr>
-                                <form action="actualizarVPax.php" method="POST">
-                                    <!-- Muestra el nombre de la tienda -->
-                                    <td width="220">
-                                        <?php if (!empty($fecha)) { ?>
+                        if ($datos) {
+                            while ($i = mysqli_fetch_array($datos)) {
+                        ?>
+                                <tr>
+                                    <form action="actualizarVPax.php" method="POST">
+                                        <!-- Muestra el nombre de la tienda -->
+                                        <td width="220">
+                                            <?php if (!empty($fecha)) { ?>
 
+                                                <!-- CAMPOS DE LA VISTA POR DÍA -->
+                                                <input type="hidden" name="id_comparativosDia" value="<?php echo $i['id_comparativosDia']; ?>">
+                                                <input type="hidden" name="id_tienda" value="<?php echo $i['id_tienda']; ?>">
+                                                <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
+                                                <input type="hidden" name="porcentaje_original" value="<?php echo $i['porcentaje_comision']; ?>">
+                                                <input type="hidden" name="fecha" value="<?php echo $fecha; ?>">
+                                                <input type="text" name="nombre" value="<?php echo $i['nombre']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                                                <input type="file" name="archivo" id="archivo<?php echo $i['id_comparativosDia']; ?>" accept=".xlsx,.xls" style="display:none;">
+
+                                            <?php } else { ?>
+
+                                                <!-- CAMPOS DE LA VISTA GENERAL -->
+                                                <input type="hidden" name="id_comparativos" value="<?php echo $i['id_comparativos']; ?>">
+                                                <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
+                                                <input type="text" name="nombre" value="<?php echo $i['nombre']; ?>" class="form-control" style="font-size: 14px;" readonly>
+
+                                            <?php } ?>
+                                        </td>
+                                        <!-- Muestra la cantidad de temporadas actuales -->
+                                        <td width="220">
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" name="metaYearAnterior" value="<?php echo $i['metaYearAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                                            </div>
+                                        </td>
+                                        <!-- Muestra el pax -->
+                                        <td width="220">
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" name="cantTempActYear" value="<?php echo $i['cantTempActYear']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                                        </td>
+                                        <!-- Muestra los visitantes por experiencia -->
+                                        <td width="220">
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" name="cantTempAnterior" value="<?php echo $i['cantTempAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                                            </div>
+                                        </td>
+                                        <td width="220">
+                                            <div class="input-group">
+                                                <span class="input-group-text">$</span>
+                                                <input type="number" name="puenteAnterior" value="<?php echo $i['puenteAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
+                                            </div>
+                                        </td>
+
+                                        <?php if (!empty($fecha)) { ?>
                                             <!-- CAMPOS DE LA VISTA POR DÍA -->
-                                            <input type="hidden" name="id_comparativosDia" value="<?php echo $i['id_comparativosDia']; ?>">
-                                            <input type="hidden" name="id_tienda" value="<?php echo $i['id_tienda']; ?>">
-                                            <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
-                                            <input type="hidden" name="porcentaje_original" value="<?php echo $i['porcentaje_comision']; ?>">
-                                            <input type="hidden" name="fecha" value="<?php echo $fecha; ?>">
-                                            <input type="text" name="nombre" value="<?php echo $i['nombre']; ?>" class="form-control" style="font-size: 14px;" readonly>
-                                            <input type="file" name="archivo" id="archivo<?php echo $i['id_comparativosDia']; ?>" accept=".xlsx,.xls" style="display:none;">
+                                            <td width="220">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" name="meta_dia"
+                                                        value="<?php echo $i['meta_dia']; ?>"
+                                                        class="form-control" style="font-size: 14px;">
+                                                    <input type="hidden" name="meta_dia_original" value="<?php echo $i['meta_dia']; ?>">
+                                                </div>
+                                            </td>
+
+                                            <td width="220">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" name="venta_real"
+                                                        value="<?php echo $i['venta_real']; ?>"
+                                                        class="form-control" style="font-size: 14px;">
+                                                    <input type="hidden" name="venta_real_original" value="<?php echo $i['venta_real']; ?>">
+                                                </div>
+                                            </td>
+
+                                            <td width="220">
+                                                <div class="input-group">
+                                                    <input type="number" name="resultados"
+                                                        value="<?php echo round($i['resultados']); ?>"
+                                                        class="form-control" style="font-size: 14px;">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </td>
+
+                                            <td width="220">
+                                                <div class="input-group">
+                                                    <input type="number" name="porcentaje"
+                                                        value="<?php echo ($i['porcentaje_comision']); ?>"
+                                                        class="form-control" style="font-size: 14px;"
+                                                        step="0.01"
+                                                        min="0">
+                                                    <input type="hidden" name="porcentaje_original" value="<?php echo ($i['porcentaje_comision']); ?>">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                            </td>
+
+                                            <td width="220">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" name="comision"
+                                                        value="<?php echo $i['comision']; ?>"
+                                                        class="form-control" style="font-size: 14px;">
+                                                </div>
+                                            </td>
 
                                         <?php } else { ?>
 
                                             <!-- CAMPOS DE LA VISTA GENERAL -->
-                                            <input type="hidden" name="id_comparativos" value="<?php echo $i['id_comparativos']; ?>">
-                                            <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
-                                            <input type="text" name="nombre" value="<?php echo $i['nombre']; ?>" class="form-control" style="font-size: 14px;" readonly>
+
+                                            <td width="220">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" name="meta"
+                                                        value="<?php echo $i['meta']; ?>"
+                                                        class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                                                                            echo "readonly";
+                                                                                                        } ?>>
+                                                </div>
+                                            </td>
+
+                                            <td width="220">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" name="venta_total"
+                                                        value="<?php echo $i['venta_total']; ?>"
+                                                        class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                                                                            echo "readonly";
+                                                                                                        } ?>>
+                                                </div>
+                                            </td>
+
+                                            <td width="220">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" name="cantTempAct"
+                                                        value="<?php echo $i['cantTempAct']; ?>"
+                                                        class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                                                                            echo "readonly";
+                                                                                                        } ?>>
+                                                </div>
+                                            </td>
+
+                                            <td width="220">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">%</span>
+                                                    <input type="number" name="crecimiento"
+                                                        value="<?php echo $i['crecimiento']; ?>"
+                                                        class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                                                                            echo "readonly";
+                                                                                                        } ?>>
+                                                </div>
+                                            </td>
+
+                                            <td width="220">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" name="comision"
+                                                        value="<?php echo $i['comision']; ?>"
+                                                        class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
+                                                                                                            echo "readonly";
+                                                                                                        } ?>>
+                                                </div>
+                                            </td>
 
                                         <?php } ?>
-                                    </td>
-                                    <!-- Muestra la cantidad de temporadas actuales -->
-                                    <td width="220">
-                                        <div class="input-group">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" name="metaYearAnterior" value="<?php echo $i['metaYearAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
-                                        </div>
-                                    </td>
-                                    <!-- Muestra el pax -->
-                                    <td width="220">
-                                        <div class="input-group">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" name="cantTempActYear" value="<?php echo $i['cantTempActYear']; ?>" class="form-control" style="font-size: 14px;" readonly>
-                                    </td>
-                                    <!-- Muestra los visitantes por experiencia -->
-                                    <td width="220">
-                                        <div class="input-group">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" name="cantTempAnterior" value="<?php echo $i['cantTempAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
-                                        </div>
-                                    </td>
-                                    <td width="220">
-                                        <div class="input-group">
-                                            <span class="input-group-text">$</span>
-                                            <input type="number" name="puenteAnterior" value="<?php echo $i['puenteAnterior']; ?>" class="form-control" style="font-size: 14px;" readonly>
-                                        </div>
-                                    </td>
 
-                                    <?php if (!empty($fecha)) { ?>
-                                        <!-- CAMPOS DE LA VISTA POR DÍA -->
-                                        <td width="220">
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="number" name="meta_dia"
-                                                    value="<?php echo $i['meta_dia']; ?>"
-                                                    class="form-control" style="font-size: 14px;">
-                                                <input type="hidden" name="meta_dia_original" value="<?php echo $i['meta_dia']; ?>">
-                                            </div>
-                                        </td>
-
-                                        <td width="220">
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="number" name="venta_real"
-                                                    value="<?php echo $i['venta_real']; ?>"
-                                                    class="form-control" style="font-size: 14px;">
-                                                <input type="hidden" name="venta_real_original" value="<?php echo $i['venta_real']; ?>">
-                                            </div>
-                                        </td>
-
-                                        <td width="220">
-                                            <div class="input-group">
-                                                <input type="number" name="resultados"
-                                                    value="<?php echo round($i['resultados']); ?>"
-                                                    class="form-control" style="font-size: 14px;">
-                                                <span class="input-group-text">%</span>
-                                            </div>
-                                        </td>
-
-                                        <td width="220">
-                                            <div class="input-group">
-                                                <input type="number" name="porcentaje"
-                                                    value="<?php echo ($i['porcentaje_comision']); ?>"
-                                                    class="form-control" style="font-size: 14px;"
-                                                    step="0.01"
-                                                    min="0">
-                                                <input type="hidden" name="porcentaje_original" value="<?php echo ($i['porcentaje_comision']); ?>">
-                                                <span class="input-group-text">%</span>
-                                            </div>
-                                        </td>
-
-                                        <td width="220">
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="number" name="comision"
-                                                    value="<?php echo $i['comision']; ?>"
-                                                    class="form-control" style="font-size: 14px;">
-                                            </div>
-                                        </td>
-
-                                    <?php } else { ?>
-
-                                        <!-- CAMPOS DE LA VISTA GENERAL -->
-
-                                        <td width="220">
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="number" name="meta"
-                                                    value="<?php echo $i['meta']; ?>"
-                                                    class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                                                                        echo "readonly";
-                                                                                                    } ?>>
-                                            </div>
-                                        </td>
-
-                                        <td width="220">
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="number" name="venta_total"
-                                                    value="<?php echo $i['venta_total']; ?>"
-                                                    class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                                                                        echo "readonly";
-                                                                                                    } ?>>
-                                            </div>
-                                        </td>
-
-                                        <td width="220">
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="number" name="cantTempAct"
-                                                    value="<?php echo $i['cantTempAct']; ?>"
-                                                    class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                                                                        echo "readonly";
-                                                                                                    } ?>>
-                                            </div>
-                                        </td>
-
-                                        <td width="220">
-                                            <div class="input-group">
-                                                <span class="input-group-text">%</span>
-                                                <input type="number" name="crecimiento"
-                                                    value="<?php echo $i['crecimiento']; ?>"
-                                                    class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                                                                        echo "readonly";
-                                                                                                    } ?>>
-                                            </div>
-                                        </td>
-
-                                        <td width="220">
-                                            <div class="input-group">
-                                                <span class="input-group-text">$</span>
-                                                <input type="number" name="comision"
-                                                    value="<?php echo $i['comision']; ?>"
-                                                    class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin' || (isset($i['estatus']) && $i['estatus'] == 0)) {
-                                                                                                        echo "readonly";
-                                                                                                    } ?>>
-                                            </div>
-                                        </td>
-
-                                    <?php } ?>
-
-                                    <?php if ($rol == 'admin') { ?>
-                                        <td width="220">
-                                            <center>
-                                                <button type="submit" class="btneditar" formnovalidate onclick="return confirm('¿Está seguro que desea actualizar esta informacion?')">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </button>
-                                            </center>
-                                        </td>
-                                    <?php } ?>
-                                </form>
-                            </tr>
-                    <?php
-                        } //Acaba el ciclo while 
-                    } //Acaba el ciclo if que verifica si hay datos para mostrar 
-                    ?>
-                </table>  
+                                        <?php if ($rol == 'admin') { ?>
+                                            <td width="220">
+                                                <center>
+                                                    <button type="submit" class="btneditar" formnovalidate onclick="return confirm('¿Está seguro que desea actualizar esta informacion?')">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </button>
+                                                </center>
+                                            </td>
+                                        <?php } ?>
+                                    </form>
+                                </tr>
+                        <?php
+                            } //Acaba el ciclo while 
+                        } //Acaba el ciclo if que verifica si hay datos para mostrar 
+                        ?>
+                    </table>
+                </div>
             </div>
-        </div>
 
-        <?php if ($id_puente != 0) { ?>
-            <div>
-                <form action="cerrarPuente.php" method="POST">
-                    <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
-                    <button type="submit" class="cerrar_puente" formnovalidate onclick="return confirm('¿Está seguro que desea cerrar este puente?')">Cerrar puente</button>
-                </form>
-            </div>
-        <?php } ?>
+            <?php if ($id_puente != 0) { ?>
+                <div>
+                    <form action="cerrarPuente.php" method="POST">
+                        <input type="hidden" name="id_puente" value="<?php echo $id_puente; ?>">
+                        <button type="submit" class="cerrar_puente" formnovalidate onclick="return confirm('¿Está seguro que desea cerrar este puente?')">Cerrar puente</button>
+                    </form>
+                </div>
+            <?php } ?>
     </main>
 
     <!-- Footer -->

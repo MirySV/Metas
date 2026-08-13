@@ -1,12 +1,13 @@
 <?php
 include "conexion.php";
-//date_default_timezone_set('America/Mazatlan');
+
 date_default_timezone_set('America/Mexico_City');
+
 $fecha = date("Y-m-d");
-//$fecha = "2026-08-08";
 $hora = "00:00:00";
 
 $insertados = 0;
+
 // Obtener el día de la semana
 $dias = [
     "Monday"    => "LUNES",
@@ -18,35 +19,32 @@ $dias = [
     "Sunday"    => "DOMINGO"
 ];
 
-//$dia = $dias[date("l")];
 $dia = $dias[date("l", strtotime($fecha))];
 
-$empleados = mysqli_query($conec, "SELECT * FROM empleados WHERE descanso='$dia' AND tipo_jornada=1 AND status=1");
+// Buscar empleados que descansan hoy
+$empleados = mysqli_query($conec,"SELECT id_empleado, id_tienda FROM empleados WHERE descanso='$dia' AND tipo_jornada=1 AND status=1");
 
 while ($emp = mysqli_fetch_assoc($empleados)) {
 
     $idEmpleado = $emp['id_empleado'];
+    $idTienda = $emp['id_tienda'];
 
-$existe = mysqli_query($conec, "SELECT 1 FROM registros WHERE id_empleado='$idEmpleado' AND fecha='$fecha'");
+    // Verificar que tenga tienda asignada
+    if (empty($idTienda)) {
+        continue;
+    }
 
-if (mysqli_num_rows($existe) > 0) {
-    continue;
-}
+    // Verificar si ya existe un registro para este empleado hoy
+    $existe = mysqli_query( $conec,"SELECT 1 FROM registros WHERE id_empleado='$idEmpleado' AND fecha='$fecha' LIMIT 1");
 
-$ultima = mysqli_query($conec, "SELECT id_tienda FROM registros WHERE id_empleado='$idEmpleado' AND tipo_registro = 'NORMAL' ORDER BY fecha DESC, hora_entrada DESC LIMIT 1");
+    if (mysqli_num_rows($existe) > 0) {
+        continue;
+    }
 
-if (mysqli_num_rows($ultima) == 0) {
-    continue;
-}
-
-$t = mysqli_fetch_assoc($ultima);
-
-$idTienda = $t['id_tienda'];
-
-mysqli_query($conec, "INSERT INTO registros(id_tienda,id_empleado,fecha,hora_entrada,tipo_registro)VALUES('$idTienda','$idEmpleado','$fecha','$hora','DESCANSO')");
+    // Insertar descanso usando la tienda ASIGNADA del empleado
+    mysqli_query($conec,"INSERT INTO registros (id_tienda_actual, id_empleado, fecha, hora_entrada, tipo_registro) VALUES ('$idTienda', '$idEmpleado', '$fecha', '$hora', 'DESCANSO')");
 
     $insertados++;
-
 }
 
 if ($insertados > 0) {

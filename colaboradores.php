@@ -134,6 +134,11 @@ if (!isset($usuario)) {
       border: 1px;
     }
 
+    #descanso {
+      border-radius: 4px;
+      border: 1px;
+    }
+
     .date {
       width: 100px;
     }
@@ -226,14 +231,14 @@ if (!isset($usuario)) {
             $tienda = $_POST['tiendas'];
             if ($tienda == "todas") {
               //Consulta para mostrar todos los colaboradores, se hace un inner join entre empleados y tiendas para mostrar el nombre del colaborador de acuerdo a la tienda a la que pertenece
-              $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda = t.id_tienda");
+              $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda");
             } else {
               //Consulta para mostrar los colaboradores de la tienda seleccionada
-              $colaboradores = mysqli_query($conec, "SELECT e.id_empleado,e.nombre, t.nombre FROM empleados AS e INNER JOIN tiendas AS t WHERE t.nombre = '$tienda' AND e.id_tienda = t.id_tienda");
+              $colaboradores = mysqli_query($conec, "SELECT e.id_empleado,e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t WHERE t.nombre = '$tienda' AND e.id_tienda_actual = t.id_tienda");
             }
           } else {
             //Consulta para mostrar todos los colaboradores, se hace un inner join entre empleados y tiendas para mostrar el nombre del colaborador de acuerdo a la tienda a la que pertenece
-            $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda = t.id_tienda");
+            $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda");
           }
           //Ciclo para mostrar los colaboradores, se muestra el nombre del colaborador en la tabla
           while ($i = mysqli_fetch_array($colaboradores)) {

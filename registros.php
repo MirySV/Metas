@@ -15,14 +15,14 @@ $ip = $_SERVER['REMOTE_ADDR'];
 $consultaTienda = mysqli_query($conec, "SELECT * FROM tiendas WHERE ip='$ip' AND estatus=1");
 $tienda = mysqli_fetch_array($consultaTienda);
 if ($tienda) {
-  $id_tienda = $tienda['id_tienda'];
+  $id_tienda_actual = $tienda['id_tienda'];
   $nombre_tienda = $tienda['nombre'];
 } else {
-  $id_tienda = 0;
+  $id_tienda_actual = 0;
   $nombre_tienda = "Tienda desconocida";
 }
 
-//echo $id_tienda;
+//echo $id_tienda_actual;
 //Consulta original
 //$scar=mysqli_query($conec,"SELECT * FROM registros as r,empleados as e WHERE r.idEmpleado=e.idEmpleado AND codigo=".$_POST['tarjeta']." AND r.fecha='".$fecha."'");
 
@@ -38,7 +38,7 @@ if (!empty($_POST['tarjeta'])) {
     $idEmpleado = $idEmpl['idEmpleado'];
 
     // Buscar el empleado en Metas para conocer su tienda
-    $empleadoMetas = mysqli_query($conec, "SELECT id_tienda FROM metas.empleados WHERE id_empleado='$idEmpleado'
+    $empleadoMetas = mysqli_query($conec, "SELECT id_tienda_actual FROM metas.empleados WHERE id_empleado='$idEmpleado'
         ");
 
     if (mysqli_num_rows($empleadoMetas) == 0) {
@@ -49,7 +49,7 @@ if (!empty($_POST['tarjeta'])) {
       $datosEmpleado = mysqli_fetch_assoc($empleadoMetas);
 
       // Verificar que pertenece a esta tienda
-      if ($datosEmpleado['id_tienda'] != $id_tienda) {
+      if ($datosEmpleado['id_tienda_actual'] != $id_tienda_actual) {
 
         $mensaje = "<div class='alerta'>⚠️ <strong>El empleado no pertenece a esta tienda.</strong></div>";
       } else {
@@ -63,7 +63,7 @@ if (!empty($_POST['tarjeta'])) {
         } else {
 
           // Verificar que no esté registrado en Metas
-          $registrado = mysqli_query($conec, "SELECT * FROM metas.registros WHERE id_empleado='$idEmpleado' AND fecha='$fecha' AND id_tienda='$id_tienda'");
+          $registrado = mysqli_query($conec, "SELECT * FROM metas.registros WHERE id_empleado='$idEmpleado' AND fecha='$fecha'"); /*AND id_tienda_actual='$id_tienda_actual'");*/
 
           if (mysqli_num_rows($registrado) > 0) {
 
@@ -71,7 +71,7 @@ if (!empty($_POST['tarjeta'])) {
           } else {
 
             // Insertar registro
-            mysqli_query($conec, "INSERT INTO metas.registros (id_registro,id_tienda,id_empleado,fecha,hora_entrada) VALUES (NULL,'$id_tienda','$idEmpleado','$fecha','$hora')");
+            mysqli_query($conec, "INSERT INTO metas.registros (id_registro,id_tienda_actual,id_empleado,fecha,hora_entrada,tipo_registro) VALUES (NULL,'$id_tienda_actual','$idEmpleado','$fecha','$hora','NORMAL')");
           }
         }
       }
@@ -172,15 +172,32 @@ if (!empty($_POST['tarjeta'])) {
     }
 
     .fondo {
-      margin-top: 25px;
+      margin-top: 15px;
+      margin-bottom: 10px;
     }
 
     .card {
       border: none;
       border-radius: 20px !important;
       box-shadow: 0 15px 40px rgba(0, 0, 0, .35);
-      padding: 15px 10px;
       background: rgba(255, 255, 255, .96);
+    }
+
+    #reloj {
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+      text-shadow: 0 3px 10px rgba(0, 0, 0, .25);
+    }
+
+    .formulario-checador {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
     }
 
     .nombre-tienda {
@@ -199,8 +216,6 @@ if (!empty($_POST['tarjeta'])) {
       text-align: center;
       border-radius: 10px;
       border: 2px solid #198754;
-      margin-right: 10px;
-      margin-bottom: 0;
       transition: .2s;
     }
 
@@ -227,8 +242,18 @@ if (!empty($_POST['tarjeta'])) {
       transform: translateY(-2px);
     }
 
+    .tabla-container {
+      width: 80%;
+      margin-top: 15px;
+      margin-left: auto;
+      margin-right: auto;
+      justify-content: center;
+      display: flex;
+    }
+
     .table {
-      margin-top: 35px;
+      width: 80%;
+      margin: 0;
       border-radius: 15px;
       overflow: hidden;
       background: #222831;
@@ -238,8 +263,9 @@ if (!empty($_POST['tarjeta'])) {
       background: #198754;
     }
 
-    .table td {
-      padding: 14px;
+    .table td,
+    .table th {
+      padding: 12px;
     }
 
     .table tbody tr:hover {
@@ -280,10 +306,10 @@ if (!empty($_POST['tarjeta'])) {
 </head>
 <!--<body onLoad="document.forms[0].tarjeta.focus()">-->
 
-<!--<body style="background-image: url('assets/<?php echo $id_tienda; ?>.png'); background-size: cover;">-->
+<!--<body style="background-image: url('assets/<?php echo $id_tienda_actual; ?>.png'); background-size: cover;">-->
 
 <body style="background:linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),
-              url('assets/<?php echo $id_tienda; ?>.png');
+              url('assets/<?php echo $id_tienda_actual; ?>.png');
               background-size:cover;
               background-position:center;
               background-attachment:fixed;">
@@ -297,20 +323,18 @@ if (!empty($_POST['tarjeta'])) {
   <!--<h1 class="nombre-tienda"><?php echo $nombre_tienda; ?></h1>-->
 
 
-  <div class="container px-1 px-sm-5 mx-auto">
+  <div class="container-fluid px-3 px-md-4 mx-auto">
+
     <form class="form-inline" action="" method="post">
 
-      <section class="">
-        <div class="container py-3 h-100 fondo">
-          <div class="row d-flex justify-content-center align-items-center h-100">
+      <section>
+        <div class="container py-3 fondo">
+          <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-              <div class="card shadow-2-strong" style="border-radius: 1rem;">
 
+              <div class="card shadow-2-strong">
 
-                <div class="card-body p-5 text-center">
-                  <!--<img src="fotografias/<?php // echo $foto; 
-                                            ?>" width="45%" alt=""/> -->
-
+                <div class="card-body p-4 p-md-5 text-center">
 
                   <?php
                   function obtenerHoraActual()
@@ -323,65 +347,106 @@ if (!empty($_POST['tarjeta'])) {
                     <?php echo obtenerHoraActual(); ?>
                   </div>
 
-                  <div class="mb-3 d-flex justify-content-center align-items-center gap-2">
-                    <!--   <label for="" class="form-label">MATRICULA</label>-->
-                    <input type="text" id="tarjeta" name="tarjeta" onLoad="enfocar()" required>
-                    <input type="submit" name="insertar" value="Aceptar">
+                  <div class="formulario-checador">
+
+                    <input
+                      type="text"
+                      id="tarjeta"
+                      name="tarjeta"
+                      required
+                      autocomplete="off">
+
+                    <input
+                      type="submit"
+                      name="insertar"
+                      value="Aceptar">
+
                   </div>
 
                 </div>
+
               </div>
+
             </div>
           </div>
         </div>
       </section>
+
     </form>
+
+
     <center>
       <h5><?php echo @$mensaje; ?></h5>
     </center>
-    <table class="table table-dark">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Hora</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php
-        $mostrarR = mysqli_query($conec, "SELECT j.nombre, m.hora_entrada FROM metas.registros AS m INNER JOIN reloj.empleados AS j ON m.id_empleado = j.idEmpleado WHERE m.fecha = '$fecha' AND m.id_tienda = '$id_tienda' ORDER BY m.hora_entrada DESC");
-        $c = 1;
-        while ($i = mysqli_fetch_array($mostrarR)) {
-          $cont = $c++;
-          if ($cont == 1) {
-            $color = "<font color='#7CFC00'>";
-            $ccierre = "</font>";
-          } else {
-            $color = "<font color=' #FDFEFE'>";
-            $ccierre = "</font>";
-          }
 
-        ?>
+
+    <div class="tabla-container">
+
+      <table class="table table-dark">
+
+        <thead>
           <tr>
-            <th scope="row"><?php echo $cont; ?></th>
-            <td>
-              <h6><?php echo $color; ?><?php echo $i[0]; ?><?php echo $ccierre; ?></h6>
-            </td>
-            <td><?php echo $color; ?><?php echo $i[1]; ?><?php echo $ccierre; ?></td>
-
+            <th scope="col">#</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Hora</th>
           </tr>
-        <?php
-        }
-        ?>
+        </thead>
 
-      </tbody>
-    </table>
+        <tbody>
 
+          <?php
+
+          $mostrarR = mysqli_query($conec, "SELECT j.nombre, m.hora_entrada FROM metas.registros AS m INNER JOIN reloj.empleados AS j ON m.id_empleado = j.idEmpleado WHERE m.fecha = '$fecha' AND m.id_tienda_actual = '$id_tienda_actual' ORDER BY m.hora_entrada DESC");
+
+          $c = 1;
+
+          while ($i = mysqli_fetch_array($mostrarR)) {
+
+            $cont = $c++;
+
+            if ($cont == 1) {
+              $color = "<font color='#7CFC00'>";
+              $ccierre = "</font>";
+            } else {
+              $color = "<font color='#FDFEFE'>";
+              $ccierre = "</font>";
+            }
+
+          ?>
+
+            <tr>
+
+              <th scope="row">
+                <?php echo $cont; ?>
+              </th>
+
+              <td>
+                <h6>
+                  <?php echo $color; ?>
+                  <?php echo $i[0]; ?>
+                  <?php echo $ccierre; ?>
+                </h6>
+              </td>
+
+              <td>
+                <?php echo $color; ?>
+                <?php echo $i[1]; ?>
+                <?php echo $ccierre; ?>
+              </td>
+
+            </tr>
+
+          <?php
+          }
+          ?>
+
+        </tbody>
+
+      </table>
+
+    </div>
 
   </div>
-
-
-  </form>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   <!-- SCRIPT PARA OBTENER LA HORA -->
