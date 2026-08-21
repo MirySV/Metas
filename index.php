@@ -40,62 +40,8 @@ $datosPuente = mysqli_fetch_assoc($puenteActivo);
     <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Glory:ital,wght@0,100..800;1,100..800&family=Macondo&family=Marcellus&display=swap" rel="stylesheet">
     <!-- Archivo CSS -->
     <link rel="stylesheet" href="./css/style.css">
-    <style>
-        main {
-            flex: 1;
-        }
+    <link rel="stylesheet" href="./css/style_index.css">
 
-        .navbarindex {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            margin: 0px 0px 10px 0px;
-            padding: 65px 0px 55px 0px;
-        }
-
-        .cerrarsesion {
-            font-family: "Macondo", cursive;
-            font-size: 22px;
-            position: absolute;
-            right: 20px;
-            top: 40px;
-        }
-
-        .cerrarsesion a {
-            text-decoration: none;
-            color: #330a04;
-        }
-
-        .cerrarsesion a:hover {
-            color: #ffffff;
-        }
-
-        #login {
-            position: absolute;
-            left: 20px;
-        }
-
-        #custom-cards {
-            margin: 30px 15px 55px 75px;
-        }
-
-        #tarjetas {
-            text-decoration: none;
-        }
-
-        .mi-card {
-            background-color: #330a04;
-        }
-
-        font {
-            font-family: "Macondo", cursive;
-        }
-
-        .form-control::placeholder {
-            color: #65646454;
-        }
-    </style>
     <title>Tiendas Africam Safari</title>
 </head>
 
@@ -111,81 +57,94 @@ $datosPuente = mysqli_fetch_assoc($puenteActivo);
     </header>
 
     <main>
+
         <div class="container px-2 py-3" id="custom-cards">
             <div class="row g-4">
-
+                <!-- COLABORADORES-->
                 <div class="col-3">
-                    <div class="card card-cover h-100 overflow-hidden mi-card rounded-4 shadow-lg">
-                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h5 class="pt-5 mt-5 mb-4 fs-2 lh-1 fw-bold">
-                                <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="colaboradores.php" style="text-decoration: none; color: white;">Colaboradores</a>
-                                </font>
-                            </h5>
+                    <a href="colaboradores.php" class="mi-card-link">
+                        <div class="card mi-card rounded-4 shadow-lg">
+                            <div class="mi-card-content">
+                                <div class="mi-card-icon">
+                                    <i class="bi bi-people-fill"></i>
+                                </div>
+                                <h5>
+                                    Colaboradores
+                                </h5>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
+                <?php if ($rol == 'admin' || $rol == 'user') { ?>
 
-                <div class="col-3">
-                    <div class="card card-cover h-100 overflow-hidden mi-card rounded-4 shadow-lg">
-                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h5 class="pt-5 mt-5 mb-4 fs-2 lh-1 fw-bold">
-                                <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="tiendas_exp.php" style="text-decoration: none; color: white;">Tiendas Explanada</a>
-                                </font>
-                            </h5>
-                        </div>
+                    <!-- TIENDAS EXPLANADA -->
+                    <div class="col-3">
+                        <a href="tiendas_exp.php" class="mi-card-link">
+                            <div class="card mi-card rounded-4 shadow-lg">
+                                <div class="mi-card-content">
+                                    <div class="mi-card-icon">
+                                        <i class="bi bi-shop"></i>
+                                    </div>
+                                    <h5>
+                                        Tiendas Explanada
+                                    </h5>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </div>
 
-                <div class="col-3">
-                    <div class="card card-cover h-100 overflow-hidden mi-card rounded-4 shadow-lg">
-                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h5 class="pt-5 mt-5 mb-4 fs-2 lh-1 fw-bold">
+                    <!-- VENTAS POR PAX -->
 
-                                <?php
-                                // Revisa si hay temporada activa
-                                if ($datosTemporada) {
-                                ?>
-                                    <a href="ventas_pax.php?id_temporada=<?php echo $datosTemporada['id_temporada']; ?>"style="text-decoration:none; color:white;">Ventas por Pax</a>
-                                <?php
-                                }
-                                // Revisa si hay puente activo
-                                else if ($datosPuente) {
-                                ?>
-                                    <a href="ventas_puentes.php?id_puente=<?php echo $datosPuente['id_puente']; ?>" style="text-decoration:none; color:white;">Ventas por Pax</a>
-                                <?php
-                                }
-                                // Si no hay ninguno activo entra directamente al modal para seleccionar temporada o puente
-                                else {
-                                ?>
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#modalVentas" style="text-decoration:none;color:white;">Ventas por Pax</a>
-                                <?php
-                                }
-                                ?>
+                    <div class="col-3">
+                        <?php
+                        if ($datosTemporada) {
+                            $linkVentas = "ventas_pax.php?id_temporada=" .$datosTemporada['id_temporada'];
+                        } elseif ($datosPuente) {
+                            $linkVentas = "ventas_puentes.php?id_puente=" .$datosPuente['id_puente'];
+                        } else {
+                            $linkVentas = "#";
+                        }
+                        ?>
+                        <?php if ($datosTemporada || $datosPuente) { ?>
 
-                            </h5>
-                        </div>
+                            <a href="<?php echo $linkVentas; ?>" class="mi-card-link">
+                            <?php } else { ?>
+                                <a href="#" class="mi-card-link" data-bs-toggle="modal" data-bs-target="#modalVentas">
+
+                                <?php } ?>
+                                <div class="card mi-card rounded-4 shadow-lg">
+                                    <div class="mi-card-content">
+                                        <div class="mi-card-icon">
+                                            <i class="bi bi-bar-chart-fill"></i>
+                                        </div>
+                                        <h5>
+                                            Ventas por Pax
+                                        </h5>
+                                    </div>
+                                </div>
+                            </a>
                     </div>
-                </div>
 
-                <div class="col-3">
-                    <div class="card card-cover h-100 overflow-hidden mi-card rounded-4 shadow-lg">
-                        <div class="d-flex flex-column h-100 p-5 pb-3 text-white text-shadow-1">
-                            <h5 class="pt-5 mt-5 mb-4 fs-2 lh-1 fw-bold">
-                                <font dir="auto" style="vertical-align: inherit;">
-                                    <a href="comisiones.php" style="text-decoration: none; color: white;">Comision</a>
-                                </font>
-                            </h5>
-                        </div>
+                    <!-- COMISIONES -->
+                    <div class="col-3">
+                        <a href="comisiones.php" class="mi-card-link">
+                            <div class="card mi-card rounded-4 shadow-lg">
+                                <div class="mi-card-content">
+                                    <div class="mi-card-icon">
+                                        <i class="bi bi-cash-coin"></i>
+                                    </div>
+                                    <h5>
+                                        Comisiones
+                                    </h5>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </div>
-
+                <?php } ?>
             </div>
         </div>
     </main>
-
     <!-- Footer -->
     <footer>
         <p class="text-center">Africam Safari SA de CV &copy; 2026</p>

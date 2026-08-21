@@ -1,0 +1,341 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    background-color: #f7f7f8;
+    color: #343434;
+}
+
+main {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0 80px;
+    box-sizing: border-box;
+}
+/* ENCABEZADO */
+
+.navbarindex {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100px;
+    padding: 25px 30px;
+    box-sizing: border-box;
+}
+
+#login {
+    position: absolute;
+    left: 30px;
+    top: 25px;
+}
+
+#login img {
+    display: block;
+    width: 130px;
+    height: auto;
+}
+
+.cerrarsesion {
+    position: absolute;
+    right: 30px;
+    top: 35px;
+    font-family: "Macondo", cursive;
+    font-size: 22px;
+}
+
+.cerrarsesion a {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 10px;
+    color: #330a04;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.cerrarsesion a:hover {
+    color: #ffffff;
+    background-color: #77240f;
+}
+
+
+/* CONTENEDOR DE TARJETAS */
+
+#custom-cards {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 35px;
+    box-sizing: border-box;
+}
+
+/* FILA */
+
+#custom-cards .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-left: -12px;
+    margin-right: -12px;
+}
+
+
+/* COLUMNAS */
+
+#custom-cards .col-3 {
+    display: flex;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+
+/* ENLACE DE LA TARJETA*/
+
+.mi-card-link {
+    display: block;
+    width: 100%;
+    height: 200px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.mi-card-link:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+.mi-card-link:hover .mi-card {
+    transform: translateY(-4px);
+    background: linear-gradient(145deg, #9a3b1d, #77240f);
+    box-shadow: 0 10px 24px rgba(119, 36, 15, 0.22);
+}
+
+/* TARJETA */
+
+.mi-card {
+    width: 100%;
+    height: 200px;
+    background: linear-gradient(145deg, #8a3218, #6f220e);
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.mi-card-link:hover .mi-card {
+    transform: translateY(-4px);
+    box-shadow:0 10px 24px rgba(0, 0, 0, 0.17);
+}
+
+
+/* CONTENIDO */
+
+.mi-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 15px;
+}
+
+
+/* TEXTO */
+
+.mi-card h5 {
+    margin: 0;
+    padding: 0;
+    font-family: "Macondo", cursive;
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: #ffffff;
+    text-align: center;
+}
+
+.mi-card-icon {
+    width: 58px;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-size: 28px;
+    transition: all 0.2s ease;
+}
+
+.mi-card-link:hover .mi-card-icon {
+    background-color: rgba(255, 255, 255, 0.20);
+    transform: scale(1.05);
+}
+
+
+/* FOOTER */
+
+footer {
+    width: 100%;
+    margin-top: auto;
+    padding: 15px;
+    box-sizing: border-box;
+    color: #777;
+    font-size: 13px;
+    text-align: center;
+}
+
+footer p {
+    margin: 0;
+}
+
+
+/* TABLET */
+
+@media (max-width: 991px) {
+
+    .navbarindex {
+        min-height: 90px;
+        padding: 20px;
+    }
+
+    #login {
+        left: 20px;
+        top: 20px;
+    }
+
+    #login img {
+        width: 105px;
+    }
+
+    .cerrarsesion {
+        right: 20px;
+        top: 30px;
+        font-size: 19px;
+    }
+
+    /* 2 TARJETAS POR FILA */
+    #custom-cards .col-3 {
+        width: 50%;
+        flex: 0 0 50%;
+    }
+
+    .mi-card-link,
+    .mi-card {
+        height: 210px;
+    }
+
+    .mi-card h5 {
+        font-size: 27px;
+    }
+}
+
+
+/* CELULAR */
+
+@media (max-width: 767px) {
+
+    .navbarindex {
+        min-height: 80px;
+        padding: 15px;
+    }
+
+    #login {
+        left: 15px;
+        top: 18px;
+    }
+
+    #login img {
+        width: 75px;
+    }
+
+    .cerrarsesion {
+        right: 15px;
+        top: 23px;
+        font-size: 15px;
+    }
+
+    /* CONTENEDOR */
+
+    #custom-cards {
+        margin: 20px auto 40px;
+        padding: 0 15px;
+    }
+
+    /* UNA TARJETA POR FILA */
+
+    #custom-cards .col-3 {
+        width: 100%;
+        flex: 0 0 100%;
+    }
+
+    /* TARJETAS */
+
+    .mi-card-link,
+    .mi-card {
+        height: 175px;
+    }
+
+    .mi-card-content {
+        padding: 20px;
+    }
+
+    .mi-card h5 {
+        font-size: 25px;
+    }
+}
+
+
+/* CELULAR PEQUEÑO */
+
+@media (max-width: 400px) {
+
+    .navbarindex {
+        min-height: 70px;
+    }
+
+    #login {
+        left: 10px;
+        top: 15px;
+    }
+
+    #login img {
+        width: 62px;
+    }
+
+    .cerrarsesion {
+        right: 10px;
+        top: 20px;
+        font-size: 13px;
+    }
+
+    #custom-cards {
+        padding: 0 12px;
+    }
+
+    .mi-card-link,
+    .mi-card {
+        height: 155px;
+    }
+
+    .mi-card h5 {
+        font-size: 22px;
+    }
+}

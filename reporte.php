@@ -30,34 +30,7 @@ if (!isset($usuario)) {
     <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Glory:ital,wght@0,100..800;1,100..800&family=Macondo&family=Marcellus&display=swap" rel="stylesheet">
     <!-- Archivo CSS -->
     <link rel="stylesheet" href="./css/style.css">
-    <style>
-        .tabla_colaboradores {
-            width: 100%;
-            margin: 0 auto;
-            margin-top: 30px;
-            border-collapse: collapse;
-            /*font-size: 12px;*/
-        }
-
-        table {
-            border-collapse: collapse;
-        } 
-
-        th,
-        td {
-            border: 1px solid #77240f81;
-            padding: 10px;
-            font-size: 14px;
-        }
-
-        .encabezado {
-      padding-top: 12px;
-      padding-bottom: 12px;
-      text-align: left;
-      background-color: #77240f;
-      color: white;
-    }
-    </style>
+    <link rel="stylesheet" href="./css/style_reporte.css">
 
 <?php
 
@@ -67,26 +40,36 @@ $fin = $_POST['fin'];
 
 //echo "ID: $id_empleado | Inicio: $inicio | Fin: $fin";
 
-$colaborador = mysqli_query($conec, "SELECT r.fecha, r.hora_entrada, t.nombre FROM registros AS r INNER JOIN tiendas AS t ON r.id_tienda = t.id_tienda WHERE r.id_empleado = $id_empleado AND r.fecha BETWEEN '$inicio' AND '$fin' ORDER BY r.fecha DESC");
+$colaborador = mysqli_query($conec, "SELECT r.fecha, r.hora_entrada, t.nombre, r.tipo_registro FROM registros AS r INNER JOIN tiendas AS t ON r.id_tienda_actual = t.id_tienda WHERE r.id_empleado = $id_empleado AND r.fecha BETWEEN '$inicio' AND '$fin' ORDER BY r.fecha DESC");
 
 if(!$colaborador){
     die("Error en consulta: " . mysqli_error($conec));
 }
 
+echo "<div class='tabla-responsive'>";
 echo "<table class='tabla_colaboradores'>";
-    echo "<tr class='encabezado'>
+
+echo "<thead>";
+echo "<tr class='encabezado'>
         <th>Fecha</th>
         <th>Hora</th>
         <th>Tienda</th>
-    </tr>";
+        <th>Tipo de registro</th>
+      </tr>";
+echo "</thead>";
 
-    while($row = mysqli_fetch_assoc($colaborador)){
+echo "<tbody>";
+
+while ($row = mysqli_fetch_assoc($colaborador)) {
     echo "<tr>
-        <td>".$row['fecha']."</td>
-        <td>".$row['hora_entrada']."</td>
-        <td>".$row['nombre']."</td>
-    </tr>";
-    }
+            <td>".$row['fecha']."</td>
+            <td>".$row['hora_entrada']."</td>
+            <td>".$row['nombre']."</td>
+            <td>".$row['tipo_registro']."</td>
+          </tr>";
+}
 
-    echo "</table>";
+echo "</tbody>";
+echo "</table>";
+echo "</div>";
 ?>

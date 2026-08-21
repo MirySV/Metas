@@ -1,0 +1,677 @@
+/*GENERAL*/
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow-x: hidden;
+
+    background-color: #f7f7f8;
+    color: #343434;
+}
+
+main {
+    flex: 1;
+    width: 100%;
+}
+
+
+/* ENCABEZADO*/
+
+.navbarcolaboradores {
+    display: grid;
+    grid-template-columns: 130px 1fr 130px;
+    align-items: center;
+    width: 100%;
+    min-height: 88px;
+    padding: 10px 30px;
+    background: linear-gradient(135deg, #d5631f, #c95718);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+    box-sizing: border-box;
+}
+
+.navbarcolaboradores img {
+    display: block;
+    max-width: 115px;
+    height: auto;
+}
+
+#nombrepagcolab {
+    font-family: "Macondo", cursive;
+    font-size: 42px;
+    font-weight: 400;
+    color: #330a04;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+
+.cerrarsesion {
+    font-family: "Macondo", cursive;
+    font-size: 20px;
+    text-align: right;
+}
+
+.cerrarsesion a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    color: #330a04;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.cerrarsesion a:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+
+/* FILTROS */
+
+.filtro_tiendas {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 28px;
+    padding: 0 25px;
+    box-sizing: border-box;
+}
+
+.filtro_acciones {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 850px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+}
+
+.filtro-input {
+    width: 250px !important;
+    height: 40px !important;
+    padding: 7px 12px !important;
+    font-size: 14px !important;
+    color: #4b4b4b !important;
+    background-color: #fff !important;
+    border: 1px solid #d6d6d6 !important;
+    border-radius: 8px !important;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.filtro-input:focus {
+    border-color: #d5631f !important;
+    box-shadow: 0 0 0 0.2rem rgba(213, 99, 31, 0.15) !important;
+    outline: none;
+}
+
+.filtro_acciones button {
+    height: 40px;
+    padding: 7px 18px;
+    margin: 0;
+    background-color: #77240f;
+    color: #fff;
+    border: 1px solid #77240f;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filtro_acciones button:hover {
+    background-color: #5f1d0c;
+    border-color: #5f1d0c;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(119, 36, 15, 0.2);
+}
+
+/* CONTENEDOR DE TABLA */
+
+.info_colaboradores {
+    width: calc(100% - 70px);
+    margin: 30px 35px 50px;
+    background-color: #fff;
+    border: 1px solid #e9e9e9;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.tabla-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* TABLA */
+
+.tabla_colaboradores {
+    width: 100%;
+    min-width: 1050px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+/* ENCABEZADO DE TABLA */
+
+.tabla_colaboradores thead th {
+    height: 48px;
+    padding: 0 18px;
+    background-color: #77240f;
+    color: #fff;
+    border: none;
+    font-size: 13px !important;
+    font-weight: 600;
+    text-align: left;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+}
+
+.tabla_colaboradores thead th:first-child {
+    width: 25%;
+    border-top-left-radius: 14px;
+}
+
+.tabla_colaboradores thead th:nth-child(2) {
+    width: 21%;
+}
+
+.tabla_colaboradores thead th:nth-child(3) {
+    width: 18%;
+}
+
+.tabla_colaboradores thead th:nth-child(4) {
+    width: 36%;
+}
+
+.tabla_colaboradores thead th:last-child {
+    border-top-right-radius: 14px;
+}
+
+/* FILAS Y CELDAS */
+
+.tabla_colaboradores tbody tr {
+    background-color: #fff;
+    transition: background-color 0.15s ease;
+}
+
+.tabla_colaboradores tbody tr:hover {
+    background-color: #fff9f5;
+}
+
+.tabla_colaboradores tbody td {
+    padding: 13px 18px;
+    background-color: #fff;
+    color: #444;
+    border: none;
+    border-bottom: 1px solid #eeeeee;
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+.tabla_colaboradores tbody tr:hover td {
+    background-color: #fff9f5;
+}
+
+.tabla_colaboradores tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* INFORMACIÓN DEL COLABORADOR*/
+
+.colaborador-info {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.colaborador-nombre {
+    display: block;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* CAMPOS DENTRO DE LA TABLA*/
+
+.campo-tabla {
+    width: 100%;
+    height: 36px !important;
+    padding: 6px 10px !important;
+    font-size: 13px !important;
+    color: #444 !important;
+    background-color: #fff !important;
+    border: 1px solid #dedede !important;
+    border-radius: 7px !important;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.campo-tabla:focus {
+    border-color: #d5631f !important;
+    box-shadow: 0 0 0 0.18rem rgba(213, 99, 31, 0.13) !important;
+    outline: none;
+}
+
+/* CAMPOS DESHABILITADOS / SOLO LECTURA*/
+
+.campo-tabla:disabled,
+.campo-tabla:read-only {
+    background-color: #fff !important;
+    color: #555 !important;
+    cursor: default !important;
+    opacity: 1 !important;
+}
+
+/* CAMPOS TIENDA Y DESCANSO */
+
+#tienda,
+#descanso {
+    width: 100%;
+    min-width: 130px;
+    height: 38px;
+    padding: 6px 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #444;
+    background-color: #fff;
+    border: 1px solid #d8d8d8;
+    border-radius: 7px;
+    transition: all 0.2s ease;
+}
+
+#tienda:focus,
+#descanso:focus {
+    border-color: #d5631f;
+    box-shadow: 0 0 0 0.2rem rgba(213, 99, 31, 0.12);
+    outline: none;
+}
+
+/* ACCIONES */
+
+.acciones {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+/* RANGO DE FECHAS */
+
+.rango-fechas {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.date {
+    width: 125px !important;
+    height: 34px !important;
+    padding: 5px 8px !important;
+    box-sizing: border-box;
+    font-size: 12px !important;
+    color: #444;
+    background-color: #fff;
+    border: 1px solid #dedede !important;
+    border-radius: 7px !important;
+    transition: all 0.2s ease;
+}
+
+.date:focus {
+    border-color: #d5631f !important;
+    box-shadow: 0 0 0 0.18rem rgba(213, 99, 31, 0.13) !important;
+    outline: none;
+}
+
+.fecha-separador {
+    color: #aaa;
+    font-size: 13px;
+}
+
+/* BOTONES GENERALES */
+
+button {
+    margin: 0;
+    padding: 6px 12px;
+    background-color: #fff;
+    color: #77240f;
+    border: 1px solid #77240f;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: #77240f;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(119, 36, 15, 0.18);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+
+/* BOTÓN MODAL */
+
+.btnmodal {
+    border-radius: 7px;
+}
+
+/*BOTONES DE ACCIÓN*/
+
+.btn-accion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 34px;
+    padding: 5px 11px !important;
+    border-radius: 7px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+
+/* Actualizar */
+
+.btn-outline-primary {
+    color: #77240f !important;
+    border-color: #77240f !important;
+    background-color: transparent !important;
+}
+
+.btn-outline-primary:hover {
+    color: #fff !important;
+    background-color: #77240f !important;
+    border-color: #77240f !important;
+    transform: translateY(-1px);
+}
+
+
+/* Buscar */
+
+.btn-outline-secondary {
+    color: #666 !important;
+    border-color: #d2d2d2 !important;
+    background-color: #fff !important;
+}
+
+.btn-outline-secondary:hover {
+    color: #fff !important;
+    background-color: #555 !important;
+    border-color: #555 !important;
+    transform: translateY(-1px);
+}
+
+/* BOOTSTRAP - FORMULARIOS */
+
+.form-control,
+.form-select {
+    border-radius: 8px;
+    border-color: #d8d8d8;
+    font-size: 14px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #d5631f;
+    box-shadow: 0 0 0 0.2rem rgba(213, 99, 31, 0.15);
+}
+
+
+/* BOOTSTRAP - BOTONES */
+
+.btn-primary {
+    background-color: #77240f;
+    border-color: #77240f;
+}
+
+.btn-primary:hover {
+    background-color: #5f1d0c;
+    border-color: #5f1d0c;
+}
+
+.btn-warning {
+    color: #fff;
+    background-color: #d5631f;
+    border-color: #d5631f;
+}
+
+.btn-warning:hover {
+    color: #fff;
+    background-color: #b95116;
+    border-color: #b95116;
+}
+
+
+/* FOOTER*/
+
+footer {
+    width: 100%;
+    margin-top: auto;
+    padding: 15px;
+    box-sizing: border-box;
+    color: #777;
+    font-size: 13px;
+    text-align: center;
+}
+
+footer p {
+    margin: 0;
+}
+
+
+/* SCROLL DE TABLA*/
+
+.tabla-scroll::-webkit-scrollbar {
+    height: 7px;
+}
+
+.tabla-scroll::-webkit-scrollbar-track {
+    background: #f4f4f4;
+}
+
+.tabla-scroll::-webkit-scrollbar-thumb {
+    background: #c7c7c7;
+    border-radius: 10px;
+}
+
+.tabla-scroll::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+
+/* TABLET */
+
+@media (max-width: 900px) {
+
+    .navbarcolaboradores {
+        grid-template-columns: 100px 1fr 120px;
+        min-height: 82px;
+        padding: 10px 18px;
+    }
+
+    .navbarcolaboradores img {
+        max-width: 95px;
+    }
+
+    #nombrepagcolab {
+        font-size: 36px;
+    }
+
+    .cerrarsesion {
+        font-size: 18px;
+    }
+
+    .info_colaboradores {
+        width: calc(100% - 30px);
+        margin-left: 15px;
+        margin-right: 15px;
+    }
+
+    .filtro_acciones {
+        max-width: 700px;
+    }
+
+    .filtro-input {
+        width: 220px !important;
+    }
+}
+
+
+/* CELULAR*/
+
+@media (max-width: 600px) {
+
+    /* Encabezado */
+
+    .navbarcolaboradores {
+        grid-template-columns: 70px 1fr auto;
+        min-height: 70px;
+        padding: 8px 12px;
+    }
+
+    .navbarcolaboradores img {
+        max-width: 65px;
+    }
+
+    #nombrepagcolab {
+        font-size: 29px;
+    }
+
+    .cerrarsesion {
+        font-size: 15px;
+    }
+
+
+    /*Filtros*/
+
+    .filtro_tiendas {
+        margin-top: 18px;
+        padding: 0 12px;
+    }
+
+    .filtro_acciones {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 9px;
+        max-width: 100%;
+        padding: 13px;
+    }
+
+    .filtro-input {
+        width: 100% !important;
+    }
+
+    .filtro_acciones button {
+        width: 100%;
+    }
+
+
+    /* Tabla */
+
+    .info_colaboradores {
+        width: calc(100% - 20px);
+        margin: 20px 10px 40px;
+        border-radius: 10px;
+    }
+
+    .tabla-scroll {
+        overflow-x: auto;
+    }
+
+    .tabla_colaboradores {
+        min-width: 1000px;
+    }
+
+    .tabla_colaboradores thead th {
+        padding: 0 12px;
+        font-size: 12px !important;
+    }
+
+    .tabla_colaboradores tbody td {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+
+    /* Colaborador */
+
+    .colaborador-nombre {
+        font-size: 13px;
+    }
+
+    .colaborador-avatar {
+        width: 34px;
+        height: 34px;
+    }
+
+
+    /* Acciones */
+
+    .acciones {
+        gap: 7px;
+    }
+
+    .date {
+        width: 120px !important;
+    }
+}
+
+
+/* CELULARES MUY PEQUEÑOS */
+
+@media (max-width: 400px) {
+
+    .navbarcolaboradores {
+        grid-template-columns: 55px 1fr auto;
+        padding: 8px;
+    }
+
+    .navbarcolaboradores img {
+        max-width: 52px;
+    }
+
+    #nombrepagcolab {
+        font-size: 24px;
+    }
+
+    .cerrarsesion {
+        font-size: 13px;
+    }
+
+    .tabla_colaboradores {
+        min-width: 950px;
+    }
+}

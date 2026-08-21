@@ -8,18 +8,9 @@ $hora = "00:00:00";
 
 $insertados = 0;
 
-// Obtener el día de la semana
-$dias = [
-    "Monday"    => "LUNES",
-    "Tuesday"   => "MARTES",
-    "Wednesday" => "MIERCOLES",
-    "Thursday"  => "JUEVES",
-    "Friday"    => "VIERNES",
-    "Saturday"  => "SABADO",
-    "Sunday"    => "DOMINGO"
-];
-
-$dia = $dias[date("l", strtotime($fecha))];
+// Obtener el número del día de la semana
+// 0 = Trabaja fines 1 = Lunes, 2 = Martes, 3 = Miércoles, 4 = Jueves, 5 = Viernes, 6 = Sábado, 7 = Domingo
+$dia = date("N", strtotime($fecha));
 
 // Buscar empleados que descansan hoy
 $empleados = mysqli_query($conec,"SELECT id_empleado, id_tienda FROM empleados WHERE descanso='$dia' AND tipo_jornada=1 AND status=1");

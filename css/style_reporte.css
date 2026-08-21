@@ -1,0 +1,92 @@
+/* CONTENEDOR RESPONSIVO DE LA TABLA */
+.tabla-responsive {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* TABLA */
+.tabla_colaboradores {
+    width: 100%;
+    min-width: 650px;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: auto;
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* ENCABEZADO */
+.tabla_colaboradores .encabezado {
+    background-color: #77240f;
+    color: white;
+}
+
+.tabla_colaboradores .encabezado th {
+    padding: 13px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: left;
+    border: none;
+}
+
+/* CELDAS */
+.tabla_colaboradores td {
+    padding: 12px;
+    font-size: 14px;
+    color: #444;
+    background: #ffffff;
+    border: none;
+    border-bottom: 1px solid #eeeeee;
+
+    white-space: nowrap;
+}
+
+/* HOVER */
+.tabla_colaboradores tr:hover td {
+    background-color: #faf5f3;
+}
+
+/* ÚLTIMA FILA */
+.tabla_colaboradores tr:last-child td {
+    border-bottom: none;
+}
+
+/* ESQUINAS */
+.tabla_colaboradores .encabezado th:first-child {
+    border-top-left-radius: 12px;
+}
+
+.tabla_colaboradores .encabezado th:last-child {
+    border-top-right-radius: 12px;
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 576px) {
+
+    .tabla-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .tabla_colaboradores {
+        min-width: 650px;
+        width: 650px;
+    }
+
+    .tabla_colaboradores .encabezado th {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+
+    .tabla_colaboradores td {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+}

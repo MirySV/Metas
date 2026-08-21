@@ -3,11 +3,17 @@
 include 'conexion.php'; //Conexion a la base de datos
 
 session_start();
-$usuario = $_SESSION['username'];
+
+if (!isset($_SESSION['username'])) {
+    header('Location: index.php');
+    exit();
+}
+
 $rol = $_SESSION['rol'];
-//echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
-if (!isset($usuario)) {
-    header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
+
+if ($rol != 'admin' && $rol != 'user') {
+    header('Location: index.php');
+    exit();
 }
 
 ?>

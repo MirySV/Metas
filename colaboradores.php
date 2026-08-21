@@ -3,12 +3,21 @@
 include 'conexion.php'; //Conexion a la base de datos
 
 session_start();
-$usuario = $_SESSION['username'];
-$rol = $_SESSION['rol'];
-//echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
-if (!isset($usuario)) {
+
+if (!isset($_SESSION['username'])) {
   header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
+  exit();
 }
+
+$usuario = $_SESSION['username'];
+//echo "Bienvenido, " .$usuario; //Confirmo el usuario que ha iniciado sesion
+$rol = $_SESSION['rol'];
+
+if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
+  header('Location: index.php');
+  exit();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -31,131 +40,7 @@ if (!isset($usuario)) {
   <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Glory:ital,wght@0,100..800;1,100..800&family=Macondo&family=Marcellus&display=swap" rel="stylesheet">
   <!-- Archivo CSS -->
   <link rel="stylesheet" href="./css/style.css">
-  <style>
-    main {
-      flex: 1;
-    }
-
-    .navbarcolaboradores {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      padding: 18px;
-    }
-
-    #nombrepagcolab {
-      font-family: "Macondo", cursive;
-      font-size: 45px;
-      color: #330a04;
-      text-align: center;
-      margin: 0;
-      padding-right: 150px;
-      text-decoration: none;
-    }
-
-    .cerrarsesion {
-      font-family: "Macondo", cursive;
-      font-size: 22px;
-      position: absolute;
-      right: 20px;
-      top: 40px;
-    }
-
-    .cerrarsesion a {
-      text-decoration: none;
-      color: #330a04;
-    }
-
-    .cerrarsesion a:hover {
-      color: #ffffff;
-    }
-
-    #tabla_colaboradores {
-      /*width: 100%;*/
-      margin: 0 auto;
-      margin-top: 50px;
-      margin-left: 100px;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-
-    table {
-      border-collapse: collapse;
-    }
-
-    th,
-    td {
-      border: 1px solid #77240f81;
-      padding: 10px;
-      font-size: 14px;
-    }
-
-    /*tr:nth-child(even) {
-      background-color: #73241127;
-    }*/
-
-    tr:hover {
-      background-color: #de853136;
-    }
-
-    .encabezado {
-      padding-top: 12px;
-      padding-bottom: 12px;
-      text-align: left;
-      background-color: #77240f;
-      color: white;
-    }
-
-    .filtro_acciones {
-      margin: 20px 480px 20px 480px;
-    }
-
-    .filtro_tiendas {
-      display: flex;
-      justify-content: center;
-    }
-
-    .info_colaboradores {
-      overflow-x: auto;
-      margin: 50px 120px 50px 120px;
-      border-collapse: collapse;
-      /*font-family: "Glory", sans-serif;*/
-    }
-
-    #tiendas {
-      padding: 5px;
-      font-size: 14px;
-      /*font-family: "Glory", sans-serif;*/
-      border-radius: 4px;
-    }
-
-    #tienda {
-      border-radius: 4px;
-      border: 1px;
-    }
-
-    #descanso {
-      border-radius: 4px;
-      border: 1px;
-    }
-
-    .date {
-      width: 100px;
-    }
-
-    button {
-      background-color: #de85315c;
-      border: 1px;
-      border-radius: 4px;
-      padding: 4px 5px;
-      /*font-family: "Glory", sans-serif;*/
-      margin: 0px 15px 0px 7px;
-    }
-
-    .btnmodal {
-      border-radius: 4px;
-    }
-  </style>
+  <link rel="stylesheet" href="./css/style_colaboradores.css">
   <title>Tiendas Africam Safari</title>
 </head>
 
@@ -174,151 +59,189 @@ if (!isset($usuario)) {
     <div class="filtro_tiendas">
       <form action="colaboradores.php" method="POST">
         <div class="filtro_acciones">
-          <select id="tiendas" name="tiendas">
+          <select id="tiendas" name="tiendas" class="filtro-input">
             <option value="todas" selected>Todas las tiendas</option>
-            <option value="KARIBU">KARIBU</option>
-            <option value="EXPLANADA">EXPLANADA</option>
-            <option value="CHAMCHAWI">CHAMCHAWI</option>
-            <option value="NIEVES ESPECTACULOS">NIEVES ESPECTACULOS</option>
-            <option value="AVENTURA AMAZONICA">AVENTURA AMAZONICA</option>
-            <option value="MATUNDA ESPECTACULOS">MATUNDA ESPECTACULOS</option>
-            <option value="FOTO EXPERIENCIAS">FOTO EXPERIENCIAS</option>
-            <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>
-            <option value="ZAWADI ASIATICOS">ZAWADI ASIATICOS</option>
-            <option value="MOROCCO SOUVENIRS">MOROCCO SOUVENIRS</option>
-            <option value="NIEVES MOROCCO">NIEVES MOROCCO</option>
-            <option value="MICHELADAS">MICHELADAS</option>
-            <option value="CARRITO DE LEONES">CARRITO DE LEONES</option>
             <option value="AFRITATTOS">AFRITATTOS</option>
-            <option value="MOROCCO DULCERIA">MOROCCO DULCERIA</option>
-            <option value="PALOMITAS MOROCCO">PALOMITAS MOROCCO</option>
+            <option value="AVENTURA AMAZONICA">AVENTURA AMAZONICA</option>
+            <option value="AVIARIO AUSTRALIANO">AVIARIO AUSTRALIANO</option>
+            <option value="CARRITO DE LEONES">CARRITO DE LEONES</option>
+            <option value="CHAMCHAWI">CHAMCHAWI</option>
+            <option value="EXPLANADA">EXPLANADA</option>
+            <option value="FOTO EXPERIENCIAS">FOTO EXPERIENCIAS</option>
+            <option value="FOTO SAFARI">FOTO SAFARI</option>
+            <option value="KARIBU">KARIBU</option>
             <option value="KARLUI">KARLUI</option>
-            <option value="PENDA">PENDA</option>
-            <option value="MAHALI">MAHALI</option>
-            <option value="NIEVES MOMBASA">NIEVES MOMBASA</option>
             <option value="KIBOKO">KIBOKO</option>
             <option value="KU-HU-ZU">KU-HU-ZU</option>
-            <option value="FOTO SAFARI">FOTO SAFARI</option>
-            <option value="ZAWADI HUELLAS">ZAWADI HUELLAS</option>
+            <option value="MAHALI">MAHALI</option>
+            <option value="MATUNDA ESPECTACULOS">MATUNDA ESPECTACULOS</option>
+            <option value="MICHELADAS">MICHELADAS</option>
+            <option value="MOROCCO DULCERIA">MOROCCO DULCERIA</option>
+            <option value="MOROCCO SOUVENIRS">MOROCCO SOUVENIRS</option>
+            <option value="NIEVES ESPECTACULOS">NIEVES ESPECTACULOS</option>
+            <option value="NIEVES MOMBASA">NIEVES MOMBASA</option>
+            <option value="NIEVES MOROCCO">NIEVES MOROCCO</option>
             <option value="OCEANIA">OCEANIA</option>
-            <option value="AVIARIO AUSTRALIANO">AVIARIO AUSTRALIANO</option>
+            <option value="PALOMITAS MOROCCO">PALOMITAS MOROCCO</option>
+            <option value="PENDA">PENDA</option>
+            <option value="ZAWADI ASIATICOS">ZAWADI ASIATICOS</option>
+            <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>         
+            <option value="ZAWADI HUELLAS">ZAWADI HUELLAS</option>
           </select>
+
+          <input type="text" id="empleado" name="empleado" list="lista_empleados" placeholder="Nombre del colaborador" class="form-control filtro-input" style=" width: 250px; font-size: 14px;">
+          <datalist id="lista_empleados">
+            <?php
+            //Consulta para obtener los nombres de los colaboradores y mostrarlos en el datalist del input de nombre del colaborador
+            $colaboradores = mysqli_query($conec, "SELECT id_empleado, nombre FROM empleados WHERE status = 1 ORDER BY nombre");
+            while ($empleadoBusqueda = mysqli_fetch_assoc($colaboradores)) {
+            ?>
+              <option value="<?php echo htmlspecialchars($empleadoBusqueda['nombre']); ?>">
+              <?php
+            }
+              ?>
+          </datalist>
           <button type="submit" style="font-size: 14px;">Filtrar</button>
         </div>
       </form>
     </div>
 
     <div class="info_colaboradores" style="overflow-x:auto;  ">
-      <table class="tabla_colaboradores">
-        <tr class="encabezado">
-          <th width="2000" style="font-size: 16px;">
-            <b>Colaborador</b>
-          </th>
-          <th width="1300" style="font-size: 16px;">
-            <b>Tienda</b>
-          </th>
-          <th width="1300" style="font-size: 16px;">
-            <b>Descanso</b>
-          </th>
-          <th width="2800" style="font-size: 16px;">
-            <b>Acciones</b>
-          </th>
-        </tr>
-        <tr>
-          <?php
-          //Condicional para mostrar los colaboradores de acuerdo a la tienda seleccionada, si se selecciona "todas las tiendas" se muestran todos los colaboradores, de lo contrario se muestra el colaborador de la tienda seleccionada
-          if (isset($_POST['tiendas']) && $_POST['tiendas'] != "") {
-            $tienda = $_POST['tiendas'];
-            if ($tienda == "todas") {
-              //Consulta para mostrar todos los colaboradores, se hace un inner join entre empleados y tiendas para mostrar el nombre del colaborador de acuerdo a la tienda a la que pertenece
-              $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda");
-            } else {
-              //Consulta para mostrar los colaboradores de la tienda seleccionada
-              $colaboradores = mysqli_query($conec, "SELECT e.id_empleado,e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t WHERE t.nombre = '$tienda' AND e.id_tienda_actual = t.id_tienda");
-            }
-          } else {
-            //Consulta para mostrar todos los colaboradores, se hace un inner join entre empleados y tiendas para mostrar el nombre del colaborador de acuerdo a la tienda a la que pertenece
-            $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda");
-          }
-          //Ciclo para mostrar los colaboradores, se muestra el nombre del colaborador en la tabla
-          while ($i = mysqli_fetch_array($colaboradores)) {
-          ?>
-        <tr>
-          <form action="actualizar_tiendaColab.php" method="POST">
-            <!-- Muestra el nombre del colaborador, la posicion 1 es el nombre, por ser el unico valor solicitado en la consulta -->
-            <td width="220">
-              <?php echo $i[1]; ?>
-            </td>
-            <!-- Muestra el nombre de la tienda a la que pertenece el colaborador, la posicion 2 es el nombre de la tienda, por ser el segundo valor solicitado en la consulta -->
-            <td width="220">
-              <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->
-              <input type="hidden" name="id_empleado" value="<?php echo $i[0]; ?>">
+      <div class="info_colaboradores">
 
-              <input id="tienda" list="tienda_<?php echo $i[0]; ?>" name="tienda" value="<?php echo $i[2]; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+        <div class="tabla-scroll">
 
-              <datalist id="tienda_<?php echo $i[0]; ?>">
-                <option value="KARIBU">
-                <option value="EXPLANADA">
-                <option value="CHAMCHAWI">
-                <option value="NIEVES ESPECTACULOS">
-                <option value="AVENTURA AMAZONICA">
-                <option value="MATUNDA ESPECTACULOS">
-                <option value="FOTO EXPERIENCIAS">
-                <option value="ZAWADI DUKAZURI">
-                <option value="ZAWADI ASIATICOS">
-                <option value="MOROCCO SOUVENIRS">
-                <option value="NIEVES MOROCCO">
-                <option value="MICHELADAS">
-                <option value="CARRITO DE LEONES">
-                <option value="AFRITATTOS">
-                <option value="MOROCCO DULCERIA">
-                <option value="PALOMITAS MOROCCO">
-                <option value="KARLUI">
-                <option value="PENDA">
-                <option value="MAHALI">
-                <option value="NIEVES MOMBASA">
-                <option value="KIBOKO">
-                <option value="KU-HU-ZU">
-                <option value="FOTO SAFARI">
-                <option value="ZAWADI HUELLAS">
-                <option value="OCEANIA">
-                <option value="AVIARIO AUSTRALIANO">
-              </datalist>
-            </td>
-            <td width="220">
-              <!-- Aqui va el campo para editar el dia de descanso -->
-              <input type="hidden" name="id_empleado" value="<?php echo $i[0]; ?>">
+          <table class="tabla_colaboradores">
 
-              <input id="descanso" list="dia<?php echo $i[3]; ?>" name="descanso" value="<?php echo $i[3]; ?>" class="form-control" style="font-size: 14px;" <?php if ($rol != 'admin') echo "readonly"; ?>>
+            <thead>
+              <tr class="encabezado">
+                <th>Colaborador</th>
+                <th>Tienda</th>
+                <th>Descanso</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
 
-              <datalist id="dia<?php echo $i[3]; ?>">
-                <option value="LUNES">
-                <option value="MARTES">
-                <option value="MIERCOLES">
-                <option value="JUEVES">
-                <option value="VIERNES">
-                <option value="SABADO">
-                <option value="DOMINGO">
-              </datalist>
-            </td>
-            <!-- Muestra un formulario para actualizar la tienda a la que pertenece el colaborador, se envia el id del colaborador para actualizarlo en la base de datos, se muestra un select con las tiendas disponibles para seleccionar a cual tienda se desea cambiar al colaborador -->
-            <td width="220">
-              <!-- Aqui va el boton de actualizar -->
-              <?php if ($rol == 'admin') { ?>
-                <button class="btnmodal" style="margin-right: 90px;" type="submit" formnovalidate onclick="return confirm('¿Esta seguro que desea actualizar esta informacion?')">Actualizar</button>
-              <?php } ?>
-              <input type="date" id="inicio_<?php echo $i[0]; ?>" name="inicio" required class="date">
-              <input type="date" id="fin_<?php echo $i[0]; ?>" name="fin" required class="date">
-              <!-- Botón para buscar registros -->
-              <button type="button" class="btnmodal" onclick="buscar(<?php echo $i[0]; ?> , '<?php echo $i[1]; ?>')">Buscar</button>
-            </td>
-          </form>
-        </tr>
-      <?php
-          } //Acaba el ciclo while 
-      ?>
-      </tr>
-      </table>
+            <tbody>
+
+              <?php
+              $tienda = $_POST['tiendas'] ?? 'todas';
+              $empleado = $_POST['empleado'] ?? '';
+
+              if ($empleado != '') {
+
+                $colaboradores = mysqli_query($conec,"SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda WHERE e.nombre = '$empleado' ORDER BY e.nombre");
+              } elseif ($tienda != 'todas') {
+
+                $colaboradores = mysqli_query($conec,"SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda WHERE t.nombre = '$tienda' ORDER BY e.nombre");
+              } else {
+                $colaboradores = mysqli_query($conec,"SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda ORDER BY e.nombre");
+              }
+
+              while ($i = mysqli_fetch_array($colaboradores)) {
+              ?>
+
+                <tr>
+
+                  <form action="actualizar_tiendaColab.php" method="POST">
+                    <!-- ID DEL EMPLEADO -->
+                    <input type="hidden" name="id_empleado" value="<?php echo $i[0]; ?>">
+                    <!-- COLABORADOR -->
+                    <td>
+                      <div class="colaborador-info">
+                        <div>
+                          <span class="colaborador-nombre">
+                            <?php echo $i[1]; ?>
+                          </span> 
+                        </div>
+                      </div>
+                    </td>
+
+
+                    <!-- TIENDA -->
+                    <td>
+                      <input
+                        id="tienda" list="tienda_<?php echo $i[0]; ?>" name="tienda" value="<?php echo $i[2]; ?>" class="form-control form-control-sm campo-tabla"
+                        <?php
+                        if ($rol != 'admin' && $rol != 'supervisora') echo "readonly";
+                        ?>>
+
+                      <datalist id="tienda_<?php echo $i[0]; ?>">
+
+                        <option value="AFRITATTOS">
+                        <option value="AVENTURA AMAZONICA">
+                        <option value="AVIARIO AUSTRALIANO">
+                        <option value="CARRITO DE LEONES">
+                        <option value="CHAMCHAWI">
+                        <option value="EXPLANADA">
+                        <option value="FOTO EXPERIENCIAS">
+                        <option value="FOTO SAFARI">
+                        <option value="KARIBU">
+                        <option value="KARLUI">
+                        <option value="KIBOKO">
+                        <option value="KU-HU-ZU">
+                        <option value="MAHALI">
+                        <option value="MATUNDA ESPECTACULOS">
+                        <option value="MICHELADAS">
+                        <option value="MOROCCO DULCERIA">
+                        <option value="MOROCCO SOUVENIRS">
+                        <option value="NIEVES ESPECTACULOS">
+                        <option value="NIEVES MOMBASA">
+                        <option value="NIEVES MOROCCO">
+                        <option value="OCEANIA">
+                        <option value="PALOMITAS MOROCCO">
+                        <option value="PENDA">
+                        <option value="ZAWADI ASIATICOS">
+                        <option value="ZAWADI DUKAZURI">
+                        <option value="ZAWADI HUELLAS">
+
+                      </datalist>
+                    </td>
+
+                    <!-- DESCANSO -->
+                    <td>
+
+                      <select id="descanso" name="descanso" class="form-select form-select-sm campo-tabla"
+                        <?php if ($rol != 'admin' && $rol != 'supervisora') echo "disabled";?>>
+                        <option value="0" <?php if ($i[3] == 0) echo "selected"; ?>>TRABAJA FINES</option>
+                        <option value="1" <?php if ($i[3] == 1) echo "selected"; ?>>LUNES</option>
+                        <option value="2" <?php if ($i[3] == 2) echo "selected"; ?>>MARTES</option>
+                        <option value="3" <?php if ($i[3] == 3) echo "selected"; ?>>MIÉRCOLES</option>
+                        <option value="4" <?php if ($i[3] == 4) echo "selected"; ?>>JUEVES</option>
+                        <option value="5" <?php if ($i[3] == 5) echo "selected"; ?>>VIERNES</option>
+                        <option value="6" <?php if ($i[3] == 6) echo "selected"; ?>>SÁBADO</option>
+                        <option value="7" <?php if ($i[3] == 7) echo "selected"; ?>>DOMINGO</option>
+                      </select>
+
+                    </td>
+
+                    <!-- ACCIONES -->
+                    <td>
+
+                      <div class="acciones">
+                        <?php if ($rol == 'admin' || $rol == 'supervisora') { ?>
+                          <button type="submit" class="btn btn-sm btn-outline-primary btn-accion" formnovalidate onclick="return confirm('¿Está seguro que desea actualizar esta información?')" title="Actualizar información"><i class="bi bi-check2"></i>Actualizar</button>
+
+                        <?php } ?>
+                        <div class="rango-fechas">
+                          <input type="date" id="inicio_<?php echo $i[0]; ?>" name="inicio" required class="form-control form-control-sm date" title="Fecha inicial">
+                          <span class="fecha-separador">—</span>
+                          <input type="date" id="fin_<?php echo $i[0]; ?>" name="fin" required class="form-control form-control-sm date" title="Fecha final">
+                        </div>
+
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary btn-accion" onclick="buscar(<?php echo $i[0]; ?>, '<?php echo $i[1]; ?>')" title="Buscar historial"> <i class="bi bi-search"></i> Buscar </button>
+                      </div>
+                    </td>
+                  </form>
+                </tr>
+              <?php
+              }
+              ?>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
       <!--Modal para mostrar los resultados de la busqueda de los registros del colaborador, se muestra el nombre del colaborador y las fechas seleccionadas para mostrar los registros de ese colaborador en ese rango de fechas-->
 

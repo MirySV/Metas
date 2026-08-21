@@ -6,7 +6,7 @@ session_start();
 $usuario = $_POST['usuario'];
 $contraseña = $_POST['contraseña'];
 
-//consulta para verificar si el usuariO existe en la base de datos
+//consulta para verificar si el usuario existe en la base de datos
 $consulta = "SELECT * FROM usuarios WHERE username='$usuario' AND contraseña='$contraseña'";
 $resultado = mysqli_query($conec, $consulta);
 
