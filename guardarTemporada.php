@@ -27,14 +27,21 @@ if (
         $fin = $_POST['fin'];
 
         $guardar = mysqli_query($conec, "INSERT INTO temporadas (temporada, fecha_inicio, fecha_fin, estatus) VALUES ('$temporada','$inicio','$fin', 1)");
-        if ($guardar) {
+        /*if ($guardar) {
             $id_temporada = mysqli_insert_id($conec);
             echo '<script>
                 alert("Temporada guardada correctamente");
                 window.location.href =
                 "ventas_pax.php?id_temporada=' . $id_temporada . '";
             </script>';
-        } else {
+        }*/
+            if ($guardar) {
+    $id_temporada = mysqli_insert_id($conec);
+
+    header("Location: generar_periodo.php?id_temporada=$id_temporada");
+    exit();
+}
+            else {
             echo "Error al guardar temporada";
         }
     }
@@ -44,14 +51,19 @@ if (
         $fin = $_POST['fin'];
 
         $guardar = mysqli_query($conec, "INSERT INTO puentes (puente, fecha_inicio, fecha_fin, estatus) VALUES('$puente','$inicio','$fin', 1)");
-        if ($guardar) {
+        /*if ($guardar) {
             $id_puente = mysqli_insert_id($conec);
             echo '<script>
                 alert("Puente guardado correctamente");
                 window.location.href =
                 "ventas_pax.php?id_puente=' . $id_puente . '";
                 </script>';
-        } else {
+        }*/if ($guardar) {
+    $id_puente = mysqli_insert_id($conec);
+
+    header("Location: generar_periodo.php?id_puente=$id_puente");
+    exit();
+} else {
             echo "Error al guardar puente";
         }
     }

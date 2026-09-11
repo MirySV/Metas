@@ -66,6 +66,46 @@
     border-top-right-radius: 12px;
 }
 
+/* Modal de registros */
+#modal .modal-content{
+    border-radius:16px;
+}
+
+#modal .modal-header{
+    background:#0d6efd;
+    color:#fff;
+}
+
+#modal .modal-title{
+    font-weight:600;
+}
+
+#modal .table th{
+    font-size:14px;
+    white-space:nowrap;
+}
+
+#modal .table td{
+    vertical-align:middle;
+    font-size:14px;
+}
+
+#modal .badge{
+    font-size:12px;
+    letter-spacing:.5px;
+}
+
+#modal .input-group .form-select{
+    min-width:180px;
+}
+
+#modal .guardar-btn{
+    width:42px;
+}
+
+#modal .table tbody tr:hover{
+    background:#f8f9fa;
+}
 
 /* RESPONSIVE */
 @media (max-width: 576px) {

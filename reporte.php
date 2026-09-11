@@ -1,75 +1,125 @@
 <?php
 include "conexion.php";
-
 session_start();
-$usuario = $_SESSION['username'];
-//echo "Bienvenido, " .$usuario; 
-if (!isset($usuario)) {
-    header('Location: index.php'); //En caso de que no haya una sesion abierta, redirecciona al index
+
+if (!isset($_SESSION['username'])) {
+    exit("Sesión no válida.");
 }
 
+$id_empleado = (int)($_POST['id_empleado'] ?? $_GET['id_empleado'] ?? 0);
+$inicio = $_POST['inicio'] ?? $_GET['inicio'] ?? '';
+$fin = $_POST['fin'] ?? $_GET['fin'] ?? '';
+
+$sql = "SELECT r.id_registro,r.fecha,r.hora_entrada,t.nombre,r.tipo_registro,r.tipo_descanso FROM registros r INNER JOIN tiendas t ON r.id_tienda_actual = t.id_tienda WHERE r.id_empleado = ? AND r.fecha BETWEEN ? AND ? AND r.hora_entrada = (SELECT MAX(r2.hora_entrada)FROM registros r2 WHERE r2.id_empleado = r.id_empleado AND r2.fecha = r.fecha)ORDER BY r.fecha DESC";
+
+$stmt = mysqli_prepare($conec, $sql);
+mysqli_stmt_bind_param($stmt, "iss", $id_empleado, $inicio, $fin);
+mysqli_stmt_execute($stmt);
+
+$resultado = mysqli_stmt_get_result($stmt);
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
+<div class="container-fluid">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CDN Boostrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- Icoons de Boostrap -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- Favicon (Icono de la pagina web)-->
-    <link rel="shortcut icon" href="./assets/img/shop.svg" type="image/x-icon">
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <!-- Tipografia Google -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Glory:ital,wght@0,100..800;1,100..800&family=Macondo&family=Marcellus&display=swap" rel="stylesheet">
-    <!-- Archivo CSS -->
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/style_reporte.css">
+    <div id="mensajeDescanso"></div>
 
-<?php
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover table-bordered align-middle mb-0">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th style="width:120px;">
+                        <i class="bi bi-calendar-event"></i><br>Fecha
+                    </th>
+                    <th style="width:110px;">
+                        <i class="bi bi-clock"></i><br>Hora
+                    </th>
+                    <th>
+                        <i class="bi bi-shop"></i><br>Tienda
+                    </th>
+                    <th style="width:140px;">
+                        <i class="bi bi-fingerprint"></i><br>Registro
+                    </th>
+                    <th style="width:320px;">
+                        <i class="bi bi-cup-hot"></i><br>Motivo de la falta
+                    </th>
+                </tr>
+            </thead>
 
-$id_empleado = $_POST['id_empleado'];
-$inicio = $_POST['inicio'];
-$fin = $_POST['fin'];
+            <tbody>
 
-//echo "ID: $id_empleado | Inicio: $inicio | Fin: $fin";
+                <?php while ($row = mysqli_fetch_assoc($resultado)) { ?>
 
-$colaborador = mysqli_query($conec, "SELECT r.fecha, r.hora_entrada, t.nombre, r.tipo_registro FROM registros AS r INNER JOIN tiendas AS t ON r.id_tienda_actual = t.id_tienda WHERE r.id_empleado = $id_empleado AND r.fecha BETWEEN '$inicio' AND '$fin' ORDER BY r.fecha DESC");
+                    <tr>
+                        <td class="text-center fw-semibold">
+                            <?= date("d/m/Y", strtotime($row['fecha'])) ?>
+                        </td>
 
-if(!$colaborador){
-    die("Error en consulta: " . mysqli_error($conec));
-}
+                        <td class="text-center">
+                            <?= substr($row['hora_entrada'], 0, 5) ?>
+                        </td>
 
-echo "<div class='tabla-responsive'>";
-echo "<table class='tabla_colaboradores'>";
+                        <td><?= $row['nombre'] ?></td>
+Revisar aqui para que se habilite el select para las faltas, no para los decansos y modificar los colores
+                        <td class="text-center">
+                            <?php if ($row['tipo_registro'] == "DESCANSO") { ?>
+                                <span class="badge bg-warning text-dark px-3 py-2">
+                                    DESCANSO
+                                </span>
+                            <?php } else { ?>
+                                <span class="badge bg-success px-3 py-2">
+                                    <?= $row['tipo_registro'] ?>
+                                </span>
+                            <?php } ?>
+                        </td>
 
-echo "<thead>";
-echo "<tr class='encabezado'>
-        <th>Fecha</th>
-        <th>Hora</th>
-        <th>Tienda</th>
-        <th>Tipo de registro</th>
-      </tr>";
-echo "</thead>";
+                        <td>
+                            <?php if ($row['tipo_registro'] == "DESCANSO") { ?>
 
-echo "<tbody>";
+                                <form class="form-descanso">
+                                    <div class="input-group input-group-sm">
 
-while ($row = mysqli_fetch_assoc($colaborador)) {
-    echo "<tr>
-            <td>".$row['fecha']."</td>
-            <td>".$row['hora_entrada']."</td>
-            <td>".$row['nombre']."</td>
-            <td>".$row['tipo_registro']."</td>
-          </tr>";
-}
+                                        <select name="tipo_descanso" class="form-select" required>
 
-echo "</tbody>";
-echo "</table>";
-echo "</div>";
-?>
+                                            <option value="">Seleccionar...</option>
+
+                                            <?php
+                                            $motivos = [
+                                                "PAGO CON GOCE",
+                                                "PAGO SIN GOCE",
+                                                "CUMPLEAÑOS",
+                                                "VACACIONES",
+                                                "INCAPACIDAD",
+                                                "OTRO"
+                                            ];
+
+                                            foreach ($motivos as $motivo) {
+                                                $sel = ($row['tipo_descanso'] == $motivo) ? "selected" : "";
+                                                echo "<option value='$motivo' $sel>$motivo</option>";
+                                            }
+                                            ?>
+
+                                        </select>
+
+                                        <input type="hidden" name="id_registro" value="<?= $row['id_registro'] ?>">
+
+                                        <button class="btn btn-primary guardar-btn" type="submit">
+                                            <i class="bi bi-save"></i>
+                                        </button>
+
+                                    </div>
+                                </form>
+
+                            <?php } else { ?>
+
+                                <span class="text-muted">—</span>
+
+                            <?php } ?>
+                        </td>
+
+                    </tr>
+
+                <?php } ?>
+
+            </tbody>
+        </table>
+    </div>

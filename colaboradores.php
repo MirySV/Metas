@@ -85,7 +85,7 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
             <option value="PALOMITAS MOROCCO">PALOMITAS MOROCCO</option>
             <option value="PENDA">PENDA</option>
             <option value="ZAWADI ASIATICOS">ZAWADI ASIATICOS</option>
-            <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>         
+            <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>
             <option value="ZAWADI HUELLAS">ZAWADI HUELLAS</option>
           </select>
 
@@ -102,6 +102,20 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
               ?>
           </datalist>
           <button type="submit" style="font-size: 14px;">Filtrar</button>
+          <!-- NUEVO -->
+        <input type="date" id="inicio_general"
+          class="form-control filtro-input">
+
+        <input type="date" id="fin_general"
+          class="form-control filtro-input">
+
+        <!-- BOTÓN EXCEL -->
+        <button type="button"
+          class="btn btn-success"
+          onclick="exportarExcel()">
+          <i class="bi bi-file-earmark-excel"></i>
+          Exportar Excel
+        </button>
         </div>
       </form>
     </div>
@@ -130,12 +144,12 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
 
               if ($empleado != '') {
 
-                $colaboradores = mysqli_query($conec,"SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda WHERE e.nombre = '$empleado' ORDER BY e.nombre");
+                $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda WHERE e.nombre = '$empleado' ORDER BY e.nombre");
               } elseif ($tienda != 'todas') {
 
-                $colaboradores = mysqli_query($conec,"SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda WHERE t.nombre = '$tienda' ORDER BY e.nombre");
+                $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda WHERE t.nombre = '$tienda' ORDER BY e.nombre");
               } else {
-                $colaboradores = mysqli_query($conec,"SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda ORDER BY e.nombre");
+                $colaboradores = mysqli_query($conec, "SELECT e.id_empleado, e.nombre, t.nombre, e.descanso FROM empleados AS e INNER JOIN tiendas AS t ON e.id_tienda_actual = t.id_tienda ORDER BY e.nombre");
               }
 
               while ($i = mysqli_fetch_array($colaboradores)) {
@@ -152,7 +166,7 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
                         <div>
                           <span class="colaborador-nombre">
                             <?php echo $i[1]; ?>
-                          </span> 
+                          </span>
                         </div>
                       </div>
                     </td>
@@ -202,7 +216,7 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
                     <td>
 
                       <select id="descanso" name="descanso" class="form-select form-select-sm campo-tabla"
-                        <?php if ($rol != 'admin' && $rol != 'supervisora') echo "disabled";?>>
+                        <?php if ($rol != 'admin' && $rol != 'supervisora') echo "disabled"; ?>>
                         <option value="0" <?php if ($i[3] == 0) echo "selected"; ?>>TRABAJA FINES</option>
                         <option value="1" <?php if ($i[3] == 1) echo "selected"; ?>>LUNES</option>
                         <option value="2" <?php if ($i[3] == 2) echo "selected"; ?>>MARTES</option>
@@ -285,10 +299,67 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
   let modal;
 
   document.addEventListener("DOMContentLoaded", function() {
-    modal = new bootstrap.Modal(document.getElementById('modal'));
+
+    modal = new bootstrap.Modal(document.getElementById("modal"));
+
+    // Escuchar cualquier formulario dentro del modal
+    document.getElementById("tablaResultados").addEventListener("submit", function(e) {
+
+      if (!e.target.classList.contains("form-descanso")) return;
+
+      e.preventDefault();
+
+      const formulario = e.target;
+      const boton = formulario.querySelector("button");
+
+      boton.disabled = true;
+      boton.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
+
+      fetch("actualizar_descanso.php", {
+          method: "POST",
+          body: new FormData(formulario)
+        })
+        .then(res => res.text())
+        .then(resultado => {
+
+          resultado = resultado.trim();
+
+          if (resultado === "ok") {
+
+            boton.classList.remove("btn-primary");
+            boton.classList.add("btn-success");
+            boton.innerHTML = '<i class="bi bi-check-circle"></i>';
+
+            // Regresar al ícono de guardar después de 2 segundos
+            setTimeout(() => {
+              boton.innerHTML = '<i class="bi bi-save"></i>';
+              boton.disabled = false;
+              boton.classList.remove("btn-success");
+              boton.classList.add("btn-primary");
+            }, 2000);
+
+          } else {
+
+            boton.disabled = false;
+            boton.innerHTML = '<i class="bi bi-save"></i>';
+            alert(resultado);
+
+          }
+
+        })
+        .catch(error => {
+          console.error(error);
+          boton.disabled = false;
+          boton.innerHTML = '<i class="bi bi-save"></i>';
+          alert("Ocurrió un error al guardar.");
+        });
+
+    });
+
   });
 
   function buscar(id_empleado, nombre) {
+
     let inicio = document.getElementById("inicio_" + id_empleado).value;
     let fin = document.getElementById("fin_" + id_empleado).value;
 
@@ -300,22 +371,41 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
     document.getElementById("tituloModal").innerText =
       "Registros de " + nombre + " del " + inicio + " al " + fin;
 
+    document.getElementById("tablaResultados").innerHTML =
+      '<div class="text-center p-4"><div class="spinner-border text-primary"></div></div>';
+
     modal.show();
 
-    // enviar datos a PHP
     fetch("reporte.php", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: "id_empleado=" + id_empleado + "&inicio=" + inicio + "&fin=" + fin
+        body: `id_empleado=${id_empleado}&inicio=${inicio}&fin=${fin}`
       })
       .then(res => res.text())
       .then(data => {
-        console.log(data);
         document.getElementById("tablaResultados").innerHTML = data;
       });
+
   }
+
+  function exportarExcel() {
+
+    let inicio = document.getElementById("inicio_general").value;
+    let fin = document.getElementById("fin_general").value;
+    let tienda = document.getElementById("tiendas").value;
+
+    if (inicio === "" || fin === "") {
+        alert("Selecciona un rango de fechas.");
+        return;
+    }
+
+    window.open(
+        `exportar_rep_excel.php?inicio=${inicio}&fin=${fin}&tienda=${encodeURIComponent(tienda)}`,
+        "_blank"
+    );
+}
 </script>
 
 </html>
