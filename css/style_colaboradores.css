@@ -84,13 +84,60 @@ main {
 /* FILTROS */
 
 .filtro_tiendas {
-    display: flex;
+        display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
+    gap: 10px;
+
     width: 100%;
-    margin-top: 28px;
-    padding: 0 25px;
+    max-width: 1200px;
+    margin: 28px auto 0;
+    padding: 0 20px;
+
     box-sizing: border-box;
 }
+
+.filtro_tiendas select,
+.filtro_tiendas input[type="text"],
+.filtro_tiendas input[type="date"] {
+    flex: 1 1 180px;
+    min-width: 0;
+    width: auto;
+    height: 40px;
+    padding: 8px 12px;
+
+    box-sizing: border-box;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #495057;
+}
+
+.filtro_tiendas button,
+.filtro_tiendas input[type="submit"] {
+    flex: 0 1 110px;
+    min-width: 100px;
+    height: 40px;
+
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+
+    background-color: #842b16;
+    color: white;
+    font-weight: 600;
+    white-space: nowrap;
+
+    cursor: pointer;
+    transition: background-color .2s ease;
+}
+
+.filtro_tiendas button:hover,
+.filtro_tiendas input[type="submit"]:hover {
+    background-color: #69210f;
+}
+
 
 .filtro_acciones {
     display: flex;
@@ -145,6 +192,47 @@ main {
     border-color: #5f1d0c;
     transform: translateY(-1px);
     box-shadow: 0 3px 8px rgba(119, 36, 15, 0.2);
+}
+
+.filtro_tiendas .guardar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    flex: 0 0 145px;
+    width: 145px;
+    min-width: 145px;
+    height: 40px;
+
+    padding: 8px 12px;
+    box-sizing: border-box;
+
+    background-color: #198754;
+    border: 1px solid #198754;
+    border-radius: 8px;
+
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.filtro_tiendas .guardar-btn i {
+    font-size: 16px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.filtro_tiendas .guardar-btn span {
+    white-space: nowrap;
+}
+
+.filtro_tiendas .guardar-btn:hover {
+    background-color: #157347;
+    border-color: #157347;
 }
 
 /* CONTENEDOR DE TABLA */
@@ -673,5 +761,24 @@ footer p {
 
     .tabla_colaboradores {
         min-width: 950px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .filtro_tiendas {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 15px;
+        gap: 10px;
+    }
+
+    .filtro_tiendas select,
+    .filtro_tiendas input[type="text"],
+    .filtro_tiendas input[type="date"],
+    .filtro_tiendas button,
+    .filtro_tiendas input[type="submit"] {
+        width: 100%;
+        flex: 1 1 auto;
     }
 }

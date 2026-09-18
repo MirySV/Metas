@@ -56,7 +56,7 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
   </header>
 
   <main>
-    <div class="filtro_tiendas">
+    <div class="filtro_tiendas" style="overflow-x:auto;"> 
       <form action="colaboradores.php" method="POST">
         <div class="filtro_acciones">
           <select id="tiendas" name="tiendas" class="filtro-input">
@@ -102,20 +102,19 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
               ?>
           </datalist>
           <button type="submit" style="font-size: 14px;">Filtrar</button>
-          <!-- NUEVO -->
+<?php if ($_SESSION['rol'] == 'admin') { ?>
         <input type="date" id="inicio_general"
           class="form-control filtro-input">
 
         <input type="date" id="fin_general"
           class="form-control filtro-input">
 
-        <!-- BOTÓN EXCEL -->
-        <button type="button"
-          class="btn btn-success"
-          onclick="exportarExcel()">
-          <i class="bi bi-file-earmark-excel"></i>
-          Exportar Excel
-        </button>
+        
+    <button class="btn guardar-btn" type="submit" name="exportar" onclick="exportarExcel()">
+        <i class="bi bi-file-earmark-excel"></i>
+        <span>Exportar Excel</span>
+    </button>
+<?php } ?>
         </div>
       </form>
     </div>

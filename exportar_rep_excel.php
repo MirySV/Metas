@@ -1,11 +1,6 @@
 <?php
-
-/*
-    Evita que cualquier warning/notice/deprecated (o espacio en blanco
-    accidental de algún archivo incluido) se mezcle con el binario del
-    xlsx y lo corrompa. Los errores reales se registran en el log de
-    PHP en vez de imprimirse en pantalla.
-*/
+/*Evita que cualquier warning/notice/deprecated (o espacio en blanco accidental de algún archivo incluido) se mezcle con el binario del
+    xlsx y lo corrompa. Los errores reales se registran en el log de PHP en vez de imprimirse en pantalla.*/
 error_reporting(E_ALL);
 ini_set('display_errors', '0');
 ini_set('log_errors', '1');
@@ -30,9 +25,7 @@ $tienda = $_GET['tienda'] ?? "todas";
 $fechaInicio = new DateTime($inicio);
 $fechaFin    = new DateTime($fin);
 
-/* ==========================
-   CALCULAR QUINCENA
-========================== */
+/* CALCULAR QUINCENA*/
 
 $numeroQuincena = ceil((int)$fechaInicio->format("z") / 15);
 $anio = $fechaInicio->format("Y");
@@ -45,12 +38,9 @@ $excel = new Spreadsheet();
 $hoja = $excel->getActiveSheet();
 $hoja->setTitle("PRENOMINA");
 
-/* ==========================
-   COLORES
-========================== */
+/*COLORES*/
 
 $COLORES = [
-
     "AZUL"      => "0070C0",
     "VERDE"     => "00B050",
     "ROJO"      => "FF0000",
@@ -73,8 +63,7 @@ $COLORES = [
 
 ];
 
-/* ==========================================================
-   CATALOGO DE CODIGOS DE ASISTENCIA
+/* CATALOGO DE CODIGOS DE ASISTENCIA
    ----------------------------------------------------------
    "tipo"           => valor de registros.tipo_registro
    "subtipo"        => valor de registros.tipo_descanso (opcional)
@@ -101,7 +90,6 @@ $CODIGOS = [
     "V"   => ["tipo"=>"VACACIONES",       "subtipo"=>null,        "color"=>$COLORES["CAFE"],        "fuente"=>"FFFFFF", "contador"=>"V"],
 
     // Codigos que se pintan en el calendario pero no tienen columna
-    // propia en el resumen (segun la plantilla que compartiste)
     "R"   => ["tipo"=>"RETARDO",          "subtipo"=>null,        "color"=>$COLORES["AZUL_CLARO"],  "fuente"=>"000000", "contador"=>null],
     "M"   => ["tipo"=>"MATERNIDAD",       "subtipo"=>null,        "color"=>$COLORES["ROSA"],        "fuente"=>"000000", "contador"=>null],
     "P"   => ["tipo"=>"PATERNIDAD",       "subtipo"=>null,        "color"=>$COLORES["VERDE_CLARO"], "fuente"=>"000000", "contador"=>null],
@@ -148,9 +136,7 @@ function buscarCodigo($CODIGOS, $tipoRegistro, $tipoDescanso){
     return null;
 }
 
-/* ==========================
-   ENCABEZADO
-========================== */
+/*ENCABEZADO*/
 
 $hoja->mergeCells("B1:C1");
 $hoja->setCellValue("B1","DIRECCION DE TIENDAS");
@@ -171,22 +157,18 @@ $hoja->getStyle("B1:C1")->applyFromArray([
 
 $hoja->setCellValue("B2","QUINCENA No. ".$numeroQuincena." ".$anio);
 
-/* ==========================
-   COLUMNAS FIJAS
-========================== */
+/*COLUMNAS FIJAS*/
 
 $hoja->setCellValue("A6","#");
 $hoja->setCellValue("B6","NOMBRE");
 $hoja->setCellValue("C6","TIENDA");
 
-/* ==========================
-   GENERAR DIAS DEL RANGO
-========================== */
+/*GENERAR DIAS DEL RANGO*/
 
 $dias = [];
 $meses = [];
 
-// Reemplazo de strftime() (deprecated desde PHP 8.1)
+// Reemplazo de strftime()
 $nombresMeses = [
     1=>"ENERO", 2=>"FEBRERO", 3=>"MARZO", 4=>"ABRIL",
     5=>"MAYO", 6=>"JUNIO", 7=>"JULIO", 8=>"AGOSTO",
@@ -258,9 +240,7 @@ while($fecha <= $fechaFin){
 
 }
 
-/* ==========================
-   DIBUJAR MESES
-========================== */
+/*DIBUJAR MESES*/
 
 foreach($meses as $mes=>$cols){
 
@@ -293,9 +273,7 @@ foreach($meses as $mes=>$cols){
 
 }
 
-/* ==========================
-   TEXTO DEL PERIODO
-========================== */
+/* TEXTO DEL PERIODO*/
 
 $ultimaFecha = end(array_keys($dias));
 $ultimaColumnaDias = end($dias);
@@ -321,9 +299,7 @@ $hoja->getStyle("D4:".$ultimaColumnaDias."4")
         ]
     ]);
 
-/* ==========================================================
-   COLUMNAS DEL RESUMEN (a la derecha del calendario)
-========================================================== */
+/* COLUMNAS DEL RESUMEN (a la derecha del calendario)*/
 
 // Ultima columna usada por los dias + 1 columna de separacion
 $colResumenInicio = $columna + 1;
@@ -396,10 +372,7 @@ $hoja->getStyle($letraObservaciones."3")->applyFromArray([
     ]
 ]);
 
-/* ==========================================================
-   PARTE 2
-   CONSULTAR EMPLEADOS Y PREPARAR INFORMACIÓN
-========================================================== */
+/* CONSULTAR EMPLEADOS Y PREPARAR INFORMACIÓN */
 
 if ($tienda == "todas") {
 
@@ -418,38 +391,15 @@ if ($tienda == "todas") {
 mysqli_stmt_execute($stmtEmp);
 $empleados = mysqli_stmt_get_result($stmtEmp);
 
-/* ==========================================================
-   CONSULTA DEL ÚLTIMO REGISTRO DEL DÍA
-========================================================== */
+/* CONSULTA DEL ÚLTIMO REGISTRO DEL DÍA*/
 
-$sqlRegistro = "SELECT
-    r.id_registro,
-    r.fecha,
-    r.hora_entrada,
-    r.tipo_registro,
-    r.tipo_descanso,
-    IFNULL(r.horas_extra,0) AS horas_extra
-FROM registros r
-WHERE r.id_empleado = ?
-AND r.fecha BETWEEN ? AND ?
-AND r.id_registro = (
-
-    SELECT MAX(r2.id_registro)
-
-    FROM registros r2
-
-    WHERE r2.id_empleado = r.id_empleado
-    AND r2.fecha = r.fecha
-
-)
-ORDER BY r.fecha
-";
+$sqlRegistro = "SELECT r.id_registro, r.fecha, r.hora_entrada, r.tipo_registro, r.tipo_descanso, IFNULL(r.horas_extra,0) AS horas_extra FROM registros r WHERE r.id_empleado = ?
+AND r.fecha BETWEEN ? AND ? AND r.id_registro = (SELECT MAX(r2.id_registro) FROM registros r2 WHERE r2.id_empleado = r.id_empleado AND r2.fecha = r.fecha)
+ORDER BY r.fecha";
 
 $stmtRegistro = mysqli_prepare($conec, $sqlRegistro);
 
-/* ==========================================================
-   FILA DONDE COMIENZAN LOS COLABORADORES
-========================================================== */
+/* FILA DONDE COMIENZAN LOS COLABORADORES*/
 
 $fila = 7;
 $numeroEmpleado = 1;
@@ -499,17 +449,9 @@ while($empleado = mysqli_fetch_assoc($empleados)){
         ]
     ]);
 
-    /* ======================================
-       TRAER LOS REGISTROS DEL EMPLEADO
-    ====================================== */
+    /*TRAER LOS REGISTROS DEL EMPLEADO*/
 
-    mysqli_stmt_bind_param(
-        $stmtRegistro,
-        "iss",
-        $idEmpleado,
-        $inicio,
-        $fin
-    );
+    mysqli_stmt_bind_param($stmtRegistro,"iss",$idEmpleado,$inicio, $fin);
 
     mysqli_stmt_execute($stmtRegistro);
 
@@ -539,28 +481,16 @@ while($empleado = mysqli_fetch_assoc($empleados)){
         "V"   => 0
     ];
 
-    /*
-        Observaciones (vacaciones largas, incapacidades, etc.)
+    /*Observaciones (vacaciones largas, incapacidades, etc.)
         Se generan agrupando dias consecutivos con el mismo codigo,
-        solo dentro del rango de la quincena consultada.
-
-        NOTA: si necesitas que la observacion muestre el rango COMPLETO
-        aunque empiece o termine fuera de la quincena (como en tu
-        ejemplo "INCAPACIDAD DEL 10 DE JUN AL 1 DE SEP 2026"), esa
-        informacion tendria que venir de una tabla adicional
-        (por ejemplo "incapacidades" o "permisos" con fecha_inicio /
-        fecha_fin) que aun no me has compartido. Avísame si la tienes
-        y ajusto esta parte para leerla de ahí.
-    */
+        solo dentro del rango de la quincena consultada.*/
 
     $observaciones = [];
     $bloqueActual = null; // ["codigo"=>.., "inicio"=>DateTime, "fin"=>DateTime]
 
     $codigosParaObservacion = ["V","INC","M","P"]; // vacaciones, incapacidad, maternidad, paternidad
 
-    /* ======================================
-       RECORRER CADA DIA DEL CALENDARIO
-    ====================================== */
+    /* RECORRER CADA DIA DEL CALENDARIO*/
 
     foreach($dias as $fechaDia => $letraCol){
 
@@ -649,14 +579,14 @@ while($empleado = mysqli_fetch_assoc($empleados)){
         $observaciones[] = $bloqueActual;
     }
 
-    /* ======================================
-       ESCRIBIR RESUMEN DE LA FILA
+    /*ESCRIBIR RESUMEN DE LA FILA
     ====================================== */
 
-    $hoja->setCellValue($letraHrsExtra.$fila, $contador["HE"]);
-    $hoja->getStyle($letraHrsExtra.$fila)->applyFromArray([
-        "alignment"=>["horizontal"=>Alignment::HORIZONTAL_CENTER]
-    ]);
+    // HRS EXTRA: se deja vacía (solo con borde) para llenarla manualmente
+$hoja->getStyle($letraHrsExtra.$fila)->applyFromArray($bordeDelgado);
+$hoja->getStyle($letraHrsExtra.$fila)->applyFromArray([
+    "alignment"=>["horizontal"=>Alignment::HORIZONTAL_CENTER]
+]);
 
     foreach($ordenResumen as $clave){
 

@@ -40,7 +40,7 @@ $resultado = mysqli_stmt_get_result($stmt);
                         <i class="bi bi-fingerprint"></i><br>Registro
                     </th>
                     <th style="width:320px;">
-                        <i class="bi bi-cup-hot"></i><br>Motivo de la falta
+                        <i class="bi bi-cup-hot"></i><br>Motivo
                     </th>
                 </tr>
             </thead>
@@ -59,11 +59,14 @@ $resultado = mysqli_stmt_get_result($stmt);
                         </td>
 
                         <td><?= $row['nombre'] ?></td>
-Revisar aqui para que se habilite el select para las faltas, no para los decansos y modificar los colores
                         <td class="text-center">
                             <?php if ($row['tipo_registro'] == "DESCANSO") { ?>
                                 <span class="badge bg-warning text-dark px-3 py-2">
                                     DESCANSO
+                                </span>
+                            <?php } elseif ($row['tipo_registro'] == "FALTA") { ?>
+                                <span class="badge bg-danger px-3 py-2">
+                                    FALTA
                                 </span>
                             <?php } else { ?>
                                 <span class="badge bg-success px-3 py-2">
@@ -73,13 +76,13 @@ Revisar aqui para que se habilite el select para las faltas, no para los decanso
                         </td>
 
                         <td>
-                            <?php if ($row['tipo_registro'] == "DESCANSO") { ?>
+
+                            <?php if ($row['tipo_registro'] == "FALTA") { ?>
 
                                 <form class="form-descanso">
                                     <div class="input-group input-group-sm">
 
                                         <select name="tipo_descanso" class="form-select" required>
-
                                             <option value="">Seleccionar...</option>
 
                                             <?php
@@ -89,6 +92,8 @@ Revisar aqui para que se habilite el select para las faltas, no para los decanso
                                                 "CUMPLEAÑOS",
                                                 "VACACIONES",
                                                 "INCAPACIDAD",
+                                                "MATERNIDAD",
+                                                "PATERNIDAD",
                                                 "OTRO"
                                             ];
 
@@ -97,7 +102,28 @@ Revisar aqui para que se habilite el select para las faltas, no para los decanso
                                                 echo "<option value='$motivo' $sel>$motivo</option>";
                                             }
                                             ?>
+                                        </select>
 
+                                        <input type="hidden" name="id_registro" value="<?= $row['id_registro'] ?>">
+
+                                        <button class="btn btn-primary guardar-btn" type="submit">
+                                            <i class="bi bi-save"></i>
+                                        </button>
+
+                                    </div>
+                                </form>
+
+                            <?php } elseif ($row['tipo_registro'] == "NORMAL") { ?>
+
+                                <form class="form-descanso">
+                                    <div class="input-group input-group-sm">
+
+                                        <select name="tipo_descanso" class="form-select" required>
+                                            <option value="">Seleccionar...</option>
+                                            <option value="DESCANSO TRABAJADO"
+                                                <?= ($row['tipo_descanso'] == "DESCANSO TRABAJADO") ? "selected" : "" ?>>
+                                                DESCANSO TRABAJADO
+                                            </option>
                                         </select>
 
                                         <input type="hidden" name="id_registro" value="<?= $row['id_registro'] ?>">
@@ -114,8 +140,8 @@ Revisar aqui para que se habilite el select para las faltas, no para los decanso
                                 <span class="text-muted">—</span>
 
                             <?php } ?>
-                        </td>
 
+                        </td>
                     </tr>
 
                 <?php } ?>

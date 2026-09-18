@@ -4,7 +4,7 @@ include "conexion.php";
 
 date_default_timezone_set('America/Mexico_City');
 
-$fecha = "2026-08-20";
+$fecha = "2026-09-11";
 $hora = "00:00:00";
 
 $insertadosDescanso = 0;

@@ -13,9 +13,10 @@ if ($id_registro <= 0 || $tipo_descanso == '') {
     exit("Debe seleccionar un motivo.");
 }
 
-$consulta = mysqli_prepare($conec,"UPDATE registros SET tipo_descanso = ? WHERE id_registro = ? AND tipo_registro = 'DESCANSO'");
+$consulta = mysqli_prepare(
+    $conec,"UPDATE registros SET tipo_descanso = ? WHERE id_registro = ? AND tipo_registro IN ('FALTA', 'NORMAL')");
 
-mysqli_stmt_bind_param($consulta, "si", $tipo_descanso, $id_registro);
+mysqli_stmt_bind_param($consulta,"si",$tipo_descanso, $id_registro);
 
 if (mysqli_stmt_execute($consulta)) {
     echo "ok";
