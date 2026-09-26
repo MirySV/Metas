@@ -87,8 +87,8 @@ $resultado = mysqli_stmt_get_result($stmt);
 
                                             <?php
                                             $motivos = [
-                                                "PAGO CON GOCE",
-                                                "PAGO SIN GOCE",
+                                                "PERMISO CON GOCE",
+                                                "PERMISO SIN GOCE",
                                                 "CUMPLEAÑOS",
                                                 "VACACIONES",
                                                 "INCAPACIDAD",
@@ -120,10 +120,18 @@ $resultado = mysqli_stmt_get_result($stmt);
 
                                         <select name="tipo_descanso" class="form-select" required>
                                             <option value="">Seleccionar...</option>
-                                            <option value="DESCANSO TRABAJADO"
-                                                <?= ($row['tipo_descanso'] == "DESCANSO TRABAJADO") ? "selected" : "" ?>>
-                                                DESCANSO TRABAJADO
-                                            </option>
+
+                                            <?php
+                                            $motivos = [
+                                                "DESCANSO TRABAJADO",
+                                                "DOBLE ASISTENCIA POR SAFARI NOCTURNO"
+                                            ];
+
+                                            foreach ($motivos as $motivo) {
+                                                $sel = ($row['tipo_descanso'] == $motivo) ? "selected" : "";
+                                                echo "<option value='$motivo' $sel>$motivo</option>";
+                                            }
+                                            ?>
                                         </select>
 
                                         <input type="hidden" name="id_registro" value="<?= $row['id_registro'] ?>">

@@ -84,6 +84,7 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
             <option value="OCEANIA">OCEANIA</option>
             <option value="PALOMITAS MOROCCO">PALOMITAS MOROCCO</option>
             <option value="PENDA">PENDA</option>
+            <option value="PRODUCCION">PRODUCCION</option>
             <option value="ZAWADI ASIATICOS">ZAWADI ASIATICOS</option>
             <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>
             <option value="ZAWADI HUELLAS">ZAWADI HUELLAS</option>
@@ -204,6 +205,7 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
                         <option value="OCEANIA">
                         <option value="PALOMITAS MOROCCO">
                         <option value="PENDA">
+                        <option value="PRODUCCION">
                         <option value="ZAWADI ASIATICOS">
                         <option value="ZAWADI DUKAZURI">
                         <option value="ZAWADI HUELLAS">
@@ -216,7 +218,7 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
 
                       <select id="descanso" name="descanso" class="form-select form-select-sm campo-tabla"
                         <?php if ($rol != 'admin' && $rol != 'supervisora') echo "disabled"; ?>>
-                        <option value="0" <?php if ($i[3] == 0) echo "selected"; ?>>TRABAJA FINES</option>
+                        <option value="0" <?php if ($i[3] == 0) echo "selected"; ?>>TRABAJA FIN DE SEMANA</option>
                         <option value="1" <?php if ($i[3] == 1) echo "selected"; ?>>LUNES</option>
                         <option value="2" <?php if ($i[3] == 2) echo "selected"; ?>>MARTES</option>
                         <option value="3" <?php if ($i[3] == 3) echo "selected"; ?>>MIÉRCOLES</option>
@@ -224,6 +226,7 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
                         <option value="5" <?php if ($i[3] == 5) echo "selected"; ?>>VIERNES</option>
                         <option value="6" <?php if ($i[3] == 6) echo "selected"; ?>>SÁBADO</option>
                         <option value="7" <?php if ($i[3] == 7) echo "selected"; ?>>DOMINGO</option>
+                        <option value="8" <?php if ($i[3] == 8) echo "selected"; ?>>FIN DE SEMANA</option>
                       </select>
 
                     </td>

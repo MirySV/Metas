@@ -2,7 +2,8 @@
 include "conexion.php";
 date_default_timezone_set('America/Mazatlan');
 //date_default_timezone_set('America/Mexico_City');
-$fecha = date("Y-m-d");
+//$fecha = date("Y-m-d");
+$fecha = "2026-09-27";
 $hora = date("H:i:s");
 
 

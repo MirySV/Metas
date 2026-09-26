@@ -4,7 +4,8 @@ include "conexion.php";
 
 date_default_timezone_set('America/Mexico_City');
 
-$fecha = "2026-09-11";
+$fecha = date("Y-m-d");
+//$fecha = "2026-09-26";
 $hora = "00:00:00";
 
 $insertadosDescanso = 0;
@@ -13,57 +14,124 @@ $insertadosFalta = 0;
 // 1=Lunes, 2=Martes, 3=Miércoles, 4=Jueves, 5=Viernes, 6=Sábado, 7=Domingo
 $dia = date("N", strtotime($fecha));
 
-/*GENERAR DESCANSOS*/
 
-$empleadosDescanso = mysqli_query($conec, "SELECT id_empleado, id_tienda FROM empleados WHERE descanso = '$dia' AND tipo_jornada = 1 AND status = 1");
+/* OBTENER EMPLEADOS*/
 
-while ($emp = mysqli_fetch_assoc($empleadosDescanso)) {
+$empleados = mysqli_query($conec,"SELECT id_empleado, id_tienda, descanso, tipo_jornada FROM empleados WHERE status = 1 AND tipo_jornada IN (0, 1)");
+
+while ($emp = mysqli_fetch_assoc($empleados)) {
 
     $idEmpleado = $emp['id_empleado'];
-    $idTienda   = $emp['id_tienda'];
+    $idTienda = $emp['id_tienda'];
+    $descanso = (int)$emp['descanso'];
+    $tipoJornada = (int)$emp['tipo_jornada'];
 
+    // Si no tiene tienda, no se procesa
     if (empty($idTienda)) {
         continue;
     }
 
-    // Revisa si hay registro para el dia de hoy
-    $existe = mysqli_query($conec, "SELECT 1 FROM registros WHERE id_empleado = '$idEmpleado' AND fecha = '$fecha' LIMIT 1");
+    /*DETERMINAR SI HOY DESCANSA*/
 
-    if (mysqli_num_rows($existe) > 0) {
-        continue;
+    $esDescanso = false;
+    $debeTrabajar = false;
+
+
+    /* TIPO DE JORNADA 0 SOLO TRABAJA SÁBADO Y DOMINGO*/
+
+    if ($tipoJornada == 0) {
+
+        // Lunes a viernes → no trabaja
+        if ($dia >= 1 && $dia <= 5) {
+            continue;
+        }
+
+        // Sábado y domingo → trabaja
+        if ($dia == 6 || $dia == 7) {
+            $debeTrabajar = true;
+        }
     }
 
-    mysqli_query($conec, "INSERT INTO registros (id_tienda_actual, id_empleado, fecha, hora_entrada, tipo_registro) VALUES ('$idTienda','$idEmpleado','$fecha','$hora','DESCANSO')");
 
-    $insertadosDescanso++;
-}
+    /* TIPO DE JORNADA 1 JORNADA NORMAL*/
 
+    elseif ($tipoJornada == 1) {
 
-/* GENERAR FALTAS*/
+        // Lunes a viernes
+        if ($dia >= 1 && $dia <= 5) {
 
-$empleadosTrabajo = mysqli_query($conec, "SELECT id_empleado, id_tienda FROM empleados WHERE status = 1 AND tipo_jornada = 1 AND descanso <> '$dia'");
+            // Descanso normal del día
+            if ($descanso == $dia) {
+                $esDescanso = true;
+            } else {
+                $debeTrabajar = true;
+            }
+        }
 
-while ($emp = mysqli_fetch_assoc($empleadosTrabajo)) {
+        // Sábado
+        elseif ($dia == 6) {
 
-    $idEmpleado = $emp['id_empleado'];
-    $idTienda   = $emp['id_tienda'];
+            // 6 = descanso sábado
+            // 8 = descanso sábado y domingo
+            if ($descanso == 6 || $descanso == 8) {
+                $esDescanso = true;
+            } else {
+                $debeTrabajar = true;
+            }
+        }
 
-    if (empty($idTienda)) {
-        continue;
+        // Domingo
+        elseif ($dia == 7) {
+
+            // 7 = descanso domingo
+            // 8 = descanso sábado y domingo
+            if ($descanso == 7 || $descanso == 8) {
+                $esDescanso = true;
+            } else {
+                $debeTrabajar = true;
+            }
+        }
     }
 
-    // Si NO existe ningún registro del día (ni reloj general ni reloj tienda)
-    $existe = mysqli_query($conec, "SELECT 1 FROM registros WHERE id_empleado = '$idEmpleado'AND fecha = '$fecha'LIMIT 1");
 
-    if (mysqli_num_rows($existe) == 0) {
+    /* REVISAR SI YA EXISTE REGISTRO HOY*/
 
-        mysqli_query($conec, "INSERT INTO registros(id_tienda_actual, id_empleado, fecha, hora_entrada, tipo_registro)VALUES('$idTienda','$idEmpleado','$fecha','$hora','FALTA')
-        ");
+    $existe = mysqli_query($conec,"SELECT 1 FROM registros WHERE id_empleado = '$idEmpleado' AND fecha = '$fecha' LIMIT 1");
+
+
+    /* GENERAR DESCANSO*/
+
+    if ($esDescanso) {
+
+        // Si ya tiene cualquier registro, no hacer nada
+        if (mysqli_num_rows($existe) > 0) {
+            continue;
+        }
+
+        mysqli_query($conec,"INSERT INTO registros (id_tienda_actual,id_empleado,fecha, hora_entrada,tipo_registro) VALUES
+            ('$idTienda','$idEmpleado','$fecha','$hora','DESCANSO' )");
+
+        $insertadosDescanso++;
+    }
+
+
+    /* GENERAR FALTA*/
+
+    elseif ($debeTrabajar) {
+
+        // Si ya tiene cualquier registro, no generar falta
+        if (mysqli_num_rows($existe) > 0) {
+            continue;
+        }
+
+        mysqli_query( $conec,"INSERT INTO registros(id_tienda_actual, id_empleado,fecha, hora_entrada, tipo_registro) VALUES
+            ('$idTienda','$idEmpleado','$fecha','$hora','FALTA')");
 
         $insertadosFalta++;
     }
 }
 
 echo "Fecha: $fecha<br>";
+echo "Día: $dia<br>";
 echo "Descansos generados: $insertadosDescanso<br>";
 echo "Faltas generadas: $insertadosFalta";
