@@ -45,7 +45,7 @@ $COLORES = [
     "VERDE"     => "00B050",
     "ROJO"      => "FF0000",
     "AMARILLO"  => "FFC000",
-    "GRIS"      => "D9D9D9",
+    "GRIS"      => "808080",
     "NARANJA"   => "F4B183",
     "MORADO"    => "D9A5FF",
     "CIAN"      => "00B0F0",
@@ -78,24 +78,25 @@ $COLORES = [
 
 $CODIGOS = [
 
-    "A"   => ["tipo"=>"NORMAL",           "subtipo"=>null,        "color"=>$COLORES["BLANCO"],      "fuente"=>"000000", "contador"=>"A"],
-    "D"   => ["tipo"=>"DESCANSO",         "subtipo"=>null,        "color"=>$COLORES["BLANCO"],      "fuente"=>"000000", "contador"=>"D"],
-    "DT"  => ["tipo"=>"DESCANSO",         "subtipo"=>"TRABAJADO", "color"=>$COLORES["AZUL"],        "fuente"=>"FFFFFF", "contador"=>"DT"],
-    "F"   => ["tipo"=>"FALTA",            "subtipo"=>null,        "color"=>$COLORES["ROJO"],        "fuente"=>"FFFFFF", "contador"=>"F"],
-    "FES" => ["tipo"=>"FESTIVO",          "subtipo"=>null,        "color"=>$COLORES["AMARILLO_FES"],"fuente"=>"000000", "contador"=>"FES"],
-    "PD"  => ["tipo"=>"PRIMA_DOMINICAL",  "subtipo"=>null,        "color"=>$COLORES["VERDE"],       "fuente"=>"FFFFFF", "contador"=>"PD"],
-    "PCG" => ["tipo"=>"PERMISO_CON_GOCE", "subtipo"=>null,        "color"=>$COLORES["NARANJA"],     "fuente"=>"000000", "contador"=>"PCG"],
-    "PSG" => ["tipo"=>"PERMISO_SIN_GOCE", "subtipo"=>null,        "color"=>$COLORES["MORADO"],      "fuente"=>"000000", "contador"=>"PSG"],
-    "INC" => ["tipo"=>"INCAPACIDAD",      "subtipo"=>null,        "color"=>$COLORES["AMARILLO"],    "fuente"=>"000000", "contador"=>"INC"],
-    "V"   => ["tipo"=>"VACACIONES",       "subtipo"=>null,        "color"=>$COLORES["CAFE"],        "fuente"=>"FFFFFF", "contador"=>"V"],
+    // Estado base: se usa solo cuando NO hay tipo_descanso
+    "A"   => ["tipo"=>"NORMAL",   "subtipo"=>null, "color"=>$COLORES["BLANCO"], "fuente"=>"000000", "contador"=>"A"],
+    "D"   => ["tipo"=>"DESCANSO", "subtipo"=>null, "color"=>$COLORES["BLANCO"], "fuente"=>"000000", "contador"=>"D"],
+    "F"   => ["tipo"=>"FALTA",    "subtipo"=>null, "color"=>$COLORES["ROJO"],   "fuente"=>"000000", "contador"=>"F"],
 
-    // Codigos que se pintan en el calendario pero no tienen columna
-    "R"   => ["tipo"=>"RETARDO",          "subtipo"=>null,        "color"=>$COLORES["AZUL_CLARO"],  "fuente"=>"000000", "contador"=>null],
-    "M"   => ["tipo"=>"MATERNIDAD",       "subtipo"=>null,        "color"=>$COLORES["ROSA"],        "fuente"=>"000000", "contador"=>null],
-    "P"   => ["tipo"=>"PATERNIDAD",       "subtipo"=>null,        "color"=>$COLORES["VERDE_CLARO"], "fuente"=>"000000", "contador"=>null],
-    "HO"  => ["tipo"=>"HOME_OFFICE",      "subtipo"=>null,        "color"=>$COLORES["NARANJA_HO"],  "fuente"=>"000000", "contador"=>null],
-    "CUM" => ["tipo"=>"CUMPLEAÑOS",       "subtipo"=>null,        "color"=>$COLORES["CIAN"],        "fuente"=>"000000", "contador"=>null],
-    "AA"  => ["tipo"=>"DOBLE_ASISTENCIA", "subtipo"=>null,        "color"=>$COLORES["CAFE_OSCURO"], "fuente"=>"FFFFFF", "contador"=>null],
+    // Motivos: se buscan por tipo_descanso, sin importar tipo_registro
+    "DT"  => ["tipo"=>null, "subtipo"=>"DESCANSO TRABAJADO", "color"=>$COLORES["AZUL"],        "fuente"=>"000000", "contador"=>"DT"],
+    "PCG" => ["tipo"=>null, "subtipo"=>"PERMISO CON GOCE",   "color"=>$COLORES["NARANJA"],     "fuente"=>"000000", "contador"=>"PCG"],
+    "PSG" => ["tipo"=>null, "subtipo"=>"PERMISO SIN GOCE",   "color"=>$COLORES["MORADO"],      "fuente"=>"000000", "contador"=>"PSG"],
+    "INC" => ["tipo"=>null, "subtipo"=>"INCAPACIDAD",        "color"=>$COLORES["AMARILLO"],    "fuente"=>"000000", "contador"=>"INC"],
+    "V"   => ["tipo"=>null, "subtipo"=>"VACACIONES",         "color"=>$COLORES["GRIS"],        "fuente"=>"000000", "contador"=>"V"],
+    "FES" => ["tipo"=>null, "subtipo"=>"FESTIVO",            "color"=>$COLORES["AMARILLO_FES"],"fuente"=>"000000", "contador"=>"FES"],
+    "PD"  => ["tipo"=>null, "subtipo"=>"PRIMA DOMINICAL",    "color"=>$COLORES["VERDE"],       "fuente"=>"000000", "contador"=>"PD"],
+    "R"   => ["tipo"=>null, "subtipo"=>"RETARDO",            "color"=>$COLORES["AZUL_CLARO"],  "fuente"=>"000000", "contador"=>null],
+    "M"   => ["tipo"=>null, "subtipo"=>"MATERNIDAD",         "color"=>$COLORES["ROSA"],        "fuente"=>"000000", "contador"=>null],
+    "P"   => ["tipo"=>null, "subtipo"=>"PATERNIDAD",         "color"=>$COLORES["VERDE_CLARO"], "fuente"=>"000000", "contador"=>null],
+    "HO"  => ["tipo"=>null, "subtipo"=>"HOME OFFICE",        "color"=>$COLORES["NARANJA_HO"],  "fuente"=>"000000", "contador"=>null],
+    "CUM" => ["tipo"=>null, "subtipo"=>"CUMPLEAÑOS",         "color"=>$COLORES["CIAN"],        "fuente"=>"000000", "contador"=>null],
+    "AA"  => ["tipo"=>null, "subtipo"=>"DOBLE ASISTENCIA POR SAFARI NOCTURNO", "color"=>$COLORES["CAFE_OSCURO"], "fuente"=>"000000", "contador"=>null],
 
 ];
 
@@ -105,30 +106,21 @@ $CODIGOS = [
 */
 function buscarCodigo($CODIGOS, $tipoRegistro, $tipoDescanso){
 
-    foreach($CODIGOS as $codigo => $def){
+    $tipoDescanso = trim((string)$tipoDescanso);
 
-        if($def["tipo"] !== $tipoRegistro){
-            continue;
-        }
-
-        if($def["subtipo"] === null){
-            // Coincide con cualquier subtipo (incluyendo null)
-            // salvo que exista otro codigo mas especifico con el
-            // mismo tipo (ej. DESCANSO / DESCANSO+TRABAJADO)
-            if($tipoDescanso === null || $tipoDescanso === ""){
+    // 1) Si hay un motivo específico en tipo_descanso, ese manda,
+    //    sin importar si tipo_registro es NORMAL, FALTA o DESCANSO.
+    if($tipoDescanso !== ""){
+        foreach($CODIGOS as $codigo => $def){
+            if($def["subtipo"] !== null && $def["subtipo"] === $tipoDescanso){
                 return $codigo;
             }
-            continue;
-        }
-
-        if($def["subtipo"] === $tipoDescanso){
-            return $codigo;
         }
     }
 
-    // Si no hubo match exacto, intenta solo por tipo_registro
+    // 2) Sin motivo especial: usar el estado base (A/D/F)
     foreach($CODIGOS as $codigo => $def){
-        if($def["tipo"] === $tipoRegistro){
+        if($def["subtipo"] === null && $def["tipo"] === $tipoRegistro){
             return $codigo;
         }
     }
@@ -138,13 +130,13 @@ function buscarCodigo($CODIGOS, $tipoRegistro, $tipoDescanso){
 
 /*ENCABEZADO*/
 
-$hoja->mergeCells("B1:C1");
-$hoja->setCellValue("B1","DIRECCION DE TIENDAS");
+//$hoja->mergeCells("B2:C2");
+$hoja->setCellValue("B2","DIRECCION DE TIENDAS");
 
-$hoja->getStyle("B1:C1")->applyFromArray([
+$hoja->getStyle("B2")->applyFromArray([
     "font"=>[
         "bold"=>true,
-        "color"=>["rgb"=>"FFFFFF"]
+        "color"=>["rgb"=>"000000"],
     ],
     "alignment"=>[
         "horizontal"=>Alignment::HORIZONTAL_CENTER
@@ -155,13 +147,13 @@ $hoja->getStyle("B1:C1")->applyFromArray([
     ]
 ]);
 
-$hoja->setCellValue("B2","QUINCENA No. ".$numeroQuincena." ".$anio);
+$hoja->setCellValue("B3","QUINCENA No. ".$numeroQuincena." ".$anio);
 
 /*COLUMNAS FIJAS*/
 
-$hoja->setCellValue("A6","#");
-$hoja->setCellValue("B6","NOMBRE");
-$hoja->setCellValue("C6","TIENDA");
+$hoja->setCellValue("A4","");
+$hoja->setCellValue("B4","NOMBRE");
+$hoja->setCellValue("C4","TIENDA");
 
 /*GENERAR DIAS DEL RANGO*/
 
@@ -201,17 +193,17 @@ while($fecha <= $fechaFin){
     ];
 
     $hoja->setCellValue(
-        $letra."5",
+        $letra."3",
         $diasSemana[$fecha->format("D")]
     );
 
     // DIA NUMERO
     $hoja->setCellValue(
-        $letra."6",
+        $letra."4",
         $fecha->format("d")
     );
 
-    $hoja->getStyle($letra."5:".$letra."6")->applyFromArray([
+    $hoja->getStyle($letra."3:".$letra."4")->applyFromArray([
         "alignment"=>[
             "horizontal"=>Alignment::HORIZONTAL_CENTER
         ],
@@ -222,14 +214,14 @@ while($fecha <= $fechaFin){
 
     // Resalta en verde la columna cuando el dia de la semana es Domingo
     if($fecha->format("D") == "Sun"){
-        $hoja->getStyle($letra."5")->applyFromArray([
+        $hoja->getStyle($letra."3")->applyFromArray([
             "fill"=>[
                 "fillType"=>Fill::FILL_SOLID,
                 "startColor"=>["rgb"=>$COLORES["VERDE"]]
             ],
             "font"=>[
                 "bold"=>true,
-                "color"=>["rgb"=>"FFFFFF"]
+                "color"=>["rgb"=>"000000"]
             ]
         ]);
     }
@@ -247,15 +239,15 @@ foreach($meses as $mes=>$cols){
     $inicioMes = $cols[0];
     $finMes    = end($cols);
 
-    $hoja->mergeCells($inicioMes."3:".$finMes."3");
+    $hoja->mergeCells($inicioMes."1:".$finMes."1");
 
-    $hoja->setCellValue($inicioMes."3",$mes);
+    $hoja->setCellValue($inicioMes."1",$mes);
 
     $colorMes = ($mes=="SEPTIEMBRE") ?
         $COLORES["ROJO"] :
         $COLORES["VERDE"];
 
-    $hoja->getStyle($inicioMes."3:".$finMes."3")
+    $hoja->getStyle($inicioMes."1:".$finMes."1")
         ->applyFromArray([
             "font"=>[
                 "bold"=>true
@@ -279,7 +271,7 @@ $ultimaFecha = end(array_keys($dias));
 $ultimaColumnaDias = end($dias);
 $primeraColumnaDias = reset($dias);
 
-$hoja->mergeCells("D4:".$ultimaColumnaDias."4");
+$hoja->mergeCells("D2:".$ultimaColumnaDias."2");
 
 $textoPeriodo = "DEL ".
     strtoupper($fechaInicio->format("d M")).
@@ -287,9 +279,9 @@ $textoPeriodo = "DEL ".
     strtoupper($fechaFin->format("d M")).
     " DE ".$anio;
 
-$hoja->setCellValue("D4",$textoPeriodo);
+$hoja->setCellValue("D2",$textoPeriodo);
 
-$hoja->getStyle("D4:".$ultimaColumnaDias."4")
+$hoja->getStyle("D2:".$ultimaColumnaDias."2")
     ->applyFromArray([
         "font"=>[
             "bold"=>true
@@ -328,7 +320,7 @@ $hoja->setCellValue($letrasResumen["A"]."3","RESUMEN");
 $hoja->getStyle($letrasResumen["A"]."3:".$ultimaColumnaResumen."3")->applyFromArray([
     "font"=>["bold"=>true],
     "alignment"=>["horizontal"=>Alignment::HORIZONTAL_CENTER],
-    "fill"=>["fillType"=>Fill::FILL_SOLID,"startColor"=>["rgb"=>$COLORES["GRIS"]]]
+    "fill"=>["fillType"=>Fill::FILL_SOLID,"startColor"=>["rgb"=>$COLORES["BLANCO"]]]
 ]);
 
 // Encabezado "HRS EXTRA"
@@ -350,7 +342,7 @@ foreach($ordenResumen as $clave){
 
     $hoja->setCellValue($letra."4",$clave);
 
-    $colorEncabezado = isset($CODIGOS[$clave]) ? $CODIGOS[$clave]["color"] : $COLORES["GRIS"];
+    $colorEncabezado = isset($CODIGOS[$clave]) ? $CODIGOS[$clave]["color"] : $COLORES["BLANCO"];
     $colorFuente     = isset($CODIGOS[$clave]) ? $CODIGOS[$clave]["fuente"] : "000000";
 
     $hoja->getStyle($letra."4")->applyFromArray([
@@ -401,7 +393,7 @@ $stmtRegistro = mysqli_prepare($conec, $sqlRegistro);
 
 /* FILA DONDE COMIENZAN LOS COLABORADORES*/
 
-$fila = 7;
+$fila = 5;
 $numeroEmpleado = 1;
 
 // Estilo de borde delgado para las celdas del calendario
@@ -445,7 +437,7 @@ while($empleado = mysqli_fetch_assoc($empleados)){
         ],
         "font"=>[
             "bold"=>true,
-            "color"=>["rgb"=>"FFFFFF"]
+            "color"=>["rgb"=>"000000"]
         ]
     ]);
 
@@ -517,7 +509,7 @@ while($empleado = mysqli_fetch_assoc($empleados)){
 
             $def = $CODIGOS[$codigo];
 
-            // "A" y "D" se dejan en blanco (sin texto) como en tu plantilla,
+            // "A" y "D" se dejan en blanco (sin texto) 
             // solo se cuentan. El resto de codigos SI se escriben en la celda.
             if(!in_array($codigo, ["A","D"])){
 
@@ -594,12 +586,13 @@ $hoja->getStyle($letraHrsExtra.$fila)->applyFromArray([
 
         $hoja->setCellValue($letra.$fila, $contador[$clave]);
 
+        $hoja->getStyle($letraHrsExtra.$fila)->applyFromArray($bordeDelgado);
         $hoja->getStyle($letra.$fila)->applyFromArray([
             "alignment"=>["horizontal"=>Alignment::HORIZONTAL_CENTER]
         ]);
 
         // Resalta la celda del resumen si tiene un valor mayor a 0,
-        // usando el color de su propio codigo (como en tu ejemplo INC=7)
+    
         if($contador[$clave] > 0 && isset($CODIGOS[$clave])){
             $hoja->getStyle($letra.$fila)->applyFromArray([
                 "fill"=>[
@@ -654,9 +647,7 @@ $hoja->getStyle($letraHrsExtra.$fila)->applyFromArray([
 
 }
 
-/* ==========================================================
-   LEYENDA (igual a la que compartiste)
-========================================================== */
+/* LEYENDA */
 
 $filaLeyenda = $fila + 2;
 
@@ -718,9 +709,7 @@ foreach($leyendaDerecha as $i => $item){
     }
 }
 
-/* ==========================================================
-   AJUSTES FINALES DE FORMATO
-========================================================== */
+/* AJUSTES DE FORMATO */
 
 $hoja->getColumnDimension("A")->setWidth(4);
 $hoja->getColumnDimension("B")->setWidth(28);

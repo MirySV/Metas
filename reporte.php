@@ -93,8 +93,7 @@ $resultado = mysqli_stmt_get_result($stmt);
                                                 "VACACIONES",
                                                 "INCAPACIDAD",
                                                 "MATERNIDAD",
-                                                "PATERNIDAD",
-                                                "OTRO"
+                                                "PATERNIDAD"
                                             ];
 
                                             foreach ($motivos as $motivo) {
@@ -123,6 +122,7 @@ $resultado = mysqli_stmt_get_result($stmt);
 
                                             <?php
                                             $motivos = [
+                                                "FESTIVO",
                                                 "DESCANSO TRABAJADO",
                                                 "DOBLE ASISTENCIA POR SAFARI NOCTURNO"
                                             ];

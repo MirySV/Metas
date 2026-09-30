@@ -3,7 +3,7 @@ include "conexion.php";
 date_default_timezone_set('America/Mazatlan');
 //date_default_timezone_set('America/Mexico_City');
 //$fecha = date("Y-m-d");
-$fecha = "2026-09-27";
+$fecha = "2026-10-04";
 $hora = date("H:i:s");
 
 
@@ -72,7 +72,19 @@ if (!empty($_POST['tarjeta'])) {
           } else {
 
             // Insertar registro
-            mysqli_query($conec, "INSERT INTO metas.registros (id_registro,id_tienda_actual,id_empleado,fecha,hora_entrada,tipo_registro) VALUES (NULL,'$id_tienda_actual','$idEmpleado','$fecha','$hora','NORMAL')");
+            //mysqli_query($conec, "INSERT INTO metas.registros (id_registro,id_tienda_actual,id_empleado,fecha,hora_entrada,tipo_registro) VALUES (NULL,'$id_tienda_actual','$idEmpleado','$fecha','$hora','NORMAL')");
+            // Determinar si la fecha es domingo
+            $diaSemana = date("N", strtotime($fecha));
+
+            // Si es domingo, guardar PRIMA DOMINICAL
+            if ($diaSemana == 7) {
+              $tipo_descanso = "PRIMA DOMINICAL";
+            } else {
+              $tipo_descanso = NULL;
+            }
+
+            // Insertar registro
+            mysqli_query($conec,"INSERT INTO metas.registros(id_registro,id_tienda_actual,id_empleado,fecha,hora_entrada,tipo_registro,tipo_descanso)VALUES (NULL,'$id_tienda_actual','$idEmpleado','$fecha','$hora','NORMAL'," . ($tipo_descanso === NULL ? "NULL" : "'$tipo_descanso'") . ")");
           }
         }
       }
