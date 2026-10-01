@@ -324,9 +324,9 @@ $hoja->getStyle($letrasResumen["A"]."3:".$ultimaColumnaResumen."3")->applyFromAr
 ]);
 
 // Encabezado "HRS EXTRA"
-$hoja->mergeCells($letraHrsExtra."3:".$letraHrsExtra."6");
-$hoja->setCellValue($letraHrsExtra."3","HRS EXTRA");
-$hoja->getStyle($letraHrsExtra."3")->applyFromArray([
+$hoja->mergeCells($letraHrsExtra."4:".$letraHrsExtra."4");
+$hoja->setCellValue($letraHrsExtra."4","HRS EXTRA");
+$hoja->getStyle($letraHrsExtra."4")->applyFromArray([
     "font"=>["bold"=>true],
     "alignment"=>[
         "horizontal"=>Alignment::HORIZONTAL_CENTER,
@@ -353,9 +353,9 @@ foreach($ordenResumen as $clave){
 }
 
 // Encabezado "OBSERVACIONES"
-$hoja->mergeCells($letraObservaciones."3:".$letraObservaciones."6");
-$hoja->setCellValue($letraObservaciones."3","OBSERVACIONES");
-$hoja->getStyle($letraObservaciones."3")->applyFromArray([
+$hoja->mergeCells($letraObservaciones."4:".$letraObservaciones."4");
+$hoja->setCellValue($letraObservaciones."4","OBSERVACIONES");
+$hoja->getStyle($letraObservaciones."4")->applyFromArray([
     "font"=>["bold"=>true],
     "alignment"=>[
         "horizontal"=>Alignment::HORIZONTAL_CENTER,
@@ -368,7 +368,7 @@ $hoja->getStyle($letraObservaciones."3")->applyFromArray([
 
 if ($tienda == "todas") {
 
-    $sqlEmpleados = "SELECT e.id_empleado, e.nombre, e.descanso, t.nombre AS tienda FROM empleados e INNER JOIN tiendas t ON e.id_tienda_actual = t.id_tienda WHERE e.status = 1 ORDER BY t.nombre, e.nombre";
+    $sqlEmpleados = "SELECT e.id_empleado, e.nombre, e.descanso, t.nombre AS tienda FROM empleados e INNER JOIN tiendas t ON e.id_tienda_actual = t.id_tienda WHERE e.status = 1 ORDER BY e.nombre";
 
     $stmtEmp = mysqli_prepare($conec, $sqlEmpleados);
 
@@ -581,10 +581,12 @@ $hoja->getStyle($letraHrsExtra.$fila)->applyFromArray([
 ]);
 
     foreach($ordenResumen as $clave){
-
+    
         $letra = $letrasResumen[$clave];
+        $hoja->getStyle($letra.$fila)->applyFromArray($bordeDelgado);
 
         $hoja->setCellValue($letra.$fila, $contador[$clave]);
+        $hoja->getStyle($letra.$fila)->applyFromArray($bordeDelgado);
 
         $hoja->getStyle($letraHrsExtra.$fila)->applyFromArray($bordeDelgado);
         $hoja->getStyle($letra.$fila)->applyFromArray([
