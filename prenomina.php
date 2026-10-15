@@ -24,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json; charset=utf-8');
 
     $entrada = json_decode(file_get_contents('php://input'), true);
-
     $accion = $entrada['accion'] ?? '';
 
     if ($accion === 'guardar') {
@@ -57,9 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
 
             $conec->begin_transaction();
-
             $sql = "INSERT INTO prenomina_ediciones(inicio,fin,id_empleado,tienda,dias,horas_extra,observaciones,id_usuario)VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE tienda = VALUES(tienda), dias = VALUES(dias), horas_extra = VALUES(horas_extra), observaciones = VALUES(observaciones), id_usuario = VALUES(id_usuario), fecha_actualizacion = CURRENT_TIMESTAMP";
-
             $stmt = $conec->prepare($sql);
 
             if (!$stmt) {
@@ -78,13 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // información de empleados de su propia zona.
                 if ($rol === 'supervisora') {
                     $id_zona_sesion = (int)($_SESSION['id_zona'] ?? 0);
-                    $stmtZonaEmpleado = $conec->prepare(
-                        "SELECT 1
-                         FROM empleados e
-                         INNER JOIN tiendas t ON t.id_tienda = e.id_tienda_actual
-                         WHERE e.id_empleado = ? AND t.id_zona = ?
-                         LIMIT 1"
-                    );
+                    $stmtZonaEmpleado = $conec->prepare("SELECT 1 FROM empleados e INNER JOIN tiendas t ON t.id_tienda = e.id_tienda_actual WHERE e.id_empleado = ? AND t.id_zona = ? LIMIT 1");
                     if (!$stmtZonaEmpleado) {
                         throw new Exception($conec->error);
                     }
@@ -603,28 +594,23 @@ function codigoRegistro($registro, $fecha = null)
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>
-        Prenómina - Tiendas Africam Safari
-    </title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <link
-        rel="stylesheet"
-        href="css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CDN Boostrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Icoons de Boostrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Favicon (Icono de la pagina web)-->
+    <link rel="shortcut icon" href="./assets/img/shop.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <!-- Tipografia Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Averia+Libre:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Glory:ital,wght@0,100..800;1,100..800&family=Macondo&family=Marcellus&display=swap" rel="stylesheet">
+    <!-- Archivo CSS -->
+    <link rel="stylesheet" href="./css/style.css">
+    <title>Tiendas Africam Safari</title>
 
     <style>
         body {
@@ -747,7 +733,7 @@ function codigoRegistro($registro, $fecha = null)
         /* Columnas de nombre y tienda */
         .encabezado-prenomina .columna-fija {
             background-color: #1f3a5f !important;
-    color: white !important;
+            color: white !important;
         }
 
         /* Días de la semana y números */
@@ -799,7 +785,6 @@ function codigoRegistro($registro, $fecha = null)
      ===================================================== -->
 
     <div class="sidebar">
-
         <img
             src="assets/img/logo.png"
             class="sidebar-logo"
@@ -813,52 +798,37 @@ function codigoRegistro($registro, $fecha = null)
         </div>
 
         <a href="index.php">
-
             <i class="bi bi-house"></i>
-
             <span>
                 Menú principal
             </span>
-
         </a>
 
 
         <a href="colaboradores.php">
-
             <i class="bi bi-people"></i>
-
             <span>
                 Colaboradores
             </span>
-
         </a>
 
 
-        <a
-            href="prenomina.php"
+        <a href="prenomina.php"
             class="active">
-
             <i class="bi bi-calendar3"></i>
-
             <span>
                 Prenómina
             </span>
-
         </a>
 
 
-        <a
-            href="logout.php"
+        <a href="logout.php"
             class="mt-4">
-
             <i class="bi bi-box-arrow-right"></i>
-
             <span>
                 Cerrar sesión
             </span>
-
         </a>
-
     </div>
 
 
@@ -868,30 +838,19 @@ function codigoRegistro($registro, $fecha = null)
 
     <div class="contenido">
 
-
         <div class="d-flex justify-content-between align-items-center mb-4">
-
             <div>
-
                 <h2 class="fw-bold mb-1">
-
                     <i class="bi bi-calendar3"></i>
-
                     Prenómina
-
                 </h2>
-
                 <small class="text-muted">
-
                     <?= $rol === 'supervisora'
                         ? 'Edición de prenómina'
                         : 'Consulta y descarga de prenómina'
                     ?>
-
                 </small>
-
             </div>
-
         </div>
 
 
@@ -900,36 +859,26 @@ function codigoRegistro($registro, $fecha = null)
          ================================================= -->
 
         <div class="card shadow-sm mb-4">
-
             <div class="card-body">
-
                 <form method="GET">
-
                     <div class="row g-3 align-items-end">
-
-
                         <div class="col-md-3">
-
                             <label class="form-label fw-bold">
                                 Inicio
                             </label>
-
                             <input
                                 type="date"
                                 name="inicio"
                                 class="form-control"
                                 value="<?= htmlspecialchars($inicio) ?>"
                                 required>
-
                         </div>
 
 
                         <div class="col-md-3">
-
                             <label class="form-label fw-bold">
                                 Fin
                             </label>
-
                             <input
                                 type="date"
                                 name="fin"
@@ -979,34 +928,22 @@ function codigoRegistro($registro, $fecha = null)
                                         <?= htmlspecialchars($item['nombre']) ?>
 
                                     </option>
-
                                 <?php endforeach; ?>
-
                             </select>
-
                         </div>
 
 
                         <div class="col-md-3">
-
                             <button
                                 type="submit"
                                 class="btn btn-primary w-100">
-
                                 <i class="bi bi-search"></i>
-
                                 Consultar
-
                             </button>
-
                         </div>
-
                     </div>
-
                 </form>
-
             </div>
-
         </div>
 
 
@@ -1016,18 +953,14 @@ function codigoRegistro($registro, $fecha = null)
 
         <div class="d-flex gap-2 mb-3">
 
-
             <?php if ($rol === 'supervisora'): ?>
 
                 <button
                     type="button"
                     class="btn btn-success"
                     onclick="guardarCambios()">
-
                     <i class="bi bi-save"></i>
-
                     Guardar cambios
-
                 </button>
 
             <?php endif; ?>
@@ -1041,14 +974,9 @@ function codigoRegistro($registro, $fecha = null)
                     onclick="exportarExcel()">
 
                     <i class="bi bi-file-earmark-excel"></i>
-
                     Descargar Excel
-
                 </button>
-
             <?php endif; ?>
-
-
         </div>
 
 
@@ -1057,9 +985,7 @@ function codigoRegistro($registro, $fecha = null)
          ================================================= -->
 
         <div class="tabla-prenomina">
-
             <table class="table table-bordered">
-
                 <thead class="encabezado-prenomina">
                     <tr>
                         <th rowspan="2" class="empleado columna-fija">
@@ -1109,7 +1035,6 @@ function codigoRegistro($registro, $fecha = null)
                     </tr>
                 </thead>
 
-
                 <tbody>
 
 
@@ -1126,10 +1051,8 @@ function codigoRegistro($registro, $fecha = null)
 
                         ?>
 
-
                         <tr
                             data-empleado="<?= $idEmpleado ?>">
-
 
                             <td class="empleado fw-bold">
 
@@ -1139,7 +1062,6 @@ function codigoRegistro($registro, $fecha = null)
 
                             </td>
 
-
                             <td class="tienda">
 
                                 <?= htmlspecialchars(
@@ -1148,15 +1070,9 @@ function codigoRegistro($registro, $fecha = null)
 
                             </td>
 
-
                             <?php foreach ($dias as $dia): ?>
 
                                 <?php
-
-                                /*
-                             * Primero usamos la edición
-                             * guardada por la supervisora.
-                             */
 
                                 if (
                                     $edicion &&
@@ -1192,9 +1108,7 @@ function codigoRegistro($registro, $fecha = null)
 
                                 ?>
 
-
                                 <td>
-
                                     <select
                                         class="celda-dia"
                                         data-fecha="<?= $dia ?>"
@@ -1217,16 +1131,11 @@ function codigoRegistro($registro, $fecha = null)
                                             </option>
 
                                         <?php endforeach; ?>
-
                                     </select>
-
                                 </td>
-
                             <?php endforeach; ?>
 
-
                             <td>
-
                                 <input
                                     type="number"
                                     min="0"
@@ -1241,9 +1150,7 @@ function codigoRegistro($registro, $fecha = null)
 
                             </td>
 
-
-                            <td>
-
+                            <td>                        
                                 <input
                                     type="text"
                                     class="form-control form-control-sm observaciones"
@@ -1253,18 +1160,11 @@ function codigoRegistro($registro, $fecha = null)
                                     <?= $rol === 'admin'
                                         ? 'readonly'
                                         : '' ?>>
-
                             </td>
-
                         </tr>
-
                     <?php endforeach; ?>
-
-
                 </tbody>
-
             </table>
-
         </div>
 
 
@@ -1273,40 +1173,24 @@ function codigoRegistro($registro, $fecha = null)
          ================================================= -->
 
         <div class="card mt-4">
-
             <div class="card-body">
-
                 <h6 class="fw-bold">
                     Leyenda
                 </h6>
-
-
                 <div class="leyenda">
-
                     <?php foreach ($codigos as $codigo => $descripcion): ?>
-
                         <span
                             style="background: <?= $colores[$codigo] ?? '#fff' ?>;">
-
                             <strong>
                                 <?= $codigo ?>
                             </strong>
-
                             -
-
                             <?= $descripcion ?>
-
                         </span>
-
                     <?php endforeach; ?>
-
                 </div>
-
             </div>
-
         </div>
-
-
     </div>
 
 
@@ -1345,9 +1229,7 @@ function codigoRegistro($registro, $fecha = null)
                     const idEmpleado =
                         fila.dataset.empleado;
 
-
                     const dias = {};
-
 
                     fila
                         .querySelectorAll(
@@ -1359,9 +1241,7 @@ function codigoRegistro($registro, $fecha = null)
                                     select.dataset.fecha
                                 ] =
                                 select.value;
-
                         });
-
 
                     const horasExtra =
                         fila
@@ -1370,7 +1250,6 @@ function codigoRegistro($registro, $fecha = null)
                         )
                         .value;
 
-
                     const observaciones =
                         fila
                         .querySelector(
@@ -1378,22 +1257,14 @@ function codigoRegistro($registro, $fecha = null)
                         )
                         .value;
 
-
                     filas.push({
 
                         id_empleado: idEmpleado,
-
                         dias: dias,
-
                         horas_extra: horasExtra,
-
                         observaciones: observaciones
-
                     });
-
                 });
-
-
             return filas;
         }
 
@@ -1405,10 +1276,7 @@ function codigoRegistro($registro, $fecha = null)
         async function guardarCambios() {
             const filas =
                 obtenerFilas();
-
-
             if (filas.length === 0) {
-
                 alert(
                     'No hay empleados para guardar.'
                 );
@@ -1416,33 +1284,23 @@ function codigoRegistro($registro, $fecha = null)
                 return;
             }
 
-
             try {
-
                 const respuesta =
                     await fetch(
                         'prenomina.php', {
 
                             method: 'POST',
-
                             headers: {
                                 'Content-Type': 'application/json'
                             },
 
                             body: JSON.stringify({
-
                                 accion: 'guardar',
-
                                 inicio: '<?= $inicio ?>',
-
                                 fin: '<?= $fin ?>',
-
                                 tienda: <?= json_encode($tienda) ?>,
-
                                 filas: filas
-
                             })
-
                         }
                     );
 
@@ -1450,25 +1308,19 @@ function codigoRegistro($registro, $fecha = null)
                 const resultado =
                     await respuesta.json();
 
-
                 if (resultado.success) {
-
                     alert(
                         resultado.mensaje
                     );
 
                 } else {
-
                     alert(
                         resultado.mensaje
                     );
                 }
 
-
             } catch (error) {
-
                 console.error(error);
-
                 alert(
                     'Ocurrió un error al guardar la prenómina.'
                 );
@@ -1484,7 +1336,6 @@ function codigoRegistro($registro, $fecha = null)
         async function exportarExcel() {
             const filas =
                 obtenerFilas();
-
 
             // Tomar las fechas directamente de los campos visibles para exportar
             // exactamente el periodo seleccionado por el usuario.
@@ -1510,15 +1361,12 @@ function codigoRegistro($registro, $fecha = null)
                 const respuesta =
                     await fetch(
                         'exportar_rep_excel.php', {
-
                             method: 'POST',
-
                             headers: {
                                 'Content-Type': 'application/json'
                             },
 
                             body: JSON.stringify(datos)
-
                         }
                     );
 
@@ -1544,45 +1392,32 @@ function codigoRegistro($registro, $fecha = null)
                         blob
                     );
 
-
                 const enlace =
                     document.createElement('a');
-
 
                 enlace.href =
                     url;
 
-
                 enlace.download =
                     'PRENOMINA_' + datos.inicio + '_al_' + datos.fin + '.xlsx';
-
 
                 document.body.appendChild(
                     enlace
                 );
 
-
                 enlace.click();
 
-
                 enlace.remove();
-
 
                 window.URL.revokeObjectURL(
                     url
                 );
 
-
             } catch (error) {
-
                 console.error(error);
-
                 alert('Ocurrió un error al generar el Excel: ' + (error.message || 'error desconocido'));
-
             }
         }
     </script>
-
 </body>
-
 </html>
