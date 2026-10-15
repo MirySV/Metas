@@ -4,7 +4,7 @@ html {
 }
 
 header {
-    background-color: #cf6123;
+    background-color: #15222e;
 }
 
 .navbar {
@@ -34,10 +34,11 @@ body {
     font-style: normal;
     text-align: center;
     margin: 0px;
+    color:rgba(238, 240, 255, 0.959) !important;
 }
 
 footer {
-    background-color: #993918;
+    background-color: #384550;
     margin-bottom: 0;
     padding: 20px 0;
 }

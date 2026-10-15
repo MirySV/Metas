@@ -51,8 +51,30 @@ if(!$fila){
 
 $id_tienda = $fila['id_tienda'];
 
-//Actualiza la tienda a la que pertenece el colaborador en la base de datos, se actualiza el id de la tienda y el descanso del colaborador
-    $actualizar_tienda = mysqli_query($conec, "UPDATE empleados SET id_tienda_actual='$id_tienda', descanso='$descanso_nuevo' WHERE id_empleado='$id_empleado'");
+// Actualiza la tienda, el descanso y el tipo de jornada del colaborador
+// 8 = Trabaja fines de semana -> tipo_jornada = 0
+// 1-7 = Descansa un día de la semana -> tipo_jornada = 1
+
+if ($descanso_nuevo == 0) {
+    
+    $tipo_jornada_nuevo = 0;
+
+} else {
+    
+    $tipo_jornada_nuevo = 1;
+}
+
+$actualizar_tienda = mysqli_query($conec,"UPDATE empleados SET id_tienda_actual='$id_tienda', descanso='$descanso_nuevo',tipo_jornada='$tipo_jornada_nuevo' WHERE id_empleado='$id_empleado'");
+
+if (!$actualizar_tienda) {
+
+    echo '<script>
+            alert("Error al actualizar la información del colaborador");
+            window.location.href="colaboradores.php";
+          </script>';
+
+    exit();
+}
 
     if (!$actualizar_tienda) {
     echo '<script>

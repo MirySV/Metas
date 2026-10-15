@@ -23,8 +23,7 @@ if ($id_registro <= 0 || $tipo_descanso == '') {
 
 /*OBTENER DATOS ACTUALES DEL REGISTRO*/
 
-$consulta_datos = mysqli_prepare(
-    $conec,"SELECT id_empleado, tipo_descanso FROM registros WHERE id_registro = ? AND tipo_registro IN ('FALTA', 'NORMAL')");
+$consulta_datos = mysqli_prepare($conec,"SELECT id_empleado, tipo_descanso FROM registros WHERE id_registro = ? AND tipo_registro IN ('FALTA', 'NORMAL')");
 
 mysqli_stmt_bind_param($consulta_datos, "i", $id_registro);
 
@@ -47,8 +46,7 @@ $tipo_descanso_anterior = $datos['tipo_descanso'];
 
 /* ACTUALIZAR MOTIVO DEL DESCANSO*/
 
-$consulta = mysqli_prepare(
-    $conec,"UPDATE registros SET tipo_descanso = ? WHERE id_registro = ? AND tipo_registro IN ('FALTA', 'NORMAL')");
+$consulta = mysqli_prepare($conec,"UPDATE registros SET tipo_descanso = ? WHERE id_registro = ? AND tipo_registro IN ('FALTA', 'NORMAL')");
 
 mysqli_stmt_bind_param($consulta, "si", $tipo_descanso, $id_registro);
 

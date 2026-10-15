@@ -1,18 +1,35 @@
-html,
-body {
+/* ==============================
+   ESTILOS GENERALES
+   ============================== */
+:root {
+    --color-fondo: #f4f7fb;
+    --color-texto: #263449;
+    --color-azul-marino: #15222e;
+    --color-azul: #1a2e41;
+    --color-blanco: #ffffff;
+    --color-texto-suave: #6d7b8d;
+    --sombra-tarjeta: 0 8px 24px rgba(20, 43, 74, 0.10);
+    --sombra-tarjeta-hover: 0 16px 32px rgba(20, 43, 74, 0.18);
+    --radio-tarjeta: 18px;
+}
+
+html, body {
     margin: 0;
     padding: 0;
     width: 100%;
     min-height: 100%;
 }
+html { scroll-behavior: smooth; }
 
 body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
-    background-color: #f7f7f8;
-    color: #343434;
+    background: radial-gradient(ellipse at top, rgba(36, 76, 122, 0.055), transparent 55%), var(--color-fondo);
+    color: var(--color-texto);
+    font-family: "Segoe UI", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 main {
@@ -21,321 +38,277 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 40px 0 80px;
+    padding: 42px 0 76px;
     box-sizing: border-box;
 }
-/* ENCABEZADO */
 
+/* ENCABEZADO */
 .navbarindex {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 100px;
-    padding: 25px 30px;
+    min-height: 112px;
+    padding: 24px 30px;
     box-sizing: border-box;
 }
 
 #login {
     position: absolute;
-    left: 30px;
-    top: 25px;
+    left: 32px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 #login img {
     display: block;
-    width: 130px;
+    width: 132px;
+    max-width: 100%;
     height: auto;
+    transition: transform 0.25s ease;
 }
+
+#login a:hover img { transform: scale(1.035); }
 
 .cerrarsesion {
     position: absolute;
-    right: 30px;
-    top: 35px;
+    right: 32px;
+    top: 50%;
+    transform: translateY(-50%);
     font-family: "Macondo", cursive;
-    font-size: 22px;
+    font-size: 21px;
 }
 
 .cerrarsesion a {
     display: inline-flex;
     align-items: center;
-    padding: 7px 10px;
-    color: #330a04;
+    justify-content: center;
+    padding: 9px 14px;
+    color: var(--color-blanco);
     text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .cerrarsesion a:hover {
-    color: #ffffff;
-    background-color: #77240f;
+    color: var(--color-blanco);
+    background-color: var(--color-azul-marino);
+    border-color: var(--color-azul-marino);
+    transform: translateY(-1px);
 }
 
+.cerrarsesion a:focus-visible, .mi-card-link:focus-visible {
+    outline: 3px solid rgba(63, 120, 181, 0.50);
+    outline-offset: 4px;
+}
 
 /* CONTENEDOR DE TARJETAS */
-
 #custom-cards {
     width: 100%;
-    max-width: 1400px;
+    max-width: 1360px;
     margin: 0 auto;
-    padding: 0 35px;
+    padding: 0 32px;
     box-sizing: border-box;
 }
-
-/* FILA */
 
 #custom-cards .row {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    row-gap: 26px;
     margin-left: -12px;
     margin-right: -12px;
 }
-
-
-/* COLUMNAS */
 
 #custom-cards .col-3 {
     display: flex;
     padding-left: 12px;
     padding-right: 12px;
+    box-sizing: border-box;
 }
 
-
-/* ENLACE DE LA TARJETA*/
-
+/* ENLACES Y TARJETAS */
 .mi-card-link {
     display: block;
     width: 100%;
-    height: 200px;
+    height: 205px;
     color: inherit;
     text-decoration: none;
+    border-radius: var(--radio-tarjeta);
 }
 
-.mi-card-link:hover {
-    color: inherit;
-    text-decoration: none;
-}
-
-.mi-card-link:hover .mi-card {
-    transform: translateY(-4px);
-    background: linear-gradient(145deg, #9a3b1d, #77240f);
-    box-shadow: 0 10px 24px rgba(119, 36, 15, 0.22);
-}
-
-/* TARJETA */
+.mi-card-link:hover { color: inherit; text-decoration: none; }
 
 .mi-card {
+    position: relative;
+    isolation: isolate;
     width: 100%;
-    height: 200px;
-    background: linear-gradient(145deg, #8a3218, #6f220e);
-    border: none;
-    border-radius: 16px;
+    height: 100%;
+    background: linear-gradient(135deg, #244c7a 0%, #142b4a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radio-tarjeta);
     overflow: hidden;
-    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--sombra-tarjeta);
     cursor: pointer;
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.mi-card::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 180px;
+    height: 180px;
+    right: -65px;
+    top: -75px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.075);
+    transition: transform 0.35s ease;
+}
+
+.mi-card::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 125px;
+    height: 125px;
+    left: -65px;
+    bottom: -75px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.045);
 }
 
 .mi-card-link:hover .mi-card {
-    transform: translateY(-4px);
-    box-shadow:0 10px 24px rgba(0, 0, 0, 0.17);
+    transform: translateY(-5px);
+    background: linear-gradient(135deg, #315f91 0%, #1a385e 100%);
+    box-shadow: var(--sombra-tarjeta-hover);
 }
 
+.mi-card-link:hover .mi-card::before { transform: scale(1.18); }
 
-/* CONTENIDO */
-
+/* CONTENIDO DE LAS TARJETAS */
 .mi-card-content {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 16px;
+    width: 100%;
     height: 100%;
-    gap: 15px;
+    padding: 18px;
+    box-sizing: border-box;
+    text-align: center;
 }
-
-
-/* TEXTO */
 
 .mi-card h5 {
     margin: 0;
     padding: 0;
     font-family: "Macondo", cursive;
-    font-size: 30px;
+    font-size: clamp(23px, 2vw, 30px);
     font-weight: 400;
-    line-height: 1.2;
-    color: #ffffff;
+    line-height: 1.25;
+    color: var(--color-blanco);
     text-align: center;
+    text-wrap: balance;
 }
 
 .mi-card-icon {
-    width: 58px;
-    height: 58px;
+    width: 62px;
+    height: 62px;
+    flex: 0 0 62px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.12);
-    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.13);
+    color: var(--color-blanco);
     font-size: 28px;
-    transition: all 0.2s ease;
+    transition: background-color 0.25s ease, transform 0.25s ease;
 }
 
 .mi-card-link:hover .mi-card-icon {
-    background-color: rgba(255, 255, 255, 0.20);
-    transform: scale(1.05);
+    background-color: rgba(255, 255, 255, 0.22);
+    transform: scale(1.07);
 }
 
-
-/* FOOTER */
-
+/* PIE DE PÁGINA */
 footer {
     width: 100%;
     margin-top: auto;
-    padding: 15px;
+    padding: 18px 15px;
     box-sizing: border-box;
-    color: #777;
+    color: var(--color-texto-suave);
     font-size: 13px;
     text-align: center;
 }
-
-footer p {
-    margin: 0;
-}
-
+footer p { margin: 0; }
 
 /* TABLET */
-
 @media (max-width: 991px) {
+    main { padding: 32px 0 60px; }
+    .navbarindex { min-height: 96px; padding: 20px; }
+    #login { left: 22px; }
+    #login img { width: 108px; }
+    .cerrarsesion { right: 22px; font-size: 19px; }
 
-    .navbarindex {
-        min-height: 90px;
-        padding: 20px;
-    }
-
-    #login {
-        left: 20px;
-        top: 20px;
-    }
-
-    #login img {
-        width: 105px;
-    }
-
-    .cerrarsesion {
-        right: 20px;
-        top: 30px;
-        font-size: 19px;
-    }
-
-    /* 2 TARJETAS POR FILA */
-    #custom-cards .col-3 {
-        width: 50%;
-        flex: 0 0 50%;
-    }
-
-    .mi-card-link,
-    .mi-card {
-        height: 210px;
-    }
-
-    .mi-card h5 {
-        font-size: 27px;
-    }
+    /* Dos tarjetas por fila */
+    #custom-cards .col-3 { width: 50%; flex: 0 0 50%; }
+    .mi-card-link { height: 205px; }
+    .mi-card h5 { font-size: 27px; }
 }
 
-
 /* CELULAR */
-
 @media (max-width: 767px) {
-
-    .navbarindex {
-        min-height: 80px;
-        padding: 15px;
+    main {
+        align-items: flex-start;
+        padding: 26px 0 42px;
     }
+    .navbarindex { min-height: 82px; padding: 16px; }
+    #login { left: 15px; }
+    #login img { width: 78px; }
+    .cerrarsesion { right: 15px; font-size: 16px; }
+    .cerrarsesion a { padding: 7px 9px; }
 
-    #login {
-        left: 15px;
-        top: 18px;
+    #custom-cards { margin: 12px auto 30px; padding: 0 18px; }
+    #custom-cards .row {
+        row-gap: 18px;
+        margin-left: -8px;
+        margin-right: -8px;
     }
-
-    #login img {
-        width: 75px;
-    }
-
-    .cerrarsesion {
-        right: 15px;
-        top: 23px;
-        font-size: 15px;
-    }
-
-    /* CONTENEDOR */
-
-    #custom-cards {
-        margin: 20px auto 40px;
-        padding: 0 15px;
-    }
-
-    /* UNA TARJETA POR FILA */
-
     #custom-cards .col-3 {
         width: 100%;
         flex: 0 0 100%;
+        padding-left: 8px;
+        padding-right: 8px;
     }
 
-    /* TARJETAS */
-
-    .mi-card-link,
-    .mi-card {
-        height: 175px;
-    }
-
-    .mi-card-content {
-        padding: 20px;
-    }
-
-    .mi-card h5 {
-        font-size: 25px;
-    }
+    .mi-card-link { height: 172px; }
+    .mi-card-content { gap: 12px; padding: 18px; }
+    .mi-card-icon { width: 54px; height: 54px; flex-basis: 54px; font-size: 25px; }
+    .mi-card h5 { font-size: 25px; }
 }
 
-
 /* CELULAR PEQUEÑO */
-
 @media (max-width: 400px) {
+    .navbarindex { min-height: 72px; padding: 12px; }
+    #login { left: 10px; }
+    #login img { width: 64px; }
+    .cerrarsesion { right: 10px; font-size: 14px; }
+    .cerrarsesion a { padding: 6px 7px; }
+    #custom-cards { padding: 0 12px; }
+    .mi-card-link { height: 158px; }
+    .mi-card h5 { font-size: 22px; }
+}
 
-    .navbarindex {
-        min-height: 70px;
-    }
-
-    #login {
-        left: 10px;
-        top: 15px;
-    }
-
-    #login img {
-        width: 62px;
-    }
-
-    .cerrarsesion {
-        right: 10px;
-        top: 20px;
-        font-size: 13px;
-    }
-
-    #custom-cards {
-        padding: 0 12px;
-    }
-
-    .mi-card-link,
-    .mi-card {
-        height: 155px;
-    }
-
-    .mi-card h5 {
-        font-size: 22px;
+/* Respeta la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
     }
 }

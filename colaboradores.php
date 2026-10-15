@@ -42,91 +42,263 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
   <link rel="stylesheet" href="./css/style.css">
   <link rel="stylesheet" href="./css/style_colaboradores.css">
   <title>Tiendas Africam Safari</title>
+
+  <style>
+    body {
+      background: #f5f6f8;
+    }
+
+    .sidebar {
+      width: 250px;
+      min-height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      background: #15222e;
+      z-index: 1000;
+    }
+
+    .sidebar-logo {
+      width: 130px;
+      display: block;
+      margin: 20px auto;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      padding: 13px 20px;
+      transition: .2s;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background: #3d4b5a;
+    }
+
+    .sidebar a i {
+      margin-right: 8px;
+    }
+
+    .contenido {
+      margin-left: 250px;
+      padding: 25px;
+    }
+
+    .tabla-prenomina {
+      background: white;
+      border-radius: 10px;
+      overflow: auto;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+    }
+
+    .tabla-prenomina table {
+      margin: 0;
+      min-width: 1200px;
+    }
+
+    .tabla-prenomina th,
+    .tabla-prenomina td {
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+      font-size: 12px;
+    }
+
+    .empleado {
+      text-align: left !important;
+      min-width: 230px;
+      position: sticky;
+      left: 0;
+      background: white !important;
+      z-index: 5;
+    }
+
+    .tienda {
+      min-width: 150px;
+    }
+
+    .dia {
+      width: 48px;
+      min-width: 48px;
+      padding: 4px !important;
+    }
+
+    .celda-dia {
+      width: 44px;
+      height: 36px;
+      border: 1px solid #aaa;
+      text-align: center;
+      font-weight: bold;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .horas-extra {
+      width: 80px;
+    }
+
+    .observaciones {
+      min-width: 250px;
+    }
+
+    .leyenda span {
+      display: inline-block;
+      padding: 5px 8px;
+      margin: 3px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    @media(max-width: 768px) {
+
+      .sidebar {
+        width: 70px;
+      }
+
+      .sidebar span {
+        display: none;
+      }
+
+      .sidebar-logo {
+        width: 50px;
+      }
+
+      .contenido {
+        margin-left: 70px;
+        padding: 15px;
+      }
+    }
+  </style>
+
 </head>
 
 <body>
-  <header class="navbarcolaboradores">
-    <a href="login.php">
-      <img src="./assets/img/logo.png" width="130px" />
+
+  <div class="sidebar">
+
+    <img
+      src="assets/img/logo.png"
+      class="sidebar-logo"
+      alt="Africam Safari">
+
+    <div class="text-center text-white mb-4 px-2">
+      <p class="mb-1">Bienvenido/a,</p>
+      <strong>
+        <?= htmlspecialchars($_SESSION['username'] ?? 'Usuario', ENT_QUOTES, 'UTF-8') ?>
+      </strong>
+    </div>
+
+    <a href="index.php">
+      <i class="bi bi-house"></i>
+      <span>
+        Menú Principal
+      </span>
     </a>
-    <a class="text-black m-0" id="nombrepagcolab" href="index.php">Colaboradores</a>
-    <div class="cerrarsesion">
-      <a href="logout.php">Cerrar sesión</a>
+
+    <a href="colaboradores.php"
+      class="active">
+      <i class="bi bi-people"></i>
+      <span>
+        Colaboradores
+      </span>
+    </a>
+
+    <?php if ($rol === 'admin' || $rol === 'supervisora'): ?>
+
+      <a href="prenomina.php">
+        <i class="bi bi-calendar3"></i>
+        <span>
+          Prenómina
+        </span>
+      </a>
+
+    <?php endif; ?>
+
+    <a href="logout.php"
+      class="cerrar-sesion">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>
+        Cerrar sesión
+      </span>
+    </a>
+  </div>
+
+  <div class="contenido">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="fw-bold mb-1">
+          <i class="bi bi-people"></i>
+          Colaboradores
+        </h2>
+        <small class="text-muted">
+          <?= $rol === 'supervisora'
+            ? 'Consulta y edicion de Colaboradores'
+            : 'Consulta y edicion de Colaboradores'
+          ?>
+        </small>
+
+      </div>
     </div>
-  </header>
+    <main>
+      <div class="filtro_tiendas" style="overflow-x:auto;">
+        <form action="colaboradores.php" method="POST">
+          <div class="filtro_acciones">
+            <select id="tiendas" name="tiendas" class="filtro-input">
+              <option value="todas" selected>Todas las tiendas</option>
+              <option value="AFRITATTOS">AFRITATTOS</option>
+              <option value="AVENTURA AMAZONICA">AVENTURA AMAZONICA</option>
+              <option value="AVIARIO AUSTRALIANO">AVIARIO AUSTRALIANO</option>
+              <option value="CARRITO DE LEONES">CARRITO DE LEONES</option>
+              <option value="CHAMCHAWI">CHAMCHAWI</option>
+              <option value="EXPLANADA">EXPLANADA</option>
+              <option value="FOTO EXPERIENCIAS">FOTO EXPERIENCIAS</option>
+              <option value="FOTO SAFARI">FOTO SAFARI</option>
+              <option value="KARIBU">KARIBU</option>
+              <option value="KARLUI">KARLUI</option>
+              <option value="KIBOKO">KIBOKO</option>
+              <option value="KU-HU-ZU">KU-HU-ZU</option>
+              <option value="MAHALI">MAHALI</option>
+              <option value="MATUNDA ESPECTACULOS">MATUNDA ESPECTACULOS</option>
+              <option value="MICHELADAS">MICHELADAS</option>
+              <option value="MOROCCO DULCERIA">MOROCCO DULCERIA</option>
+              <option value="MOROCCO SOUVENIRS">MOROCCO SOUVENIRS</option>
+              <option value="NIEVES ESPECTACULOS">NIEVES ESPECTACULOS</option>
+              <option value="NIEVES MOMBASA">NIEVES MOMBASA</option>
+              <option value="NIEVES MOROCCO">NIEVES MOROCCO</option>
+              <option value="OCEANIA">OCEANIA</option>
+              <option value="PALOMITAS MOROCCO">PALOMITAS MOROCCO</option>
+              <option value="PENDA">PENDA</option>
+              <option value="PRODUCCION">PRODUCCION</option>
+              <option value="ZAWADI ASIATICOS">ZAWADI ASIATICOS</option>
+              <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>
+              <option value="ZAWADI HUELLAS">ZAWADI HUELLAS</option>
+            </select>
 
-  <main>
-    <div class="filtro_tiendas" style="overflow-x:auto;"> 
-      <form action="colaboradores.php" method="POST">
-        <div class="filtro_acciones">
-          <select id="tiendas" name="tiendas" class="filtro-input">
-            <option value="todas" selected>Todas las tiendas</option>
-            <option value="AFRITATTOS">AFRITATTOS</option>
-            <option value="AVENTURA AMAZONICA">AVENTURA AMAZONICA</option>
-            <option value="AVIARIO AUSTRALIANO">AVIARIO AUSTRALIANO</option>
-            <option value="CARRITO DE LEONES">CARRITO DE LEONES</option>
-            <option value="CHAMCHAWI">CHAMCHAWI</option>
-            <option value="EXPLANADA">EXPLANADA</option>
-            <option value="FOTO EXPERIENCIAS">FOTO EXPERIENCIAS</option>
-            <option value="FOTO SAFARI">FOTO SAFARI</option>
-            <option value="KARIBU">KARIBU</option>
-            <option value="KARLUI">KARLUI</option>
-            <option value="KIBOKO">KIBOKO</option>
-            <option value="KU-HU-ZU">KU-HU-ZU</option>
-            <option value="MAHALI">MAHALI</option>
-            <option value="MATUNDA ESPECTACULOS">MATUNDA ESPECTACULOS</option>
-            <option value="MICHELADAS">MICHELADAS</option>
-            <option value="MOROCCO DULCERIA">MOROCCO DULCERIA</option>
-            <option value="MOROCCO SOUVENIRS">MOROCCO SOUVENIRS</option>
-            <option value="NIEVES ESPECTACULOS">NIEVES ESPECTACULOS</option>
-            <option value="NIEVES MOMBASA">NIEVES MOMBASA</option>
-            <option value="NIEVES MOROCCO">NIEVES MOROCCO</option>
-            <option value="OCEANIA">OCEANIA</option>
-            <option value="PALOMITAS MOROCCO">PALOMITAS MOROCCO</option>
-            <option value="PENDA">PENDA</option>
-            <option value="PRODUCCION">PRODUCCION</option>
-            <option value="ZAWADI ASIATICOS">ZAWADI ASIATICOS</option>
-            <option value="ZAWADI DUKAZURI">ZAWADI DUKAZURI</option>
-            <option value="ZAWADI HUELLAS">ZAWADI HUELLAS</option>
-          </select>
-
-          <input type="text" id="empleado" name="empleado" list="lista_empleados" placeholder="Nombre del colaborador" class="form-control filtro-input" style=" width: 250px; font-size: 14px;">
-          <datalist id="lista_empleados">
-            <?php
-            //Consulta para obtener los nombres de los colaboradores y mostrarlos en el datalist del input de nombre del colaborador
-            $colaboradores = mysqli_query($conec, "SELECT id_empleado, nombre FROM empleados WHERE status = 1 ORDER BY nombre");
-            while ($empleadoBusqueda = mysqli_fetch_assoc($colaboradores)) {
-            ?>
-              <option value="<?php echo htmlspecialchars($empleadoBusqueda['nombre']); ?>">
+            <input type="text" id="empleado" name="empleado" list="lista_empleados" placeholder="Nombre del colaborador" class="form-control filtro-input" style=" width: 250px; font-size: 14px;">
+            <datalist id="lista_empleados">
               <?php
-            }
+              //Consulta para obtener los nombres de los colaboradores y mostrarlos en el datalist del input de nombre del colaborador
+              $colaboradores = mysqli_query($conec, "SELECT id_empleado, nombre FROM empleados WHERE status = 1 ORDER BY nombre");
+              while ($empleadoBusqueda = mysqli_fetch_assoc($colaboradores)) {
               ?>
-          </datalist>
-          <button type="submit" style="font-size: 14px;">Filtrar</button>
-<?php if ($_SESSION['rol'] == 'admin') { ?>
-        <input type="date" id="inicio_general"
-          class="form-control filtro-input">
+                <option value="<?php echo htmlspecialchars($empleadoBusqueda['nombre']); ?>">
+                <?php
+              }
+                ?>
+            </datalist>
+            <button type="submit" style="font-size: 14px;">Filtrar</button>
 
-        <input type="date" id="fin_general"
-          class="form-control filtro-input">
+          </div>
+        </form>
+      </div>
 
-        
-    <button class="btn guardar-btn" type="submit" name="exportar" onclick="exportarExcel()">
-        <i class="bi bi-file-earmark-excel"></i>
-        <span>Exportar Excel</span>
-    </button>
-<?php } ?>
-        </div>
-      </form>
-    </div>
 
-    <div class="info_colaboradores" style="overflow-x:auto;  ">
-      <div class="info_colaboradores">
-
+      <div class="info_colaboradores" style="overflow-x:auto;  ">
         <div class="tabla-scroll">
-
           <table class="tabla_colaboradores">
-
             <thead>
               <tr class="encabezado">
                 <th>Colaborador</th>
@@ -257,38 +429,35 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
             </tbody>
           </table>
         </div>
-      </div>
 
-      <!--Modal para mostrar los resultados de la busqueda de los registros del colaborador, se muestra el nombre del colaborador y las fechas seleccionadas para mostrar los registros de ese colaborador en ese rango de fechas-->
+        <!--Modal para mostrar los resultados de la busqueda de los registros del colaborador, se muestra el nombre del colaborador y las fechas seleccionadas para mostrar los registros de ese colaborador en ese rango de fechas-->
 
-      <div class="modal fade" id="modal" tabindex="-1">
-        <div class="modal-dialog modal-xl"> <!-- más grande -->
-          <div class="modal-content">
+        <div class="modal fade" id="modal" tabindex="-1">
+          <div class="modal-dialog modal-xl"> <!-- más grande -->
+            <div class="modal-content">
 
-            <div class="modal-header">
-              <h5 class="modal-title" id="tituloModal"></h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              <div class="modal-header">
+                <h5 class="modal-title" id="tituloModal"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+
+              <div class="modal-body">
+                <div id="tablaResultados"></div>
+              </div>
+
+              <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+              </div>
+
             </div>
-
-            <div class="modal-body">
-              <div id="tablaResultados"></div>
-            </div>
-
-            <div class="modal-footer">
-              <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-
           </div>
         </div>
-      </div>
-
-    </div>
-  </main>
-
+    </main>
+  </div>
   <!-- Footer -->
-  <footer>
+  <!-- <footer>
     <p class="text-center">Africam Safari SA de CV &copy; 2026</p>
-  </footer>
+  </footer>-->
 
   <!-- CDN Boostrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -399,15 +568,15 @@ if ($rol != 'admin' && $rol != 'user' && $rol != 'supervisora') {
     let tienda = document.getElementById("tiendas").value;
 
     if (inicio === "" || fin === "") {
-        alert("Selecciona un rango de fechas.");
-        return;
+      alert("Selecciona un rango de fechas.");
+      return;
     }
 
     window.open(
-        `exportar_rep_excel.php?inicio=${inicio}&fin=${fin}&tienda=${encodeURIComponent(tienda)}`,
-        "_blank"
+      `exportar_rep_excel.php?inicio=${inicio}&fin=${fin}&tienda=${encodeURIComponent(tienda)}`,
+      "_blank"
     );
-}
+  }
 </script>
 
 </html>

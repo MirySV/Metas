@@ -18,6 +18,7 @@ if (mysqli_num_rows($resultado) > 0) {
     $_SESSION['rol'] = $filas['rol'];
     $_SESSION['idUsuario'] = $filas['id_usuario'];
     $_SESSION['nombreUsuario'] = $filas['nombre'];
+    $_SESSION['id_zona'] = $filas['id_zona'];
 
     header("location: index.php");
 } else {

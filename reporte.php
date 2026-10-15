@@ -77,7 +77,7 @@ $resultado = mysqli_stmt_get_result($stmt);
 
                         <td>
 
-                            <?php if ($row['tipo_registro'] == "FALTA") { ?>
+                            <?php if ($row['tipo_registro'] == "FALTA" || $row['tipo_registro'] == "DESCANSO") { ?>
 
                                 <form class="form-descanso">
                                     <div class="input-group input-group-sm">

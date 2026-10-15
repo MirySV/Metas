@@ -39,14 +39,15 @@ include 'conexion.php';
         }
 
         .boton-isesion {
-            background-color: #efac41;
+            background-color: #490808;
             border: none;
             /*font-family: "Macondo", cursive;*/
             color: white;
         }
 
         .boton-isesion:hover {
-            background-color: #de8531;
+            background-color: #753024;
+            color: white;
         }
 
         .boton-isesion:focus,

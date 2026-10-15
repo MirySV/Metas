@@ -28,24 +28,6 @@ main {
 
 /* ENCABEZADO*/
 
-.navbarcolaboradores {
-    display: grid;
-    grid-template-columns: 130px 1fr 130px;
-    align-items: center;
-    width: 100%;
-    min-height: 88px;
-    padding: 10px 30px;
-    background: linear-gradient(135deg, #d5631f, #c95718);
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
-    box-sizing: border-box;
-}
-
-.navbarcolaboradores img {
-    display: block;
-    max-width: 115px;
-    height: auto;
-}
-
 #nombrepagcolab {
     font-family: "Macondo", cursive;
     font-size: 42px;
@@ -56,30 +38,6 @@ main {
     padding: 0;
     text-decoration: none;
 }
-
-.cerrarsesion {
-    font-family: "Macondo", cursive;
-    font-size: 20px;
-    text-align: right;
-}
-
-.cerrarsesion a {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 10px;
-    border-radius: 8px;
-    color: #330a04;
-    text-decoration: none;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-}
-
-.cerrarsesion a:hover {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.12);
-}
-
 
 /* FILTROS */
 
@@ -168,7 +126,7 @@ main {
 }
 
 .filtro-input:focus {
-    border-color: #d5631f !important;
+    border-color: #073f10 !important;
     box-shadow: 0 0 0 0.2rem rgba(213, 99, 31, 0.15) !important;
     outline: none;
 }
@@ -242,7 +200,7 @@ main {
     margin: 30px 35px 50px;
     background-color: #fff;
     border: 1px solid #e9e9e9;
-    border-radius: 14px;
+    border-radius: 10px;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
     box-sizing: border-box;
     overflow: hidden;
@@ -270,7 +228,7 @@ main {
 .tabla_colaboradores thead th {
     height: 48px;
     padding: 0 18px;
-    background-color: #77240f;
+    background-color: #021a05;
     color: #fff;
     border: none;
     font-size: 13px !important;
@@ -282,7 +240,7 @@ main {
 
 .tabla_colaboradores thead th:first-child {
     width: 25%;
-    border-top-left-radius: 14px;
+    border-top-left-radius: 10px;
 }
 
 .tabla_colaboradores thead th:nth-child(2) {
@@ -298,7 +256,7 @@ main {
 }
 
 .tabla_colaboradores thead th:last-child {
-    border-top-right-radius: 14px;
+    border-top-right-radius: 10px;
 }
 
 /* FILAS Y CELDAS */
@@ -361,7 +319,7 @@ main {
 }
 
 .campo-tabla:focus {
-    border-color: #d5631f !important;
+    border-color: #9c430f !important;
     box-shadow: 0 0 0 0.18rem rgba(213, 99, 31, 0.13) !important;
     outline: none;
 }
@@ -395,7 +353,7 @@ main {
 
 #tienda:focus,
 #descanso:focus {
-    border-color: #d5631f;
+    border-color: #04380b;
     box-shadow: 0 0 0 0.2rem rgba(213, 99, 31, 0.12);
     outline: none;
 }
@@ -432,7 +390,7 @@ main {
 }
 
 .date:focus {
-    border-color: #d5631f !important;
+    border-color: #073f10 !important;
     box-shadow: 0 0 0 0.18rem rgba(213, 99, 31, 0.13) !important;
     outline: none;
 }
@@ -568,7 +526,7 @@ button:active {
 footer {
     width: 100%;
     margin-top: auto;
-    padding: 15px;
+    padding: 5px;
     box-sizing: border-box;
     color: #777;
     font-size: 13px;
@@ -599,6 +557,72 @@ footer p {
     background: #999;
 }
 
+
+body {
+    margin: 0;
+    background: #f5f6f8;
+}
+
+.sidebar {
+    width: 250px;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #212529;
+    z-index: 1000;
+}
+
+.sidebar-logo {
+    width: 130px;
+    display: block;
+    margin: 20px auto;
+}
+
+.sidebar a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 13px 20px;
+    transition: .2s;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #343a40;
+}
+
+.sidebar a i {
+    margin-right: 8px;
+}
+
+.cerrar-sesion {
+    margin-top: 30px;
+}
+
+.contenido-principal {
+    margin-left: 250px;
+    padding: 25px;
+}
+
+@media (max-width: 768px) {
+
+    .sidebar {
+        width: 70px;
+    }
+
+    .sidebar span {
+        display: none;
+    }
+
+    .sidebar-logo {
+        width: 50px;
+    }
+
+    .contenido-principal {
+        margin-left: 70px;
+    }
+}
 
 /* TABLET */
 
