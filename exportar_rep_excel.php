@@ -74,7 +74,9 @@ if ($rol === 'supervisora') {
 
 if (!$inicio || !$fin || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $inicio) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fin) || $inicio > $fin) {
     http_response_code(400);
-    if (ob_get_level() > 0) { ob_end_clean(); }
+    if (ob_get_level() > 0) {
+        ob_end_clean();
+    }
     header('Content-Type: text/plain; charset=utf-8');
     exit('El periodo seleccionado no es válido.');
 }
@@ -91,7 +93,9 @@ if (
     $fechaFinValidada->format('Y-m-d') !== $fin
 ) {
     http_response_code(400);
-    if (ob_get_level() > 0) { ob_end_clean(); }
+    if (ob_get_level() > 0) {
+        ob_end_clean();
+    }
     header('Content-Type: text/plain; charset=utf-8');
     exit('Las fechas seleccionadas no son válidas.');
 }
@@ -452,7 +456,8 @@ $hoja->getStyle($letraObservaciones . "4")->applyFromArray([
 
 /* CONSULTAR EMPLEADOS Y PREPARAR INFORMACIÓN */
 
-$sqlEmpleados = "SELECT e.id_empleado, e.nombre, e.descanso, t.nombre AS tienda
+$sqlEmpleados = "SELECT e.id_empleado, e.nombre, e.descanso,
+                        e.tipo_jornada, t.nombre AS tienda
                  FROM empleados e
                  INNER JOIN tiendas t ON e.id_tienda_actual = t.id_tienda
                  WHERE e.status = 1";
@@ -643,13 +648,25 @@ while ($empleado = mysqli_fetch_assoc($empleados)) {
             }
         }
 
+        // Los colaboradores que trabajan fines de semana
+        // no deben mostrar faltas de lunes a viernes.
+        $diaSemana = (int) date('N', strtotime($fechaDia));
+
+        if (
+            (int)$empleado['tipo_jornada'] === 0 &&
+            $diaSemana <= 5
+        ) {
+            $codigo = '';
+        }
+
+
         $celda = $letraCol . $fila;
 
         // Borde en todas las celdas del calendario
         $hoja->getStyle($celda)->applyFromArray($bordeDelgado);
 
 
-        if ($codigo !== null) {
+        if ($codigo !== null && $codigo !== '') {
 
             $def = $CODIGOS[$codigo];
 

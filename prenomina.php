@@ -1,5 +1,10 @@
 <?php
 
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 include "conexion.php";
 session_start();
 
@@ -210,7 +215,12 @@ while ($row = $resultadoTiendas->fetch_assoc()) {
 
 $empleados = [];
 
-$sql = "SELECT e.id_empleado, e.nombre, t.nombre AS tienda
+$sql = "SELECT
+            e.id_empleado,
+            e.nombre,
+            e.tipo_jornada,
+            e.descanso,
+            t.nombre AS tienda
         FROM empleados e
         INNER JOIN tiendas t ON e.id_tienda_actual = t.id_tienda
         WHERE e.status = 1";
@@ -1074,33 +1084,41 @@ function codigoRegistro($registro, $fecha = null)
 
                                 <?php
 
-                                if (
-                                    $edicion &&
-                                    isset(
-                                        $edicion['dias'][$dia]
-                                    )
-                                ) {
 
-                                    $codigo =
-                                        strtoupper(trim((string)$edicion['dias'][$dia]));
+                                $registro = $registros[$idEmpleado][$dia] ?? null;
 
-                                    // Mantener la prima dominical verde incluso cuando la asistencia
-                                    // proviene de una edición guardada previamente como A.
-                                    if ($codigo === 'A' && (new DateTime($dia))->format('N') === '7') {
-                                        $codigo = 'PD';
+                                $diaSemana = (int) date('N', strtotime($dia));
+
+                                // Empleados que trabajan fines de semana
+                                if ((int)$empleado['tipo_jornada'] === 0 && $diaSemana <= 5) {
+
+                                    // Si existe un registro real, respetarlo.
+                                    // Si no existe, dejar el día en blanco.
+                                    if ($registro === null) {
+                                        $codigo = '';
+                                    } else {
+                                        $codigo = codigoRegistro($registro, $dia);
                                     }
                                 } else {
 
-                                    $registro =
-                                        $registros[$idEmpleado][$dia]
-                                        ?? null;
+                                    // Para el resto de empleados, conservar la lógica actual.
+                                    if (
+                                        $edicion &&
+                                        isset($edicion['dias'][$dia])
+                                    ) {
+                                        $codigo = strtoupper(trim((string)$edicion['dias'][$dia]));
 
-                                    $codigo =
-                                        codigoRegistro(
-                                            $registro,
-                                            $dia
-                                        );
+                                        // Mantener la prima dominical.
+                                        if ($codigo === 'A' && $diaSemana === 7) {
+                                            $codigo = 'PD';
+                                        }
+                                    } else {
+                                        $codigo = codigoRegistro($registro, $dia);
+                                    }
                                 }
+
+
+
 
                                 $background =
                                     $colores[$codigo]
@@ -1114,23 +1132,18 @@ function codigoRegistro($registro, $fecha = null)
                                         data-fecha="<?= $dia ?>"
                                         style="background-color: <?= $background ?>;"
                                         onchange="cambiarColor(this)"
-                                        <?= $rol === 'admin'
-                                            ? 'disabled'
-                                            : '' ?>>
+                                        <?= $rol === 'admin' ? 'disabled' : '' ?>>
+
+                                        <option value="" <?= $codigo === '' ? 'selected' : '' ?>></option>
 
                                         <?php foreach ($codigos as $codigoOpcion => $descripcion): ?>
-
                                             <option
                                                 value="<?= $codigoOpcion ?>"
-                                                <?= $codigo === $codigoOpcion
-                                                    ? 'selected'
-                                                    : '' ?>>
-
+                                                <?= $codigo === $codigoOpcion ? 'selected' : '' ?>>
                                                 <?= $codigoOpcion ?>
-
                                             </option>
-
                                         <?php endforeach; ?>
+
                                     </select>
                                 </td>
                             <?php endforeach; ?>
@@ -1150,7 +1163,7 @@ function codigoRegistro($registro, $fecha = null)
 
                             </td>
 
-                            <td>                        
+                            <td>
                                 <input
                                     type="text"
                                     class="form-control form-control-sm observaciones"
@@ -1420,4 +1433,5 @@ function codigoRegistro($registro, $fecha = null)
         }
     </script>
 </body>
+
 </html>
